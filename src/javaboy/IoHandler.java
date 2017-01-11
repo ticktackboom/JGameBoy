@@ -122,7 +122,7 @@ class IoHandler {
 
  }
 
- /** Read data from IO Ram */
+ /** Read data from IO GbcRam */
  public short ioRead(int num) {
   if (num <= 0x4B) {
 //   System.out.println("Read of register " + javaboy.JavaBoy.hexByte(num) + " at " + javaboy.JavaBoy.hexWord(dmgcpu.pc));
@@ -198,7 +198,7 @@ class IoHandler {
   }
  }
 
- /** Write data to IO Ram */
+ /** Write data to IO GbcRam */
  public void ioWrite(int num, short data) {
   boolean soundOn = (dmgcpu.soundChip != null);
 

@@ -341,49 +341,6 @@ class Dmgcpu {
 
     }
 
-
-    public final void addressWriteOld(int addr, int data) {
-
-/*  if ((addr >= 0xFFA4) && (addr <= 0xFFA5) && (running)) {
-   System.out.println(javaboy.JavaBoy.hexWord(addr) + " written at " + javaboy.JavaBoy.hexWord(pc) + " bank " + cartridge.currentBank);
-  }*/
-
-
-//  System.out.print(javaboy.JavaBoy.hexByte(javaboy.JavaBoy.unsign((short) data)) + " --> " + javaboy.JavaBoy.hexWord(addr) + ", ");
-        if ((addr < 0x8000)) {
-            if (!running) {
-                cartridge.debuggerAddressWrite(addr, data);
-            } else {
-                cartridge.addressWrite(addr, data);
-//    System.out.println("Tried to write to ROM! PC = " + javaboy.JavaBoy.hexWord(pc) + ", Data = " + javaboy.JavaBoy.hexByte(javaboy.JavaBoy.unsign((byte) data)));
-            }
-        } else if (addr < 0xA000) {
-            try {
-                graphicsChip.addressWrite(addr - 0x8000, (byte) data);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("Error address " + addr);
-            }
-        } else if (addr < 0xC000) {
-            // RAM Bank write
-//   System.out.println("RAM bank write! + " + javaboy.JavaBoy.hexWord(addr) + " = " + javaboy.JavaBoy.hexByte(data) + " at " + javaboy.JavaBoy.hexWord(pc));
-            cartridge.addressWrite(addr, data);
-        } else if (addr < 0xE000) {
-            mainRam[addr - 0xC000] = (byte) data;
-        } else if (addr < 0xFE00) {
-            mainRam[addr - 0xE000] = (byte) data;
-        } else if (addr < 0xFF00) {
-            oam[addr - 0xFE00] = (byte) data;
-        } else if (addr <= 0xFFFF) {
-            if (addr == 0xFF80) {
-//    System.out.println("Register write: " + javaboy.JavaBoy.hexWord(addr) + " = " + javaboy.JavaBoy.hexWord(data));
-            }
-            ioHandler.ioWrite(addr - 0xFF00, (short) data);
-//   registers[addr - 0xFF00] = (byte) data;
-        } else {
-            System.out.println("Attempt to write to address " + JavaBoy.hexWord(addr));
-        }
-    }
-
     /**
      * Sets the value of a register by it's name
      */

@@ -620,11 +620,11 @@ class Cartridge {
 /*	if ((addr >= 0x6000) && (addr <= 0x7FFF)) {
      if ((data & 1) == 1) {
       mbc1LargeRamMode = true;
-      System.out.println("Small Ram");
+      System.out.println("Small GbcRam");
 //      ram = new byte[0x8000];
      } else {
       mbc1LargeRamMode = false;
-      System.out.println("Large Ram");
+      System.out.println("Large GbcRam");
 //      ram = new byte[0x2000];
      }
 	}*/
