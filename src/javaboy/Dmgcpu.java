@@ -40,7 +40,9 @@ class Dmgcpu {
     /**
      * Registers: 16-bit
      */
-    public int sp, pc, hl;
+    public int sp;
+    public int pc;
+    public int hl;
 
     /**
      * The number of instructions that have been executed since the

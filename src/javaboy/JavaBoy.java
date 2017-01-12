@@ -652,7 +652,7 @@ public class JavaBoy extends Applet implements Runnable, KeyListener, WindowList
      * Output the current register values to the console
      */
     public void showRegisterValues() {
-        System.out.println("- Register values");
+        System.out.println("- Register8Bit values");
         System.out.print("A = " + JavaBoy.hexWord(dmgcpu.a) + "    BC = " + JavaBoy.hexWord(dmgcpu.b) + JavaBoy.hexWord(dmgcpu.c));
         System.out.print("    DE = " + JavaBoy.hexByte(dmgcpu.d) + JavaBoy.hexByte(dmgcpu.e));
         System.out.print("    HL = " + JavaBoy.hexWord(dmgcpu.hl));
