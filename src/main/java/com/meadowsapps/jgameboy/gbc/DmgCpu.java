@@ -37,76 +37,103 @@ public class DmgCpu implements Cpu, Constants {
             int operand1 = 2; // memory.read(PC.read() + 1);
             int operand2 = 3; // memory.read(PC.read() + 2);
 
-            int length = 1;
             switch (opcode) {
-                // NOP
-                case 0x00:
+                /* NOP */
+                case 0x00: {
+                    PC.inc();
                     break;
+                }
 
-                // LD BC,d16
-                case 0x01:
-                    length = 3;
+                /* LD BC,d16 */
+                case 0x01: {
                     B.write(operand2);
                     C.write(operand1);
+                    PC.add(3);
                     break;
+                }
 
-                // LD (BC),A
-                case 0x02:
+                /* LD (BC),A */
+                case 0x02: {
                     int addr = B.read() << 8 | C.read();
-                    // write(addr, A.read());
+                    // write(Register.addr, A.read());
+                    PC.inc();
                     break;
+                }
 
-                // INC BC
-                case 0x03:
+                /* INC BC */
+                case 0x03: {
                     if (C.read() + 1 == 0x100) {
                         C.write(0);
                         if (B.read() + 1 == 0x100) {
                             B.write(0);
                         } else {
-                            Register.inc(B);
+                            B.inc();
                         }
                     } else {
-                        Register.inc(C);
+                        C.inc();
                     }
+                    PC.inc();
                     break;
+                }
 
-                // INC B
-                case 0x04:
-                    int f = F.read();
-                    // zero out CARRY_FLAG
-                    f &= CARRY_FLAG;
-
+                /* INC B */
+                case 0x04: {
                     int value = B.read();
-                    switch (value) {
-                        case 0xFF:
-                            f |= HALF_CARRY_FLAG + ZERO_FLAG;
-                            break;
-                        case 0x0F:
-                            f |= HALF_CARRY_FLAG;
-                            break;
-                    }
-                    value = (value == 0xFF) ? 0 : value + 1;
-                    B.write(value);
-                    break;
 
-                // DEC B
-                case 0x05:
-                    Register.dec(B);
+                    F.set(N_FLAG, 0);
+                    F.set(H_FLAG, value == 0xFF || value == 0x0F);
+                    F.set(Z_FLAG, value == 0xFF);
+
+                    if (value == 0xFF) {
+                        B.write(0x00);
+                    } else {
+                        B.inc();
+                    }
+                    PC.inc();
                     break;
+                }
+
+                /* DEC B */
+                case 0x05: {
+                    int value = B.read();
+
+                    F.set(N_FLAG, 1);
+                    F.set(H_FLAG, value == 0x00 || value == 0x10);
+                    F.set(Z_FLAG, value == 0x01);
+
+                    if (B.read() == 0x00) {
+                        B.write(0xFF);
+                    } else {
+                        B.dec();
+                    }
+                    PC.inc();
+                    break;
+                }
 
                 // LD B,d8
-                case 0x06:
-                    length = 2;
+                case 0x06: {
                     B.write(operand1);
+                    PC.add(2);
                     break;
+                }
 
                 // RLCA
-                case 0x07:
+                case 0x07: {
+                    int bit7 = A.get(7);
+                    A.shift(LEFT, 1);
+                    F.set(H_FLAG, 0);
+                    F.set(N_FLAG, 0);
+                    F.set(C_FLAG, bit7);
+                    A.set(0, bit7);
+                    PC.inc();
                     break;
+                }
 
                 // LD (a16),SP
                 case 0x08:
-                    length = 3;
+                    int addr = (operand2 << 8) + operand1;
+                    // write(Register.addr, SP.read());
+                    PC.add(3);
                     break;
 
                 // ADD HL,BC
@@ -123,17 +150,17 @@ public class DmgCpu implements Cpu, Constants {
 
                 // INC C
                 case 0x0C:
-                    Register.inc(C);
+                    C.inc();
                     break;
 
                 // DEC C
                 case 0x0D:
-                    Register.dec(C);
+                    C.dec();
                     break;
 
                 // LD C,d8
                 case 0x0E:
-                    length = 2;
+//                    length = 2;
                     break;
 
                 // RRCA
@@ -142,12 +169,12 @@ public class DmgCpu implements Cpu, Constants {
 
                 // STOP 0
                 case 0x10:
-                    length = 2;
+//                    length = 2;
                     break;
 
                 // LD DE,d16
                 case 0x11:
-                    length = 3;
+//                    length = 3;
                     break;
 
                 // LD (DE),A
@@ -160,27 +187,21 @@ public class DmgCpu implements Cpu, Constants {
 
                 // INC D
                 case 0x14:
-                    Register.inc(D);
+                    D.inc();
                     break;
 
                 // DEC D
                 case 0x15:
-                    Register.dec(D);
+                    D.dec();
                     break;
 
                 // LD D,d8
                 case 0x16:
-                    length = 2;
+//                    length = 2;
                     break;
             }
 
-            Register.add(PC, length);
+//            Register.Register.add(PC, length);
         }
-    }
-
-    public static void main(String[] args) {
-        DmgCpu cpu = new DmgCpu();
-        cpu.execute(0x100);
-
     }
 }

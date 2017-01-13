@@ -1,6 +1,6 @@
 package com.meadowsapps.jgameboy.gbc;
 
-import com.meadowsapps.jgameboy.Register;
+import com.meadowsapps.jgameboy.AbstractRegister;
 import org.joou.UShort;
 
 import static org.joou.Unsigned.ushort;
@@ -8,7 +8,7 @@ import static org.joou.Unsigned.ushort;
 /**
  * Created by dmeadows on 1/13/2017.
  */
-public class Register16Bit implements Register {
+public class Register16Bit extends AbstractRegister {
 
     private UShort value;
 
@@ -25,5 +25,10 @@ public class Register16Bit implements Register {
     public int write(int value) {
         this.value = ushort(value);
         return this.value.intValue();
+    }
+
+    @Override
+    public int size() {
+        return UShort.MAX_VALUE;
     }
 }

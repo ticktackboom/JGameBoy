@@ -1,31 +1,31 @@
 package com.meadowsapps.jgameboy;
 
+import com.meadowsapps.jgameboy.gbc.Constants;
+
 /**
  * Created by dmeadows on 1/12/2017.
  */
-public interface Register {
+public interface Register extends Constants {
 
     int read();
 
-    int write(int value);
+    int write(int value) throws RegisterSizeException;
 
-    static void inc(Register r) {
-        int value = r.read();
-        r.write(value + 1);
-    }
+    int size();
 
-    static void dec(Register r) {
-        int value = r.read();
-        r.write(value - 1);
-    }
+    void inc() throws RegisterSizeException;
 
-    static void add(Register r, int value) {
-        int _value = r.read();
-        r.write(_value + value);
-    }
+    void dec() throws RegisterSizeException;
 
-    static void subtract(Register r, int value) {
-        int _value = r.read();
-        r.write(_value - value);
-    }
+    void shift(int dir, int by) throws RegisterSizeException;
+
+    void add(int value) throws RegisterSizeException;
+
+    void subtract(int value) throws RegisterSizeException;
+
+    int get(int bit);
+
+    void set(int bit, int set);
+
+    void set(int bit, boolean set);
 }

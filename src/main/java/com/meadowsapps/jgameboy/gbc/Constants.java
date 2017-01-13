@@ -4,20 +4,30 @@ package com.meadowsapps.jgameboy.gbc;
  * Created by Dylan on 1/13/17.
  */
 public interface Constants {
+
     /**
-     * Zero flag
+     * Shift direction left
      */
-    short ZERO_FLAG = 0x80;
+    int LEFT = -1;
     /**
-     * Subtract/negative flag
+     * Shift direction right
      */
-    short SUBTRACT_FLAG = 0x40;
-    /**
-     * Half carry flag
-     */
-    short HALF_CARRY_FLAG = 0x20;
-    /**
-     * Carry flag
-     */
-    short CARRY_FLAG = 0x10;
+    int RIGHT = 1;
+
+    int Z_FLAG = 7;
+    int N_FLAG = 6;
+    int H_FLAG = 5;
+    int C_FLAG = 4;
+
+    public static int toInt(boolean b) {
+        return (b) ? 1 : 0;
+    }
+
+    public static boolean toBoolean(int i) throws IllegalArgumentException {
+        if (0 <= i && i <= 1) {
+            return i == 1;
+        } else {
+            throw new IllegalArgumentException("i must be 0 or 1");
+        }
+    }
 }
