@@ -6,7 +6,7 @@ import com.meadowsapps.jgameboy.Register;
 /**
  * Created by Dylan on 1/6/17.
  */
-public class DmgCpu implements Cpu {
+public class DmgCpu implements Cpu, Constants {
 
     /**
      * 8-Bit Registers
@@ -33,7 +33,7 @@ public class DmgCpu implements Cpu {
 
     public void execute(int numInstructions) {
         for (int r = 0; r != numInstructions; r++) {
-            int opcode = 1; // memory.read(PC.read());
+            int opcode = 0x03; // memory.read(PC.read());
             int operand1 = 2; // memory.read(PC.read() + 1);
             int operand2 = 3; // memory.read(PC.read() + 2);
 
@@ -46,21 +46,47 @@ public class DmgCpu implements Cpu {
                 // LD BC,d16
                 case 0x01:
                     length = 3;
-                    B.write(operand1);
-                    C.write(operand2);
+                    B.write(operand2);
+                    C.write(operand1);
                     break;
 
                 // LD (BC),A
                 case 0x02:
+                    int addr = B.read() << 8 | C.read();
+                    // write(addr, A.read());
                     break;
 
                 // INC BC
                 case 0x03:
+                    if (C.read() + 1 == 0x100) {
+                        C.write(0);
+                        if (B.read() + 1 == 0x100) {
+                            B.write(0);
+                        } else {
+                            Register.inc(B);
+                        }
+                    } else {
+                        Register.inc(C);
+                    }
                     break;
 
                 // INC B
                 case 0x04:
-                    Register.inc(B);
+                    int f = F.read();
+                    // zero out CARRY_FLAG
+                    f &= CARRY_FLAG;
+
+                    int value = B.read();
+                    switch (value) {
+                        case 0xFF:
+                            f |= HALF_CARRY_FLAG + ZERO_FLAG;
+                            break;
+                        case 0x0F:
+                            f |= HALF_CARRY_FLAG;
+                            break;
+                    }
+                    value = (value == 0xFF) ? 0 : value + 1;
+                    B.write(value);
                     break;
 
                 // DEC B
@@ -71,6 +97,7 @@ public class DmgCpu implements Cpu {
                 // LD B,d8
                 case 0x06:
                     length = 2;
+                    B.write(operand1);
                     break;
 
                 // RLCA
@@ -153,8 +180,7 @@ public class DmgCpu implements Cpu {
 
     public static void main(String[] args) {
         DmgCpu cpu = new DmgCpu();
-        int value = 256;
-        System.out.println(value - (value >> 8));
-        System.out.println(value >> 8);
+        cpu.execute(0x100);
+
     }
 }

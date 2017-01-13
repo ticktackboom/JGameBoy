@@ -36,7 +36,7 @@ public class RomReader {
         }
 
         System.out.println(builder.toString());
-        System.out.println(value >> 8);           // hi
-        System.out.println(value - (value >> 8)); // lo
+        System.out.println(value >> 8);   // hi
+        System.out.println(value & 0xFF); // lo
     }
 }

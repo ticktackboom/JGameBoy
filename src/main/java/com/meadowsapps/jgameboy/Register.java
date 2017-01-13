@@ -7,7 +7,7 @@ public interface Register {
 
     int read();
 
-    void write(int value);
+    int write(int value);
 
     static void inc(Register r) {
         int value = r.read();

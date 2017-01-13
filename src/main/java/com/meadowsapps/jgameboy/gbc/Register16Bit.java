@@ -1,5 +1,6 @@
 package com.meadowsapps.jgameboy.gbc;
 
+import com.meadowsapps.jgameboy.Register;
 import org.joou.UShort;
 
 import static org.joou.Unsigned.ushort;
@@ -7,7 +8,7 @@ import static org.joou.Unsigned.ushort;
 /**
  * Created by dmeadows on 1/13/2017.
  */
-public class Register16Bit implements GbcRegister {
+public class Register16Bit implements Register {
 
     private UShort value;
 
@@ -21,7 +22,8 @@ public class Register16Bit implements GbcRegister {
     }
 
     @Override
-    public void write(int value) {
+    public int write(int value) {
         this.value = ushort(value);
+        return this.value.intValue();
     }
 }

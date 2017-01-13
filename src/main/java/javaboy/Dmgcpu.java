@@ -680,7 +680,7 @@ class Dmgcpu {
         int dat;
         running = true;
         graphicsChip.startTime = System.currentTimeMillis();
-        int b1, b2, b3, offset;
+        int b1, operand1, operand2, offset;
 
         for (int r = 0; (r != numInstr) && (!terminate); r++) {
 
@@ -693,8 +693,8 @@ class Dmgcpu {
 
             b1 = JavaBoy.unsign(addressRead(pc));
             offset = addressRead(pc + 1);
-            b3 = JavaBoy.unsign(addressRead(pc + 2));
-            b2 = JavaBoy.unsign((short) offset);
+            operand2 = JavaBoy.unsign(addressRead(pc + 2));
+            operand1 = JavaBoy.unsign((short) offset);
 
             switch (b1) {
                 case 0x00:               // NOP
@@ -702,8 +702,8 @@ class Dmgcpu {
                     break;
                 case 0x01:               // LD BC, nn
                     pc += 3;
-                    b = b3;
-                    c = b2;
+                    b = operand2;
+                    c = operand1;
                     break;
                 case 0x02:               // LD (BC), A
                     pc++;
@@ -761,7 +761,7 @@ class Dmgcpu {
                     break;
                 case 0x06:               // LD B, nn
                     pc += 2;
-                    b = b2;
+                    b = operand1;
                     break;
                 case 0x07:               // RLC A
                     pc++;
@@ -780,8 +780,8 @@ class Dmgcpu {
                     break;
                 case 0x08:               // LD (nnnn), SP   /* **** May be wrong! **** */
                     pc += 3;
-                    addressWrite((b3 << 8) + b2 + 1, (sp & 0xFF00) >> 8);
-                    addressWrite((b3 << 8) + b2, (sp & 0x00FF));
+                    addressWrite((operand2 << 8) + operand1 + 1, (sp & 0xFF00) >> 8);
+                    addressWrite((operand2 << 8) + operand1, (sp & 0x00FF));
                     break;
                 case 0x09:               // ADD HL, BC
                     pc++;
@@ -849,7 +849,7 @@ class Dmgcpu {
                     break;
                 case 0x0E:               // LD C, nn
                     pc += 2;
-                    c = b2;
+                    c = operand1;
                     break;
                 case 0x0F:               // RRC A
                     pc++;
@@ -889,8 +889,8 @@ class Dmgcpu {
                     break;
                 case 0x11:               // LD DE, nnnn
                     pc += 3;
-                    d = b3;
-                    e = b2;
+                    d = operand2;
+                    e = operand1;
                     break;
                 case 0x12:               // LD (DE), A
                     pc++;
@@ -948,7 +948,7 @@ class Dmgcpu {
                     break;
                 case 0x16:               // LD D, nn
                     pc += 2;
-                    d = b2;
+                    d = operand1;
                     break;
                 case 0x17:               // RL A
                     pc++;
@@ -1038,7 +1038,7 @@ class Dmgcpu {
                     break;
                 case 0x1E:               // LD E, nn
                     pc += 2;
-                    e = b2;
+                    e = operand1;
                     break;
                 case 0x1F:               // RR A
                     pc++;
@@ -1067,7 +1067,7 @@ class Dmgcpu {
                     break;
                 case 0x21:               // LD HL, nnnn
                     pc += 3;
-                    hl = (b3 << 8) + b2;
+                    hl = (operand2 << 8) + operand1;
                     break;
                 case 0x22:               // LD (HL+), A
                     pc++;
@@ -1119,7 +1119,7 @@ class Dmgcpu {
                     break;
                 case 0x26:               // LD H, nn
                     pc += 2;
-                    hl = (hl & 0x00FF) | (b2 << 8);
+                    hl = (hl & 0x00FF) | (operand1 << 8);
                     break;
                 case 0x27:               // DAA         ** This could be wrong! **
                     pc++;
@@ -1288,7 +1288,7 @@ class Dmgcpu {
                     break;
                 case 0x2E:               // LD L, nn
                     pc += 2;
-                    hl = (hl & 0xFF00) | b2;
+                    hl = (hl & 0xFF00) | operand1;
                     break;
                 case 0x2F:               // CPL A
                     pc++;
@@ -1313,7 +1313,7 @@ class Dmgcpu {
                     break;
                 case 0x31:               // LD SP, nnnn
                     pc += 3;
-                    sp = (b3 << 8) + b2;
+                    sp = (operand2 << 8) + operand1;
                     break;
                 case 0x32:
                     pc++;
@@ -1367,7 +1367,7 @@ class Dmgcpu {
                     break;
                 case 0x36:               // LD (HL), nn
                     pc += 2;
-                    addressWrite(hl, b2);
+                    addressWrite(hl, operand1);
                     break;
                 case 0x37:               // SCF
                     pc++;
@@ -1441,7 +1441,7 @@ class Dmgcpu {
                     break;
                 case 0x3E:               // LD A, nn
                     pc += 2;
-                    a = b2;
+                    a = operand1;
                     break;
                 case 0x3F:               // CCF
                     pc++;
@@ -1494,13 +1494,13 @@ class Dmgcpu {
                     break;
                 case 0xC2:               // JP NZ, nnnn
                     if ((f & F_ZERO) == 0) {
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
                     break;
                 case 0xC3:
-                    pc = (b3 << 8) + b2;  // JP nnnn
+                    pc = (operand2 << 8) + operand1;  // JP nnnn
                     break;
                 case 0xC4:               // CALL NZ, nnnnn
                     if ((f & F_ZERO) == 0) {
@@ -1508,7 +1508,7 @@ class Dmgcpu {
                         sp -= 2;
                         addressWrite(sp + 1, pc >> 8);
                         addressWrite(sp, pc & 0x00FF);
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
@@ -1524,11 +1524,11 @@ class Dmgcpu {
                     pc += 2;
                     f = 0;
 
-                    if ((((a & 0x0F) + (b2 & 0x0F)) & 0xF0) != 0x00) {
+                    if ((((a & 0x0F) + (operand1 & 0x0F)) & 0xF0) != 0x00) {
                         f |= F_HALFCARRY;
                     }
 
-                    a += b2;
+                    a += operand1;
 
                     if ((a & 0xFF00) != 0) {     // Perform 8-bit overflow and set zero flag
                         if (a == 0x0100) {
@@ -1561,18 +1561,18 @@ class Dmgcpu {
                     break;
                 case 0xCA:               // JP Z, nnnn
                     if ((f & F_ZERO) == F_ZERO) {
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
                     break;
                 case 0xCB:               // Shift/bit test
                     pc += 2;
-                    int regNum = b2 & 0x07;
+                    int regNum = operand1 & 0x07;
                     int data = registerRead(regNum);
 //        System.out.println("0xCB instr! - reg " + javaboy.JavaBoy.hexByte((short) (b2 & 0xF4)));
-                    if ((b2 & 0xC0) == 0) {
-                        switch ((b2 & 0xF8)) {
+                    if ((operand1 & 0xC0) == 0) {
+                        switch ((operand1 & 0xF8)) {
                             case 0x00:          // RLC A
                                 if ((data & 0x80) == 0x80) {
                                     f = F_CARRY;
@@ -1704,9 +1704,9 @@ class Dmgcpu {
                         }
                     } else {
 
-                        int bitNumber = (b2 & 0x38) >> 3;
+                        int bitNumber = (operand1 & 0x38) >> 3;
 
-                        if ((b2 & 0xC0) == 0x40) {  // BIT n, r
+                        if ((operand1 & 0xC0) == 0x40) {  // BIT n, r
                             mask = (short) (0x01 << bitNumber);
                             if ((data & mask) != 0) {
                                 f = (short) ((f & F_CARRY) | F_HALFCARRY);
@@ -1714,12 +1714,12 @@ class Dmgcpu {
                                 f = (short) ((f & F_CARRY) | (F_HALFCARRY + F_ZERO));
                             }
                         }
-                        if ((b2 & 0xC0) == 0x80) {  // RES n, r
+                        if ((operand1 & 0xC0) == 0x80) {  // RES n, r
                             mask = (short) (0xFF - (0x01 << bitNumber));
                             data = (short) (data & mask);
                             registerWrite(regNum, data);
                         }
-                        if ((b2 & 0xC0) == 0xC0) {  // SET n, r
+                        if ((operand1 & 0xC0) == 0xC0) {  // SET n, r
                             mask = (short) (0x01 << bitNumber);
                             data = (short) (data | mask);
                             registerWrite(regNum, data);
@@ -1734,7 +1734,7 @@ class Dmgcpu {
                         sp -= 2;
                         addressWrite(sp + 1, pc >> 8);
                         addressWrite(sp, pc & 0x00FF);
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
@@ -1744,21 +1744,21 @@ class Dmgcpu {
                     sp -= 2;
                     addressWrite(sp + 1, pc >> 8);
                     addressWrite(sp, pc & 0x00FF);
-                    pc = (b3 << 8) + b2;
+                    pc = (operand2 << 8) + operand1;
                     break;
                 case 0xCE:               // ADC A, nn
                     pc += 2;
 
                     if ((f & F_CARRY) != 0) {
-                        b2++;
+                        operand1++;
                     }
                     f = 0;
 
-                    if ((((a & 0x0F) + (b2 & 0x0F)) & 0xF0) != 0x00) {
+                    if ((((a & 0x0F) + (operand1 & 0x0F)) & 0xF0) != 0x00) {
                         f |= F_HALFCARRY;
                     }
 
-                    a += b2;
+                    a += operand1;
 
                     if ((a & 0xFF00) != 0) {     // Perform 8-bit overflow and set zero flag
                         if (a == 0x0100) {
@@ -1794,7 +1794,7 @@ class Dmgcpu {
                     break;
                 case 0xD2:               // JP NC, nnnn
                     if ((f & F_CARRY) == 0) {
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
@@ -1805,7 +1805,7 @@ class Dmgcpu {
                         sp -= 2;
                         addressWrite(sp + 1, pc >> 8);
                         addressWrite(sp, pc & 0x00FF);
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
@@ -1822,11 +1822,11 @@ class Dmgcpu {
 
                     f = F_SUBTRACT;
 
-                    if ((((a & 0x0F) - (b2 & 0x0F)) & 0xFFF0) != 0x00) {
+                    if ((((a & 0x0F) - (operand1 & 0x0F)) & 0xFFF0) != 0x00) {
                         f |= F_HALFCARRY;
                     }
 
-                    a -= b2;
+                    a -= operand1;
 
                     if ((a & 0xFF00) != 0) {
                         a &= 0x00FF;
@@ -1859,7 +1859,7 @@ class Dmgcpu {
                     break;
                 case 0xDA:               // JP C, nnnn
                     if ((f & F_CARRY) == F_CARRY) {
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
@@ -1870,7 +1870,7 @@ class Dmgcpu {
                         sp -= 2;
                         addressWrite(sp + 1, pc >> 8);
                         addressWrite(sp, pc & 0x00FF);
-                        pc = (b3 << 8) + b2;
+                        pc = (operand2 << 8) + operand1;
                     } else {
                         pc += 3;
                     }
@@ -1878,15 +1878,15 @@ class Dmgcpu {
                 case 0xDE:               // SBC A, nn
                     pc += 2;
                     if ((f & F_CARRY) != 0) {
-                        b2++;
+                        operand1++;
                     }
 
                     f = F_SUBTRACT;
-                    if ((((a & 0x0F) - (b2 & 0x0F)) & 0xFFF0) != 0x00) {
+                    if ((((a & 0x0F) - (operand1 & 0x0F)) & 0xFFF0) != 0x00) {
                         f |= F_HALFCARRY;
                     }
 
-                    a -= b2;
+                    a -= operand1;
 
                     if ((a & 0xFF00) != 0) {
                         a &= 0x00FF;
@@ -1906,7 +1906,7 @@ class Dmgcpu {
                     break;
                 case 0xE0:               // LDH (FFnn), A
                     pc += 2;
-                    addressWrite(0xFF00 + b2, a);
+                    addressWrite(0xFF00 + operand1, a);
                     break;
                 case 0xE1:               // POP HL
                     pc++;
@@ -1926,7 +1926,7 @@ class Dmgcpu {
                     break;
                 case 0xE6:               // AND nn
                     pc += 2;
-                    a &= b2;
+                    a &= operand1;
                     if (a == 0) {
                         f = F_ZERO;
                     } else {
@@ -1956,11 +1956,11 @@ class Dmgcpu {
                     break;
                 case 0xEA:               // LD (nnnn), A
                     pc += 3;
-                    addressWrite((b3 << 8) + b2, a);
+                    addressWrite((operand2 << 8) + operand1, a);
                     break;
                 case 0xEE:               // XOR A, nn
                     pc += 2;
-                    a ^= b2;
+                    a ^= operand1;
                     if (a == 0) {
                         f = F_ZERO;
                     } else {
@@ -1976,7 +1976,7 @@ class Dmgcpu {
                     break;
                 case 0xF0:               // LDH A, (FFnn)
                     pc += 2;
-                    a = JavaBoy.unsign(addressRead(0xFF00 + b2));
+                    a = JavaBoy.unsign(addressRead(0xFF00 + operand1));
                     break;
                 case 0xF1:               // POP AF
                     pc++;
@@ -2002,7 +2002,7 @@ class Dmgcpu {
                     break;
                 case 0xF6:               // OR A, nn
                     pc += 2;
-                    a |= b2;
+                    a |= operand1;
                     if (a == 0) {
                         f = F_ZERO;
                     } else {
@@ -2032,7 +2032,7 @@ class Dmgcpu {
                     break;
                 case 0xFA:               // LD A, (nnnn)
                     pc += 3;
-                    a = JavaBoy.unsign(addressRead((b3 << 8) + b2));
+                    a = JavaBoy.unsign(addressRead((operand2 << 8) + operand1));
                     break;
                 case 0xFB:               // EI
                     pc++;
@@ -2043,10 +2043,10 @@ class Dmgcpu {
                 case 0xFE:               // CP nn     ** FLAGS ARE WRONG! **
                     pc += 2;
                     f = 0;
-                    if (b2 == a) {
+                    if (operand1 == a) {
                         f |= F_ZERO;
                     } else {
-                        if (a < b2) {
+                        if (a < operand1) {
                             f |= F_CARRY;
                         }
                     }

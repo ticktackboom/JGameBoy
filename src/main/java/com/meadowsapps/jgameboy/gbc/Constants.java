@@ -1,11 +1,9 @@
 package com.meadowsapps.jgameboy.gbc;
 
-import com.meadowsapps.jgameboy.Register;
-
 /**
- * Created by dmeadows on 1/13/2017.
+ * Created by Dylan on 1/13/17.
  */
-public interface GbcRegister extends Register {
+public interface Constants {
     /**
      * Zero flag
      */
