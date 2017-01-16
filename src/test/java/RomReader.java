@@ -1,3 +1,5 @@
+import com.meadowsapps.jgameboy.gbc.DmgCpu;
+
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.URL;
@@ -10,21 +12,26 @@ public class RomReader {
         URL url = RomReader.class.getClassLoader().getResource("DMG_ROM.bin");
         File rom = new File(url.toURI());
 
-        RandomAccessFile raf = new RandomAccessFile(rom, "r");
-        raf.seek(4);
+        DmgCpu cpu = new DmgCpu();
         byte[] buffer = new byte[3];
-        raf.read(buffer);
-        System.out.printf("OPCODE:   %d\n", Byte.toUnsignedInt(buffer[0]));
-        System.out.printf("OPERAND1: %d\n", Byte.toUnsignedInt(buffer[2]));
-        System.out.printf("OPERAND2: %d\n", Byte.toUnsignedInt(buffer[1]));
-        System.out.println();
+        RandomAccessFile raf = new RandomAccessFile(rom, "r");
+        for (int i = 0; i < raf.length(); ) {
+            raf.seek(i);
+            raf.read(buffer);
 
-        int value = 0x9fff;
-        print(value);
-        value = 256;
-        print(value);
-        value = 513;
-        print(value);
+            int opcode = Byte.toUnsignedInt(buffer[0]);
+            int operand1 = Byte.toUnsignedInt(buffer[1]);
+            int operand2 = Byte.toUnsignedInt(buffer[2]);
+
+            System.out.printf("OPCODE:   %d\n", opcode);
+            System.out.printf("OPERAND1: %d\n", operand1);
+            System.out.printf("OPERAND2: %d\n", operand2);
+            System.out.println();
+
+            int length = cpu.execute(opcode, operand1, operand2);
+            i += length;
+        }
+        System.out.println("completed");
     }
 
     static void print(int value) {

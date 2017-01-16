@@ -19,6 +19,8 @@ public interface Register extends Constants {
 
     void shift(int dir, int by) throws RegisterSizeException;
 
+    void invert();
+
     void add(int value) throws RegisterSizeException;
 
     void subtract(int value) throws RegisterSizeException;
@@ -28,4 +30,6 @@ public interface Register extends Constants {
     void set(int bit, int set);
 
     void set(int bit, boolean set);
+
+    boolean isSet(int bit);
 }

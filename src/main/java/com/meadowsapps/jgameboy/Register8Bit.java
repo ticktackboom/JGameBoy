@@ -1,19 +1,19 @@
-package com.meadowsapps.jgameboy.gbc;
+package com.meadowsapps.jgameboy;
 
 import com.meadowsapps.jgameboy.AbstractRegister;
-import org.joou.UShort;
+import org.joou.UByte;
 
-import static org.joou.Unsigned.ushort;
+import static org.joou.Unsigned.ubyte;
 
 /**
  * Created by dmeadows on 1/13/2017.
  */
-public class Register16Bit extends AbstractRegister {
+public class Register8Bit extends AbstractRegister {
 
-    private UShort value;
+    private UByte value;
 
-    public Register16Bit() {
-        value = ushort(0);
+    public Register8Bit() {
+        value = ubyte(0);
     }
 
     @Override
@@ -23,12 +23,13 @@ public class Register16Bit extends AbstractRegister {
 
     @Override
     public int write(int value) {
-        this.value = ushort(value);
+        this.value = ubyte(value);
         return this.value.intValue();
     }
 
     @Override
     public int size() {
-        return UShort.MAX_VALUE;
+        return UByte.MAX_VALUE;
     }
+
 }

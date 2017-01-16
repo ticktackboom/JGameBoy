@@ -27,6 +27,12 @@ public abstract class AbstractRegister implements Register {
     }
 
     @Override
+    public final void invert() {
+        int value = read();
+        write(~value);
+    }
+
+    @Override
     public final void add(int value) throws RegisterSizeException {
         if (!(read() + value > size())) {
             write(read() + value);
@@ -59,8 +65,13 @@ public abstract class AbstractRegister implements Register {
     }
 
     @Override
-    public void set(int bit, boolean set) {
+    public final void set(int bit, boolean set) {
         set(bit, (set) ? 1 : 0);
+    }
+
+    @Override
+    public final boolean isSet(int bit) {
+        return get(bit) == 1;
     }
 
     @Override

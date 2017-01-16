@@ -1,7 +1,7 @@
 import com.meadowsapps.jgameboy.Register;
+import com.meadowsapps.jgameboy.Register16Bit;
+import com.meadowsapps.jgameboy.Register8Bit;
 import com.meadowsapps.jgameboy.RegisterSizeException;
-import com.meadowsapps.jgameboy.gbc.Register16Bit;
-import com.meadowsapps.jgameboy.gbc.Register8Bit;
 
 /**
  * Created by dmeadows on 1/13/2017.
@@ -33,5 +33,15 @@ public class RegisterTest {
         }
 
         throw new RegisterSizeException(RegisterSizeException.BIT);
+    }
+
+    static String toBinary(int value) {
+        String binary = Integer.toBinaryString(value);
+        binary = String.format("%8s", binary).replace(' ', '0');
+        StringBuilder builder = new StringBuilder(binary);
+        for (int i = builder.length() - 4; i > 0; i -= 4) {
+            builder.insert(i, ' ');
+        }
+        return builder.toString();
     }
 }
