@@ -7,15 +7,31 @@ import com.meadowsapps.jgameboy.*;
  */
 public class DmgCpu implements Cpu, Constants {
 
-    /**
-     * 8-Bit Registers
-     */
-    private Register A, F, B, C, D, E, H, L;
 
     /**
-     * 16-Bit Registers
+     * Accumulator Register
      */
-    private Register SP, PC;
+    private Register8Bit A;
+
+    /**
+     * Status Register
+     */
+    private Register8Bit F;
+
+    /**
+     * General purpose Register
+     */
+    private Register8Bit B, C, D, E, H, L;
+
+    /**
+     * Stack Pointer Register
+     */
+    private Register16Bit SP;
+
+    /**
+     * Program Counter Register
+     */
+    private Register16Bit PC;
 
     public DmgCpu() {
         A = new Register8Bit();
@@ -449,6 +465,60 @@ public class DmgCpu implements Cpu, Constants {
                 break;
             }
 
+            // DEC (HL)
+            case 0x35: {
+                dec_addr(H, L);
+                break;
+            }
+
+            // LD (HL),d8
+            case 0x36: {
+                int addr = (H.read() << 8) + L.read();
+                // write(d8, addr);
+                length = 2;
+                break;
+            }
+
+            // SCF
+            case 0x37: {
+                F.set(N_FLAG, 0);
+                F.set(H_FLAG, 0);
+                F.set(C_FLAG, 1);
+                break;
+            }
+
+            // JR C,r8
+            case 0x38: {
+                if (F.isSet(C_FLAG)) {
+                    PC.add(r8);
+                }
+                length = 2;
+                break;
+            }
+
+            // ADD HL,SP
+            case 0x39: {
+                int hl = (H.read() << 8) + L.read();
+                int sp = SP.read();
+                int sum = hl + sp;
+                H.write(sum >> 8);
+                L.write(sum & 0xFF);
+
+                F.set(N_FLAG, 0);
+                F.set(H_FLAG, ((hl & 0x0FFF) + (sp & 0x0FFF)) > 0xFFF);
+                F.set(C_FLAG, sum > 0xFFFF);
+                break;
+            }
+
+            // LD A,(HL-)
+            case 0x3A: {
+                int addr = (H.read() << 8) + L.read();
+                int value = 0; // = read(addr);
+                A.write(value);
+                dec(H, L);
+                break;
+            }
+
             default:
                 throw new OpCodeException(opcode);
         }
@@ -456,21 +526,27 @@ public class DmgCpu implements Cpu, Constants {
         return length;
     }
 
-    public int read(int address) {
-        return Mmu.read(address);
-    }
-
-    public void write(int value, int address) {
-        Mmu.write(value, address);
-    }
-
-    private void inc(Register r) {
+    /**
+     * Increments the 8-Bit register <code>r</code>. If the current value equals
+     * the maximum value of an 8-Bit register (0xFF) then the value rolls over to 0.
+     * <b>Flag Alteration:</b>
+     * <ul>
+     * <li><code>Z_FLAG</code>: Set if <code>r</code>'s value before incrementing equals
+     * the maximum value of an 8-Bit Register (0xFF)</li>
+     * <li><code>N_FLAG</code>: Reset to 0</li>
+     * <li><code>H_FLAG</code>: Set if <code>r</code>'s value before incrementing equals
+     * the maximum value of an 8-Bit Register (0xFF) or if <code>r</code>'s value before
+     * incrementing equals </li>
+     * </ul>
+     * <code>N_FLAG</code> is unset
+     *
+     * @param r the 8-Bit register to increment
+     */
+    private void inc(Register8Bit r) {
         int value = r.read();
-
         F.set(N_FLAG, 0);
         F.set(H_FLAG, value == 0xFF || value == 0x0F);
         F.set(Z_FLAG, value == 0xFF);
-
         if (value == 0xFF) {
             r.write(0x00);
         } else {
@@ -478,21 +554,30 @@ public class DmgCpu implements Cpu, Constants {
         }
     }
 
-    private void inc(Register r1, Register r2) {
+    /**
+     * Increments the 16-Bit register <code>r</code>
+     *
+     * @param r the 16-Bit register to increment
+     */
+    private void inc(Register16Bit r) {
+        r.inc();
+    }
+
+    private void inc(Register8Bit r1, Register8Bit r2) {
         int value = (r1.read() << 8) + r2.read();
         value++;
         r1.write(value >> 8);
         r2.write(value & 0xFF);
     }
 
-    private void inc_addr(Register r) {
+    private void inc_addr(Register16Bit r) {
         int addr = r.read();
         int value = 0; // = read(addr);
         value++;
         // write(value, addr);
     }
 
-    private void inc_addr(Register r1, Register r2) {
+    private void inc_addr(Register8Bit r1, Register8Bit r2) {
         int addr = (r1.read() << 8) + r2.read();
         int value = 0; // = read(addr);
 
@@ -509,7 +594,7 @@ public class DmgCpu implements Cpu, Constants {
         // write(value, addr);
     }
 
-    private void dec(Register r) {
+    private void dec(Register8Bit r) {
         int value = r.read();
 
         F.set(N_FLAG, 1);
@@ -523,7 +608,7 @@ public class DmgCpu implements Cpu, Constants {
         }
     }
 
-    private void dec(Register r1, Register r2) {
+    private void dec(Register8Bit r1, Register8Bit r2) {
         int value = (r1.read() << 8) + r2.read();
         value--;
         r1.write(value >> 8);
@@ -560,14 +645,48 @@ public class DmgCpu implements Cpu, Constants {
         r2.write(d16 & 0xFF);
     }
 
-    private void add(Register r) {
+    private void add(Register8Bit r) {
         int value = A.read();
         F.set(N_FLAG, 0);
 
         A.add(r.read());
     }
 
-    private void add(Register r1_1, Register r1_2, Register r2_1, Register r2_2) {
+    private void add(Register16Bit r1, Register16Bit r2) {
+        int value1 = r1.read();
+        int value2 = r2.read();
+        int sum = value1 + value2;
+        r1.write(sum);
+
+        F.set(N_FLAG, 0);
+        F.set(Constants.H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(C_FLAG, sum > 0xFFFF);
+    }
+
+    private void add(Register16Bit r1, Register8Bit r2_1, Register8Bit r2_2) {
+        int value1 = r1.read();
+        int value2 = (r2_1.read() << 8) + r2_2.read();
+        int sum = value1 + value2;
+        r1.write(sum);
+
+        F.set(N_FLAG, 0);
+        F.set(Constants.H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(C_FLAG, sum > 0xFFFF);
+    }
+
+    private void add(Register8Bit r1_1, Register8Bit r1_2, Register16Bit r2) {
+        int value1 = (r1_1.read() << 8) + r1_2.read();
+        int value2 = r2.read();
+        int sum = value1 + value2;
+        r1_1.write(sum >> 8);
+        r1_2.write(sum & 0xFF);
+
+        F.set(N_FLAG, 0);
+        F.set(Constants.H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(C_FLAG, sum > 0xFFFF);
+    }
+
+    private void add(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = (r1_1.read() << 8) + r1_2.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
         int sum = value1 + value2;
@@ -579,11 +698,11 @@ public class DmgCpu implements Cpu, Constants {
         F.set(C_FLAG, sum > 0xFFFF);
     }
 
-    private void sub(Register r) {
+    private void sub(Register8Bit r) {
         A.subtract(r.read());
     }
 
-    private void sub(Register r1_1, Register r1_2, Register r2_1, Register r2_2) {
+    private void sub(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = (r1_1.read() << 8) + r1_2.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
         int difference = value1 - value2;

@@ -9,7 +9,7 @@ public interface Register extends Constants {
 
     int read();
 
-    int write(int value) throws RegisterSizeException;
+    void write(int value) throws RegisterSizeException;
 
     int size();
 

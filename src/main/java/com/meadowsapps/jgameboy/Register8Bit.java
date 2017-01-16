@@ -1,6 +1,5 @@
 package com.meadowsapps.jgameboy;
 
-import com.meadowsapps.jgameboy.AbstractRegister;
 import org.joou.UByte;
 
 import static org.joou.Unsigned.ubyte;
@@ -22,9 +21,8 @@ public class Register8Bit extends AbstractRegister {
     }
 
     @Override
-    public int write(int value) {
+    public void write(int value) {
         this.value = ubyte(value);
-        return this.value.intValue();
     }
 
     @Override
