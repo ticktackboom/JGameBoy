@@ -1,7 +1,7 @@
-import com.meadowsapps.jgameboy.Register;
-import com.meadowsapps.jgameboy.Register16Bit;
-import com.meadowsapps.jgameboy.Register8Bit;
-import com.meadowsapps.jgameboy.RegisterSizeException;
+import com.meadowsapps.jgameboy.core.Register;
+import com.meadowsapps.jgameboy.core.Register16Bit;
+import com.meadowsapps.jgameboy.core.Register8Bit;
+import com.meadowsapps.jgameboy.core.RegisterSizeException;
 
 /**
  * Created by dmeadows on 1/13/2017.

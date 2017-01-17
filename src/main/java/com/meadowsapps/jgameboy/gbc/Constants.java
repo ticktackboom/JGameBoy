@@ -14,11 +14,6 @@ public interface Constants {
      */
     int RIGHT = 1;
 
-    int Z_FLAG = 7;
-    int N_FLAG = 6;
-    int H_FLAG = 5;
-    int C_FLAG = 4;
-
     public static int toInt(boolean b) {
         return (b) ? 1 : 0;
     }

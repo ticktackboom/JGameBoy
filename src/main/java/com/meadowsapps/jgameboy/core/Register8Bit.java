@@ -1,4 +1,4 @@
-package com.meadowsapps.jgameboy;
+package com.meadowsapps.jgameboy.core;
 
 import org.joou.UByte;
 

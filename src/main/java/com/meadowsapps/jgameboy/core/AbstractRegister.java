@@ -1,4 +1,4 @@
-package com.meadowsapps.jgameboy;
+package com.meadowsapps.jgameboy.core;
 
 /**
  * Created by dmeadows on 1/13/2017.
@@ -67,6 +67,13 @@ public abstract class AbstractRegister implements Register {
     @Override
     public final void set(int bit, boolean set) {
         set(bit, (set) ? 1 : 0);
+    }
+
+    @Override
+    public final void flip(int bit) {
+        int value = read();
+        value = (value ^ (1 << bit));
+        write(value);
     }
 
     @Override

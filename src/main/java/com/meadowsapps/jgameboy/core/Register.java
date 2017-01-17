@@ -1,4 +1,4 @@
-package com.meadowsapps.jgameboy;
+package com.meadowsapps.jgameboy.core;
 
 import com.meadowsapps.jgameboy.gbc.Constants;
 
@@ -30,6 +30,8 @@ public interface Register extends Constants {
     void set(int bit, int set);
 
     void set(int bit, boolean set);
+
+    void flip(int bit);
 
     boolean isSet(int bit);
 }

@@ -1,4 +1,7 @@
-import com.meadowsapps.jgameboy.gbc.DmgCpu;
+import com.meadowsapps.jgameboy.CoreFactory;
+import com.meadowsapps.jgameboy.core.Cpu;
+import com.meadowsapps.jgameboy.core.EmulatorCore;
+import com.meadowsapps.jgameboy.core.OpCodeException;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -12,26 +15,37 @@ public class RomReader {
         URL url = RomReader.class.getClassLoader().getResource("DMG_ROM.bin");
         File rom = new File(url.toURI());
 
-        DmgCpu cpu = new DmgCpu();
+        EmulatorCore core = CoreFactory.getCore();
+        Cpu cpu = core.getCpu();
         byte[] buffer = new byte[3];
         RandomAccessFile raf = new RandomAccessFile(rom, "r");
-        for (int i = 0; i < raf.length(); ) {
-            raf.seek(i);
-            raf.read(buffer);
+        long start = System.currentTimeMillis();
+        try {
+            for (int i = 0; i < raf.length(); ) {
+                raf.seek(i);
+                raf.read(buffer);
 
-            int opcode = Byte.toUnsignedInt(buffer[0]);
-            int operand1 = Byte.toUnsignedInt(buffer[1]);
-            int operand2 = Byte.toUnsignedInt(buffer[2]);
+                int opcode = Byte.toUnsignedInt(buffer[0]);
+                int operand1 = Byte.toUnsignedInt(buffer[1]);
+                int operand2 = Byte.toUnsignedInt(buffer[2]);
 
-            System.out.printf("OPCODE:   %d\n", opcode);
-            System.out.printf("OPERAND1: %d\n", operand1);
-            System.out.printf("OPERAND2: %d\n", operand2);
-            System.out.println();
+                String hex = String.format("%2s", Integer.toHexString(opcode));
+                hex = "0x" + ((hex.replace(" ", "0")).toUpperCase());
+                System.out.printf("OPCODE:   %s\n", hex);
+                System.out.printf("OPERAND1: %d\n", operand1);
+                System.out.printf("OPERAND2: %d\n", operand2);
+                System.out.println();
 
-            int length = cpu.execute(opcode, operand1, operand2);
-            i += length;
+                int length = cpu.execute(opcode, operand1, operand2);
+                i += length;
+            }
+            System.out.println("completed");
+        } catch (OpCodeException e) {
+            e.printStackTrace();
+        } finally {
+            long stop = System.currentTimeMillis();
+            System.out.println(stop - start);
         }
-        System.out.println("completed");
     }
 
     static void print(int value) {

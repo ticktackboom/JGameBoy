@@ -1,4 +1,4 @@
-package com.meadowsapps.jgameboy;
+package com.meadowsapps.jgameboy.core;
 
 /**
  * Created by Dylan on 1/14/17.

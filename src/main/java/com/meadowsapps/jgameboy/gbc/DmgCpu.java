@@ -1,16 +1,13 @@
 package com.meadowsapps.jgameboy.gbc;
 
-import com.meadowsapps.jgameboy.*;
-
-import java.util.function.Function;
+import com.meadowsapps.jgameboy.core.*;
 
 /**
  * Emulated CPU found inside of the Nintendo GameBoy.
  * Custom 8-bit Sharp LR35902 based on the Intel 8080
  * and the Z80 microprocessors.
  */
-public class DmgCpu implements Cpu, Constants {
-
+public class DmgCpu extends AbstractCpu implements Constants {
 
     /**
      * Accumulator Register
@@ -37,8 +34,6 @@ public class DmgCpu implements Cpu, Constants {
      */
     private Register16Bit PC;
 
-    private Function[] opcodes;
-
     /**
      * Bit index of the Zero Status Flag
      */
@@ -62,7 +57,8 @@ public class DmgCpu implements Cpu, Constants {
     /**
      * Initializes the CPU's registers
      */
-    public DmgCpu() {
+    public DmgCpu(GbcCore core) {
+        super(core);
         A = new Register8Bit();
         F = new Register8Bit();
         B = new Register8Bit();
@@ -73,12 +69,7 @@ public class DmgCpu implements Cpu, Constants {
         L = new Register8Bit();
         SP = new Register16Bit();
         PC = new Register16Bit();
-
-        int[] a = new int[10];
-        opcodes = new Function[0xFF];
-//        opcodes[0x31] = DmgCpu::opcode0x31;
     }
-
 
     /**
      * Executes the specified number of instructions. If <code>numInstructions</code>
@@ -87,14 +78,13 @@ public class DmgCpu implements Cpu, Constants {
      *
      * @param numInstructions the number of instructions to execute
      */
+    @Override
     public void execute(int numInstructions) {
         for (int r = 0; r != numInstructions; r++) {
-            int opcode = 0x03; // memory.read(PC.read());
-            int operand1 = 2; // memory.read(PC.read() + 1);
-            int operand2 = 3; // memory.read(PC.read() + 2);
-//            int length = execute(opcode, operand1, operand2);
-            Object args = new int[]{operand1, operand2};
-            int length = (int) opcodes[opcode].apply(args);
+            int opcode = read(PC.read());
+            int operand1 = read(PC.read() + 1);
+            int operand2 = read(PC.read() + 2);
+            int length = execute(opcode, operand1, operand2);
             PC.add(length);
         }
     }
@@ -108,6 +98,7 @@ public class DmgCpu implements Cpu, Constants {
      * @param operand2 operand2 potentially used for the opcode
      * @return the length of the instruction
      */
+    @Override
     public int execute(int opcode, int operand1, int operand2) {
         int length = 1;
 
@@ -131,7 +122,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD (BC),A
             case 0x02: {
                 int addr = (B.read() << 8) + C.read();
-                // write(Register.addr, A.read());
+                write(addr, A.read());
                 break;
             }
 
@@ -175,7 +166,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD (a16),SP
             case 0x08: {
                 int addr = (operand2 << 8) + operand1;
-                // write(add, SP.read());
+                write(addr, SP.read());
                 length = 3;
                 break;
             }
@@ -189,7 +180,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD A,(BC)
             case 0x0A: {
                 int addr = (B.read() << 8) + C.read();
-                int value = 0; // = read(addr);
+                int value = read(addr);
                 A.write(value);
                 break;
             }
@@ -248,7 +239,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD (DE),A
             case 0x12: {
                 int addr = (D.read() << 8) + E.read();
-                // write(A.read(), addr);
+                write(A.read(), addr);
                 break;
             }
 
@@ -306,7 +297,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD A,(DE)
             case 0x1A: {
                 int addr = (D.read() << 8) + E.read();
-                int value = 0; // = read(addr);
+                int value = read(addr);
                 A.write(value);
                 break;
             }
@@ -368,7 +359,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD (HL+),A
             case 0x22: {
                 int addr = (H.read() << 8) + L.read();
-                // write(A.read(), addr);
+                write(A.read(), addr);
                 inc(H, L);
                 break;
             }
@@ -441,7 +432,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD A,(HL+)
             case 0x2A: {
                 int addr = (H.read() << 8) + L.read();
-                int value = 0; // = read(addr);
+                int value = read(addr);
                 A.write(value);
                 inc(H, L);
                 break;
@@ -500,7 +491,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD (HL-),A
             case 0x32: {
                 int addr = (H.read() << 8) + L.read();
-                // write(A.read(), addr);
+                write(A.read(), addr);
                 dec(H, L);
                 break;
             }
@@ -526,7 +517,7 @@ public class DmgCpu implements Cpu, Constants {
             // LD (HL),d8
             case 0x36: {
                 int addr = (H.read() << 8) + L.read();
-                // write(d8, addr);
+                write(d8, addr);
                 length = 2;
                 break;
             }
@@ -565,9 +556,240 @@ public class DmgCpu implements Cpu, Constants {
             // LD A,(HL-)
             case 0x3A: {
                 int addr = (H.read() << 8) + L.read();
-                int value = 0; // = read(addr);
+                int value = read(addr);
                 A.write(value);
                 dec(H, L);
+                break;
+            }
+
+            // DEC SP
+            case 0x3B: {
+                dec(SP);
+                break;
+            }
+
+            // INC A
+            case 0x3C: {
+                inc(A);
+                break;
+            }
+
+            // DEC A
+            case 0x3D: {
+                dec(A);
+                break;
+            }
+
+            // LD A,d8
+            case 0x3E: {
+                ld_d8(d8, A);
+                length = 2;
+                break;
+            }
+
+            // CCF
+            case 0x3F: {
+                F.set(N_FLAG, 0);
+                F.set(H_FLAG, 0);
+                F.flip(C_FLAG);
+                break;
+            }
+
+            // LD B,B
+            case 0x40: {
+                ld(B, B);
+                break;
+            }
+
+            // LD B,C
+            case 0x41: {
+                ld(B, C);
+                break;
+            }
+
+            // LD B,D
+            case 0x42: {
+                ld(B, D);
+                break;
+            }
+
+            // LD B,E
+            case 0x43: {
+                ld(B, E);
+                break;
+            }
+
+            // LD B,H
+            case 0x44: {
+                ld(B, H);
+                break;
+            }
+
+            // LD B,L
+            case 0x45: {
+                ld(B, L);
+                break;
+            }
+
+            // LD B,(HL)
+            case 0x46: {
+                ld_from_addr(B, H, L);
+                break;
+            }
+
+            // LD B,A
+            case 0x47: {
+                ld(B, A);
+                break;
+            }
+
+            // LD C,B
+            case 0x48: {
+                ld(C, B);
+                break;
+            }
+
+            // LD C,C
+            case 0x49: {
+                ld(C, C);
+                break;
+            }
+
+            // LD C,D
+            case 0x4A: {
+                ld(C, D);
+                break;
+            }
+
+            // LD C,E
+            case 0x4B: {
+                ld(C, E);
+                break;
+            }
+
+            // LD C,H
+            case 0x4C: {
+                ld(C, H);
+                break;
+            }
+
+            // LD C,L
+            case 0x4D: {
+                ld(C, L);
+                break;
+            }
+
+            // LD C,(HL)
+            case 0x4E: {
+                ld_from_addr(C, H, L);
+                break;
+            }
+
+            // LD C,A
+            case 0x4F: {
+                ld(C, A);
+                break;
+            }
+
+            // LD D,B
+            case 0x50: {
+                ld(D, B);
+                break;
+            }
+
+            // LD D,C
+            case 0x51: {
+                ld(D, C);
+                break;
+            }
+
+            // LD D,D
+            case 0x52: {
+                ld(D, D);
+                break;
+            }
+
+            // LD D,E
+            case 0x53: {
+                ld(D, E);
+                break;
+            }
+
+            // LD D,H
+            case 0x54: {
+                ld(D, H);
+                break;
+            }
+
+            // LD D,L
+            case 0x55: {
+                ld(D, L);
+                break;
+            }
+
+            // LD D,(HL)
+            case 0x56: {
+                ld_from_addr(D, H, L);
+                break;
+            }
+
+            // LD D,A
+            case 0x57: {
+                ld(D, A);
+                break;
+            }
+
+            // LD E,B
+            case 0x58: {
+                ld(E, B);
+                break;
+            }
+
+            // LD E,C
+            case 0x59: {
+                ld(E, C);
+                break;
+            }
+
+            // LD E,D
+            case 0x5A: {
+                ld(E, D);
+                break;
+            }
+
+            // LD E,E
+            case 0x5B: {
+                ld(E, E);
+                break;
+            }
+
+            // LD E,H
+            case 0x5C: {
+                ld(E, H);
+                break;
+            }
+
+            // LD E,L
+            case 0x5D: {
+                ld(E, L);
+                break;
+            }
+
+            // LD E,(HL)
+            case 0x5E: {
+                ld_from_addr(E, H, L);
+                break;
+            }
+
+            // LD E,A
+            case 0x5F: {
+                ld(E, A);
+                break;
+            }
+
+            // XOR A
+            case 0xAF: {
+                xor(A);
                 break;
             }
 
@@ -575,6 +797,10 @@ public class DmgCpu implements Cpu, Constants {
                 throw new OpCodeException(opcode);
         }
         return length;
+    }
+
+    private int executeCB() {
+        return -1;
     }
 
     /**
@@ -721,6 +947,10 @@ public class DmgCpu implements Cpu, Constants {
         }
     }
 
+    private void dec(Register16Bit r) {
+        r.dec();
+    }
+
     private void dec(Register8Bit r1, Register8Bit r2) {
         int value = (r1.read() << 8) + r2.read();
         value--;
@@ -758,6 +988,31 @@ public class DmgCpu implements Cpu, Constants {
         r2.write(d16 & 0xFF);
     }
 
+    private void ld(Register8Bit r1, Register8Bit r2) {
+        int value = r2.read();
+        r1.write(value);
+    }
+
+    private void ld_to_addr(Register16Bit r1, Register r2) {
+
+    }
+
+    private void ld_to_addr(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2) {
+
+    }
+
+    private void ld_from_addr(Register8Bit r1, Register16Bit r2) {
+        int addr = r2.read();
+        int value = read(addr);
+        r1.write(value);
+    }
+
+    private void ld_from_addr(Register8Bit r1, Register8Bit r2_1, Register8Bit r2_2) {
+        int addr = (r2_1.read() << 8) + r2_2.read();
+        int value = read(addr);
+        r1.write(value);
+    }
+
     private void add(Register8Bit r) {
         int value = A.read();
         F.set(N_FLAG, 0);
@@ -772,7 +1027,7 @@ public class DmgCpu implements Cpu, Constants {
         r1.write(sum);
 
         F.set(N_FLAG, 0);
-        F.set(Constants.H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
         F.set(C_FLAG, sum > 0xFFFF);
     }
 
@@ -783,7 +1038,7 @@ public class DmgCpu implements Cpu, Constants {
         r1.write(sum);
 
         F.set(N_FLAG, 0);
-        F.set(Constants.H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
         F.set(C_FLAG, sum > 0xFFFF);
     }
 
@@ -795,7 +1050,7 @@ public class DmgCpu implements Cpu, Constants {
         r1_2.write(sum & 0xFF);
 
         F.set(N_FLAG, 0);
-        F.set(Constants.H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
         F.set(C_FLAG, sum > 0xFFFF);
     }
 
@@ -821,5 +1076,17 @@ public class DmgCpu implements Cpu, Constants {
         int difference = value1 - value2;
         r1_1.write(difference >> 8);
         r1_2.write(difference & 0xFF);
+    }
+
+    private void xor(Register8Bit r) {
+        int value1 = A.read();
+        int value2 = r.read();
+        int result = value1 ^ value2;
+        A.write(result);
+
+        F.set(Z_FLAG, result == 0);
+        F.set(N_FLAG, 0);
+        F.set(H_FLAG, 0);
+        F.set(C_FLAG, 0);
     }
 }
