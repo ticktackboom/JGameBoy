@@ -2,8 +2,12 @@ package com.meadowsapps.jgameboy.gbc;
 
 import com.meadowsapps.jgameboy.*;
 
+import java.util.function.Function;
+
 /**
- * Created by Dylan on 1/6/17.
+ * Emulated CPU found inside of the Nintendo GameBoy.
+ * Custom 8-bit Sharp LR35902 based on the Intel 8080
+ * and the Z80 microprocessors.
  */
 public class DmgCpu implements Cpu, Constants {
 
@@ -33,6 +37,31 @@ public class DmgCpu implements Cpu, Constants {
      */
     private Register16Bit PC;
 
+    private Function[] opcodes;
+
+    /**
+     * Bit index of the Zero Status Flag
+     */
+    public static final int Z_FLAG = 7;
+
+    /**
+     * Bit index of the Subtract Status Flag
+     */
+    public static final int N_FLAG = 6;
+
+    /**
+     * Bit index of the Half Carry Status Flag
+     */
+    public static final int H_FLAG = 5;
+
+    /**
+     * Bit index of the Carry Status Flag
+     */
+    public static final int C_FLAG = 4;
+
+    /**
+     * Initializes the CPU's registers
+     */
     public DmgCpu() {
         A = new Register8Bit();
         F = new Register8Bit();
@@ -44,18 +73,41 @@ public class DmgCpu implements Cpu, Constants {
         L = new Register8Bit();
         SP = new Register16Bit();
         PC = new Register16Bit();
+
+        int[] a = new int[10];
+        opcodes = new Function[0xFF];
+//        opcodes[0x31] = DmgCpu::opcode0x31;
     }
 
+
+    /**
+     * Executes the specified number of instructions. If <code>numInstructions</code>
+     * equals -1, then the CPU will execute infinitely until <code>interrupted</code>
+     * is set to <code>true</code>.
+     *
+     * @param numInstructions the number of instructions to execute
+     */
     public void execute(int numInstructions) {
         for (int r = 0; r != numInstructions; r++) {
             int opcode = 0x03; // memory.read(PC.read());
             int operand1 = 2; // memory.read(PC.read() + 1);
             int operand2 = 3; // memory.read(PC.read() + 2);
-            int length = execute(opcode, operand1, operand2);
+//            int length = execute(opcode, operand1, operand2);
+            Object args = new int[]{operand1, operand2};
+            int length = (int) opcodes[opcode].apply(args);
             PC.add(length);
         }
     }
 
+    /**
+     * Executes the given opcode with the available operands and returns
+     * the length of the instruction to add to the <code>PC</code> register.
+     *
+     * @param opcode   opcode to execute
+     * @param operand1 operand1 potentially used for the opcode
+     * @param operand2 operand2 potentially used for the opcode
+     * @return the length of the instruction
+     */
     public int execute(int opcode, int operand1, int operand2) {
         int length = 1;
 
@@ -522,25 +574,24 @@ public class DmgCpu implements Cpu, Constants {
             default:
                 throw new OpCodeException(opcode);
         }
-
         return length;
     }
 
     /**
      * Increments the 8-Bit register <code>r</code>. If the current value equals
-     * the maximum value of an 8-Bit register (0xFF) then the value rolls over to 0.
+     * 0xFF then the value rolls over to 0.
+     * </br>
      * <b>Flag Alteration:</b>
      * <ul>
      * <li><code>Z_FLAG</code>: Set if <code>r</code>'s value before incrementing equals
      * the maximum value of an 8-Bit Register (0xFF)</li>
      * <li><code>N_FLAG</code>: Reset to 0</li>
      * <li><code>H_FLAG</code>: Set if <code>r</code>'s value before incrementing equals
-     * the maximum value of an 8-Bit Register (0xFF) or if <code>r</code>'s value before
-     * incrementing equals </li>
+     * 0xFF or 0x0F</li>
+     * <li><code>C_FLAG</code>: Unaffected</li>
      * </ul>
-     * <code>N_FLAG</code> is unset
      *
-     * @param r the 8-Bit register to increment
+     * @param r the register to increment
      */
     private void inc(Register8Bit r) {
         int value = r.read();
@@ -555,14 +606,37 @@ public class DmgCpu implements Cpu, Constants {
     }
 
     /**
-     * Increments the 16-Bit register <code>r</code>
+     * Increments the 16-Bit register <code>r</code>.
+     * </br>
+     * <b>Flag Alteration:</b>
+     * <ul>
+     * <li><code>Z_FLAG</code>: Unaffected</li>
+     * <li><code>N_FLAG</code>: Unaffected</li>
+     * <li><code>H_FLAG</code>: Unaffected</li>
+     * <li><code>C_FLAG</code>: Unaffected</li>
+     * </ul>
      *
-     * @param r the 16-Bit register to increment
+     * @param r the register to increment
      */
     private void inc(Register16Bit r) {
         r.inc();
     }
 
+    /**
+     * Combines the two 8-Bit registers, <code>r1</code> and <code>r2</code>,
+     * to behave as a 16-Bit register and increments the value.
+     * </br>
+     * <b>Flag Alteration:</b>
+     * <ul>
+     * <li><code>Z_FLAG</code>: Unaffected</li>
+     * <li><code>N_FLAG</code>: Unaffected</li>
+     * <li><code>H_FLAG</code>: Unaffected</li>
+     * <li><code>C_FLAG</code>: Unaffected</li>
+     * </ul>
+     *
+     * @param r1 Register that contains the upper 8 bytes of the value to increment
+     * @param r2 Register that contains the lower 8 bytes of the value to increment
+     */
     private void inc(Register8Bit r1, Register8Bit r2) {
         int value = (r1.read() << 8) + r2.read();
         value++;
@@ -570,13 +644,52 @@ public class DmgCpu implements Cpu, Constants {
         r2.write(value & 0xFF);
     }
 
+    /**
+     * Increments the value located at the address given by the 16-Bit register
+     * <code>r</code>. If the value before incrementing equals 0xFF, then the value
+     * rolls over to 0.
+     * </br>
+     * <b>Flag Alteration:</b>
+     * <ul>
+     * <li><code>Z_FLAG</code>: Set if the value before incrementing equals 0xFF.</li>
+     * <li><code>N_FLAG</code>: Reset to 0</li>
+     * <li><code>H_FLAG</code>: Set if the value before incrementing equals 0xFF or 0x0F</li>
+     * <li><code>C_FLAG</code>: Unaffected</li>
+     * </ul>
+     *
+     * @param r the register containing the address of the value to increment
+     */
     private void inc_addr(Register16Bit r) {
         int addr = r.read();
         int value = 0; // = read(addr);
+
+        F.set(N_FLAG, 0);
+        F.set(H_FLAG, value == 0xFF || value == 0x0F);
+        F.set(Z_FLAG, value == 0xFF);
+        if (value == 0xFF) {
+            value = 0x00;
+        } else {
+            value++;
+        }
         value++;
         // write(value, addr);
     }
 
+    /**
+     * Combines the two 8-Bit registers, <code>r1</code> and <code>r2</code>,
+     * to behave as a 16-Bit register and increments the value.
+     * </br>
+     * <b>Flag Alteration:</b>
+     * <ul>
+     * <li><code>Z_FLAG</code>: Unaffected</li>
+     * <li><code>N_FLAG</code>: Unaffected</li>
+     * <li><code>H_FLAG</code>: Unaffected</li>
+     * <li><code>C_FLAG</code>: Unaffected</li>
+     * </ul>
+     *
+     * @param r1 Register that contains the upper 8 bytes of the value to increment
+     * @param r2 Register that contains the lower 8 bytes of the value to increment
+     */
     private void inc_addr(Register8Bit r1, Register8Bit r2) {
         int addr = (r1.read() << 8) + r2.read();
         int value = 0; // = read(addr);

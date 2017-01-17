@@ -6,6 +6,6 @@ package com.meadowsapps.jgameboy;
 public class OpCodeException extends RuntimeException {
 
     public OpCodeException(int opcode) {
-        super("OpCode not defined: 0x" + Integer.toHexString(opcode));
+        super("Opcode not defined: 0x" + Integer.toHexString(opcode));
     }
 }
