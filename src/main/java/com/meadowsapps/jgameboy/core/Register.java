@@ -9,21 +9,21 @@ public interface Register extends Constants {
 
     int read();
 
-    void write(int value) throws RegisterSizeException;
+    void write(int value);
 
     int size();
 
-    void inc() throws RegisterSizeException;
+    void inc();
 
-    void dec() throws RegisterSizeException;
+    void dec();
 
-    void shift(int dir, int by) throws RegisterSizeException;
+    void shift(int dir, int by);
 
     void invert();
 
-    void add(int value) throws RegisterSizeException;
+    void add(int value);
 
-    void subtract(int value) throws RegisterSizeException;
+    void subtract(int value);
 
     int get(int bit);
 

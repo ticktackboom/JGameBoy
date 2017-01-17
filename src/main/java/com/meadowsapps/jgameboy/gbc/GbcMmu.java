@@ -35,10 +35,10 @@ public class GbcMmu extends AbstractMmu {
     }
 
     @Override
-    public int read(int address) {
+    public int readByte(int addr) {
         int value = -1;
 
-        int addr = address & 0xFFFF;
+        addr &= 0xFFFF;
         switch (addr & 0xF000) {
             case 0x1000:
             case 0x2000:
@@ -82,8 +82,23 @@ public class GbcMmu extends AbstractMmu {
     }
 
     @Override
-    public void write(int value, int address) {
-        mem[address] = value;
+    public int readWord(int addr) {
+        int hi = readByte(addr);
+        int lo = readByte(addr + 1);
+        return (hi << 8) + lo;
+    }
+
+    @Override
+    public void writeByte(int value, int addr) {
+        mem[addr] = value;
+    }
+
+    @Override
+    public void writeWord(int value, int addr) {
+        int hi = value >> 8;
+        int lo = value & 0xFF;
+        writeByte(lo, addr);
+        writeByte(hi, addr + 1);
     }
 
     @Override

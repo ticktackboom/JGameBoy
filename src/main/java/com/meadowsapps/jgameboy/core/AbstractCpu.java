@@ -12,15 +12,27 @@ public abstract class AbstractCpu implements Cpu {
     }
 
     @Override
-    public int read(int addr) {
+    public int readByte(int addr) {
         Mmu mmu = core.getMmu();
-        return mmu.read(addr);
+        return mmu.readByte(addr);
     }
 
     @Override
-    public void write(int value, int addr) {
+    public int readWord(int addr) {
         Mmu mmu = core.getMmu();
-        mmu.write(value, addr);
+        return mmu.readWord(addr);
+    }
+
+    @Override
+    public void writeByte(int value, int addr) {
+        Mmu mmu = core.getMmu();
+        mmu.writeByte(value, addr);
+    }
+
+    @Override
+    public void writeWord(int value, int addr) {
+        Mmu mmu = core.getMmu();
+        mmu.writeWord(value, addr);
     }
 
     public EmulatorCore getCore() {

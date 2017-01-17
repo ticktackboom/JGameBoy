@@ -9,7 +9,11 @@ public interface Cpu {
 
     int execute(int opcode, int operand1, int operand2);
 
-    int read(int addr);
+    int readByte(int addr);
 
-    void write(int value, int addr);
+    int readWord(int addr);
+
+    void writeByte(int value, int addr);
+
+    void writeWord(int value, int addr);
 }

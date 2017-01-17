@@ -22,6 +22,7 @@ public class Register16Bit extends AbstractRegister {
 
     @Override
     public void write(int value) {
+        value &= size();
         this.value = ushort(value);
     }
 

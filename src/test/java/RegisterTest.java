@@ -1,7 +1,6 @@
 import com.meadowsapps.jgameboy.core.Register;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
-import com.meadowsapps.jgameboy.core.RegisterSizeException;
 
 /**
  * Created by dmeadows on 1/13/2017.
@@ -31,8 +30,6 @@ public class RegisterTest {
             C.shift(Register.LEFT, 1);
             System.out.printf("C = %d\n", C.read());
         }
-
-        throw new RegisterSizeException(RegisterSizeException.BIT);
     }
 
     static String toBinary(int value) {

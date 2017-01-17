@@ -6,24 +6,25 @@ package com.meadowsapps.jgameboy.core;
 public abstract class AbstractRegister implements Register {
 
     @Override
-    public final void inc() throws RegisterSizeException {
-        add(1);
+    public final void inc() {
+        int value = read();
+        value = (value + 1) & size();
+        write(value);
     }
 
     @Override
-    public final void dec() throws RegisterSizeException {
-        subtract(1);
+    public final void dec() {
+        int value = read();
+        value = (value - 1) & size();
+        write(value);
     }
 
     @Override
     public final void shift(int dir, int by) {
-        int max = (int) (Math.log(size()) / Math.log(2));
-        if (0 < by && by < max - 1) {
-            int value = (dir == LEFT) ? read() << by : read() >> by;
-            write(value);
-        } else {
-//            throw new IllegalArgumentException("Register Size: ")
-        }
+        int value = read();
+        value = (dir == LEFT) ? value << by : value >> by;
+        value &= size();
+        write(value);
     }
 
     @Override
@@ -33,25 +34,19 @@ public abstract class AbstractRegister implements Register {
     }
 
     @Override
-    public final void add(int value) throws RegisterSizeException {
-        if (!(read() + value > size())) {
-            write(read() + value);
-        } else {
-            String message = String.format("Register Size: %d + %d > %d",
-                    read(), value, size());
-            throw new IllegalArgumentException(message);
-        }
+    public final void add(int value) {
+        int current = read();
+        int sum = current + value;
+        sum &= size();
+        write(sum);
     }
 
     @Override
-    public final void subtract(int value) throws RegisterSizeException {
-        if (!(read() - value < 0)) {
-            write(read() - value);
-        } else {
-            String message = String.format("Register Size: %d - %d < 0",
-                    read(), value);
-            throw new IllegalArgumentException(message);
-        }
+    public final void subtract(int value) {
+        int current = read();
+        int difference = current - value;
+        difference &= size();
+        write(difference);
     }
 
     @Override
@@ -61,7 +56,14 @@ public abstract class AbstractRegister implements Register {
 
     @Override
     public final void set(int bit, int set) {
-
+        int value = read();
+        if (set == 1) {
+            value |= (1 << bit);
+        } else {
+            value &= ~(1 << bit);
+        }
+        value &= size();
+        write(value);
     }
 
     @Override

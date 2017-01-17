@@ -1,7 +1,6 @@
 import com.meadowsapps.jgameboy.CoreFactory;
 import com.meadowsapps.jgameboy.core.Cpu;
 import com.meadowsapps.jgameboy.core.EmulatorCore;
-import com.meadowsapps.jgameboy.core.OpCodeException;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -40,7 +39,7 @@ public class RomReader {
                 i += length;
             }
             System.out.println("completed");
-        } catch (OpCodeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             long stop = System.currentTimeMillis();

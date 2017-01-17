@@ -81,9 +81,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
     @Override
     public void execute(int numInstructions) {
         for (int r = 0; r != numInstructions; r++) {
-            int opcode = read(PC.read());
-            int operand1 = read(PC.read() + 1);
-            int operand2 = read(PC.read() + 2);
+            int opcode = readByte(PC.read());
+            int operand1 = readByte(PC.read() + 1);
+            int operand2 = readByte(PC.read() + 2);
             int length = execute(opcode, operand1, operand2);
             PC.add(length);
         }
@@ -104,6 +104,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
         int d8 = operand1;
         int d16 = (operand2 << 8) + operand1;
+        int a16 = (operand2 << 8) + operand1;
         int r8 = operand1;
 
         switch (opcode) {
@@ -114,15 +115,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD BC,d16
             case 0x01: {
-                ld_d16(d16, B, C);
+                ldWord(B, C, d16);
                 length = 3;
                 break;
             }
 
             // LD (BC),A
             case 0x02: {
-                int addr = (B.read() << 8) + C.read();
-                write(addr, A.read());
+                int addr = getAddress(B, C);
+                ldByteToAddress(addr, A);
                 break;
             }
 
@@ -146,7 +147,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD B,d8
             case 0x06: {
-                ld_d8(d8, B);
+                ldByte(B, d8);
                 length = 2;
                 break;
             }
@@ -165,8 +166,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD (a16),SP
             case 0x08: {
-                int addr = (operand2 << 8) + operand1;
-                write(addr, SP.read());
+                writeWord(a16, SP.read());
                 length = 3;
                 break;
             }
@@ -179,9 +179,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD A,(BC)
             case 0x0A: {
-                int addr = (B.read() << 8) + C.read();
-                int value = read(addr);
-                A.write(value);
+                int addr = getAddress(B, C);
+                ldByteFromAddress(A, addr);
                 break;
             }
 
@@ -205,7 +204,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD C,d8
             case 0x0E: {
-                C.write(operand1);
+                ldByte(C, d8);
                 length = 2;
                 break;
             }
@@ -232,14 +231,14 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD DE,d16
             case 0x11: {
-                ld_d16(d16, D, E);
+                ldWord(D, E, d16);
                 break;
             }
 
             // LD (DE),A
             case 0x12: {
-                int addr = (D.read() << 8) + E.read();
-                write(A.read(), addr);
+                int addr = getAddress(D, E);
+                ldByteToAddress(addr, A);
                 break;
             }
 
@@ -263,7 +262,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD D,d8
             case 0x16: {
-                ld_d8(d8, D);
+                ldByte(D, d8);
                 break;
             }
 
@@ -296,9 +295,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD A,(DE)
             case 0x1A: {
-                int addr = (D.read() << 8) + E.read();
-                int value = read(addr);
-                A.write(value);
+                int addr = getAddress(D, E);
+                ldByteFromAddress(A, addr);
                 break;
             }
 
@@ -322,7 +320,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD E,d8
             case 0x1E: {
-                ld_d8(d8, E);
+                ldByte(E, d8);
                 break;
             }
 
@@ -351,15 +349,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD HL,d16
             case 0x21: {
-                ld_d16(d16, H, L);
+                ldWord(H, L, d16);
                 length = 3;
                 break;
             }
 
             // LD (HL+),A
             case 0x22: {
-                int addr = (H.read() << 8) + L.read();
-                write(A.read(), addr);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, A);
                 inc(H, L);
                 break;
             }
@@ -384,7 +382,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD H,d8
             case 0x26: {
-                ld_d8(d8, H);
+                ldByte(H, d8);
                 length = 2;
                 break;
             }
@@ -431,9 +429,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD A,(HL+)
             case 0x2A: {
-                int addr = (H.read() << 8) + L.read();
-                int value = read(addr);
-                A.write(value);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(A, addr);
                 inc(H, L);
                 break;
             }
@@ -458,7 +455,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD L,d8
             case 0x2E: {
-                ld_d8(d8, L);
+                ldByte(L, d8);
                 length = 2;
                 break;
             }
@@ -466,7 +463,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // CPL
             case 0x2F: {
                 A.invert();
-
                 F.set(N_FLAG, 1);
                 F.set(H_FLAG, 1);
                 break;
@@ -474,7 +470,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // JR NC,r8
             case 0x30: {
-                if (F.isSet(C_FLAG)) {
+                if (!F.isSet(C_FLAG)) {
                     PC.add(r8);
                 }
                 length = 2;
@@ -483,15 +479,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD SP,d16
             case 0x31: {
-                ld_d16(d16, SP);
+                ldWord(SP, d16);
                 length = 3;
                 break;
             }
 
             // LD (HL-),A
             case 0x32: {
-                int addr = (H.read() << 8) + L.read();
-                write(A.read(), addr);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, A);
                 dec(H, L);
                 break;
             }
@@ -504,20 +500,22 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // INC (HL)
             case 0x34: {
-                inc_addr(H, L);
+                int addr = getAddress(H, L);
+                incByte(addr);
                 break;
             }
 
             // DEC (HL)
             case 0x35: {
-                dec_addr(H, L);
+                int addr = getAddress(H, L);
+                decByte(addr);
                 break;
             }
 
             // LD (HL),d8
             case 0x36: {
-                int addr = (H.read() << 8) + L.read();
-                write(d8, addr);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, d8);
                 length = 2;
                 break;
             }
@@ -541,23 +539,14 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // ADD HL,SP
             case 0x39: {
-                int hl = (H.read() << 8) + L.read();
-                int sp = SP.read();
-                int sum = hl + sp;
-                H.write(sum >> 8);
-                L.write(sum & 0xFF);
-
-                F.set(N_FLAG, 0);
-                F.set(H_FLAG, ((hl & 0x0FFF) + (sp & 0x0FFF)) > 0xFFF);
-                F.set(C_FLAG, sum > 0xFFFF);
+                add(H, L, SP);
                 break;
             }
 
             // LD A,(HL-)
             case 0x3A: {
-                int addr = (H.read() << 8) + L.read();
-                int value = read(addr);
-                A.write(value);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(A, addr);
                 dec(H, L);
                 break;
             }
@@ -582,7 +571,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD A,d8
             case 0x3E: {
-                ld_d8(d8, A);
+                ldByte(A, d8);
                 length = 2;
                 break;
             }
@@ -633,7 +622,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD B,(HL)
             case 0x46: {
-                ld_from_addr(B, H, L);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(B, addr);
                 break;
             }
 
@@ -681,7 +671,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD C,(HL)
             case 0x4E: {
-                ld_from_addr(C, H, L);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(C, addr);
                 break;
             }
 
@@ -729,7 +720,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD D,(HL)
             case 0x56: {
-                ld_from_addr(D, H, L);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(D, addr);
                 break;
             }
 
@@ -777,7 +769,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD E,(HL)
             case 0x5E: {
-                ld_from_addr(E, H, L);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(E, addr);
                 break;
             }
 
@@ -825,7 +818,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD H,(HL)
             case 0x66: {
-                ld_from_addr(H, H, L);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(H, addr);
                 break;
             }
 
@@ -873,7 +867,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD L,(HL)
             case 0x6E: {
-                ld_from_addr(L, H, L);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(L, addr);
                 break;
             }
 
@@ -885,37 +880,43 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD (HL),B
             case 0x70: {
-                ld_to_addr(H, L, B);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, B);
                 break;
             }
 
             // LD (HL),C
             case 0x71: {
-                ld_to_addr(H, L, C);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, C);
                 break;
             }
 
             // LD (HL),D
             case 0x72: {
-                ld_to_addr(H, L, D);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, D);
                 break;
             }
 
             // LD (HL),E
             case 0x73: {
-                ld_to_addr(H, L, E);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, E);
                 break;
             }
 
             // LD (HL),H
             case 0x74: {
-                ld_to_addr(H, L, H);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, H);
                 break;
             }
 
             // LD (HL),L
             case 0x75: {
-                ld_to_addr(H, L, L);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, L);
                 break;
             }
 
@@ -926,7 +927,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD (HL),A
             case 0x77: {
-                ld_to_addr(H, L, A);
+                int addr = getAddress(H, L);
+                ldByteToAddress(addr, A);
                 break;
             }
 
@@ -968,13 +970,50 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD A,(HL)
             case 0x7E: {
-                ld_from_addr(A, H, L);
+                int addr = getAddress(H, L);
+                ldByteFromAddress(A, addr);
                 break;
             }
 
             // LD A,A
             case 0x7F: {
                 ld(A, A);
+                break;
+            }
+
+            // ADD A,B
+            case 0x80: {
+                add(A, B);
+                break;
+            }
+
+            // ADD A,C
+            case 0x81: {
+                add(A, C);
+                break;
+            }
+
+            // ADD A,D
+            case 0x82: {
+                add(A, D);
+                break;
+            }
+
+            // ADD A,E
+            case 0x83: {
+                add(A, E);
+                break;
+            }
+
+            // ADD A,H
+            case 0x84: {
+                add(A, H);
+                break;
+            }
+
+            // ADD A,L
+            case 0x85: {
+                add(A, L);
                 break;
             }
 
@@ -985,7 +1024,11 @@ public class DmgCpu extends AbstractCpu implements Constants {
             }
 
             default:
-                throw new OpCodeException(opcode);
+                String message = "Opcode not defined: %OPCODE%";
+                String hex = String.format("%2s", Integer.toHexString(opcode));
+                hex = hex.replace(" ", "0").toUpperCase();
+                hex = "0x" + hex;
+                throw new IllegalArgumentException(message.replace("%OPCODE%", hex));
         }
         return length;
     }
@@ -1015,11 +1058,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(N_FLAG, 0);
         F.set(H_FLAG, value == 0xFF || value == 0x0F);
         F.set(Z_FLAG, value == 0xFF);
-        if (value == 0xFF) {
-            r.write(0x00);
-        } else {
-            r.inc();
-        }
+        r.inc();
     }
 
     /**
@@ -1056,125 +1095,81 @@ public class DmgCpu extends AbstractCpu implements Constants {
      */
     private void inc(Register8Bit r1, Register8Bit r2) {
         int value = (r1.read() << 8) + r2.read();
-        value++;
+        value = (value + 1) & 0xFFFF;
         r1.write(value >> 8);
         r2.write(value & 0xFF);
     }
 
-    /**
-     * Increments the value located at the address given by the 16-Bit register
-     * <code>r</code>. If the value before incrementing equals 0xFF, then the value
-     * rolls over to 0.
-     * </br>
-     * <b>Flag Alteration:</b>
-     * <ul>
-     * <li><code>Z_FLAG</code>: Set if the value before incrementing equals 0xFF.</li>
-     * <li><code>N_FLAG</code>: Reset to 0</li>
-     * <li><code>H_FLAG</code>: Set if the value before incrementing equals 0xFF or 0x0F</li>
-     * <li><code>C_FLAG</code>: Unaffected</li>
-     * </ul>
-     *
-     * @param r the register containing the address of the value to increment
-     */
-    private void inc_addr(Register16Bit r) {
-        int addr = r.read();
-        int value = 0; // = read(addr);
-
+    private void incByte(int addr) {
+        int value = readByte(addr);
         F.set(N_FLAG, 0);
         F.set(H_FLAG, value == 0xFF || value == 0x0F);
         F.set(Z_FLAG, value == 0xFF);
-        if (value == 0xFF) {
-            value = 0x00;
-        } else {
-            value++;
-        }
-        value++;
-        // write(value, addr);
+        value = (value + 1) & 0xFF;
+        writeByte(value, addr);
     }
 
-    /**
-     * Combines the two 8-Bit registers, <code>r1</code> and <code>r2</code>,
-     * to behave as a 16-Bit register and increments the value.
-     * </br>
-     * <b>Flag Alteration:</b>
-     * <ul>
-     * <li><code>Z_FLAG</code>: Unaffected</li>
-     * <li><code>N_FLAG</code>: Unaffected</li>
-     * <li><code>H_FLAG</code>: Unaffected</li>
-     * <li><code>C_FLAG</code>: Unaffected</li>
-     * </ul>
-     *
-     * @param r1 Register that contains the upper 8 bytes of the value to increment
-     * @param r2 Register that contains the lower 8 bytes of the value to increment
-     */
-    private void inc_addr(Register8Bit r1, Register8Bit r2) {
-        int addr = (r1.read() << 8) + r2.read();
-        int value = 0; // = read(addr);
-
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, value == 0xFF || value == 0x0F);
-        F.set(Z_FLAG, value == 0xFF);
-
-        if (value == 0xFF) {
-            value = 0x00;
-        } else {
-            value++;
-        }
-
-        // write(value, addr);
+    @Unused
+    private void incWord(int addr) {
+        int value = readWord(addr);
+        value = (value + 1) & 0xFFFF;
+        writeWord(value, addr);
     }
 
     private void dec(Register8Bit r) {
         int value = r.read();
-
         F.set(N_FLAG, 1);
         F.set(H_FLAG, value == 0x00 || value == 0x10);
         F.set(Z_FLAG, value == 0x01);
-
-        if (value == 0x00) {
-            r.write(0xFF);
-        } else {
-            r.dec();
-        }
+        r.dec();
     }
 
     private void dec(Register16Bit r) {
-        r.dec();
+        int value = r.read();
+        if (value == 0) {
+            value = 0xFFFF;
+        } else {
+            value--;
+        }
+        r.write(value);
     }
 
     private void dec(Register8Bit r1, Register8Bit r2) {
         int value = (r1.read() << 8) + r2.read();
-        value--;
+        if (value == 0) {
+            value = 0xFFFF;
+        } else {
+            value--;
+        }
         r1.write(value >> 8);
         r2.write(value & 0xFF);
     }
 
-    private void dec_addr(Register r1, Register r2) {
-        int addr = (r1.read() << 8) + r2.read();
-        int value = 0; // = read(addr);
-
+    private void decByte(int addr) {
+        int value = readByte(addr);
         F.set(N_FLAG, 1);
         F.set(H_FLAG, value == 0x00 || value == 0x10);
         F.set(Z_FLAG, value == 0x01);
-
-        if (value == 0x00) {
-            value = 0xFF;
-        } else {
-            value--;
-        }
-
-        // write(value, addr);
+        value = (value - 1) & 0xFF;
+        writeByte(value, addr);
     }
 
-    private void ld_d8(int d8, Register r) {
+    @Unused
+    private void decWord(int addr) {
+        int value = readWord(addr);
+        value = (value - 1) & 0xFFFF;
+        writeWord(value, addr);
+    }
+
+    private void ldByte(Register8Bit r, int d8) {
         r.write(d8);
     }
 
-    private void ld_d16(int d16, Register r) {
+    private void ldWord(Register16Bit r, int d16) {
         r.write(d16);
     }
 
-    private void ld_d16(int d16, Register r1, Register r2) {
+    private void ldWord(Register r1, Register r2, int d16) {
         r1.write(d16 >> 8);
         r2.write(d16 & 0xFF);
     }
@@ -1184,31 +1179,46 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1.write(value);
     }
 
-    private void ld_to_addr(Register16Bit r1, Register r2) {
-
+    private void ldByteToAddress(int addr, int value) {
+        writeByte(value, addr);
     }
 
-    private void ld_to_addr(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2) {
-
+    private void ldByteToAddress(int addr, Register8Bit r) {
+        writeByte(r.read(), addr);
     }
 
-    private void ld_from_addr(Register8Bit r1, Register16Bit r2) {
-        int addr = r2.read();
-        int value = read(addr);
-        r1.write(value);
+    private void ldWordToAddress(int addr, int value) {
+        writeWord(value, addr);
     }
 
-    private void ld_from_addr(Register8Bit r1, Register8Bit r2_1, Register8Bit r2_2) {
-        int addr = (r2_1.read() << 8) + r2_2.read();
-        int value = read(addr);
-        r1.write(value);
+    private void ldWordToAddress(int addr, Register16Bit r) {
+        writeWord(r.read(), addr);
+    }
+
+    private void ldByteFromAddress(Register8Bit r, int addr) {
+        int value = readByte(addr);
+        r.write(value);
+    }
+
+    private void ldWordFromAddress(Register16Bit r, int addr) {
+        int value = readByte(addr);
+        r.write(value);
     }
 
     private void add(Register8Bit r) {
-        int value = A.read();
-        F.set(N_FLAG, 0);
-
         A.add(r.read());
+    }
+
+    private void add(Register8Bit r1, Register8Bit r2) {
+        int value1 = r1.read();
+        int value2 = r2.read();
+        int sum = value1 + value2;
+        r1.write(sum);
+
+        F.set(Z_FLAG, value1 + value2 == 0);
+        F.set(N_FLAG, 0);
+        F.set(H_FLAG, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(C_FLAG, sum > 0xFF);
     }
 
     private void add(Register16Bit r1, Register16Bit r2) {
@@ -1261,6 +1271,14 @@ public class DmgCpu extends AbstractCpu implements Constants {
         A.subtract(r.read());
     }
 
+    private void sub(Register8Bit r1, Register8Bit r2) {
+        int value1 = r1.read();
+        int value2 = r2.read();
+        int difference = value1 - value2;
+        r1.write(difference);
+    }
+
+
     private void sub(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = (r1_1.read() << 8) + r1_2.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
@@ -1279,5 +1297,13 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(N_FLAG, 0);
         F.set(H_FLAG, 0);
         F.set(C_FLAG, 0);
+    }
+
+    private int getAddress(Register16Bit r) {
+        return r.read();
+    }
+
+    private int getAddress(Register8Bit r1, Register8Bit r2) {
+        return (r1.read() << 8) + r2.read();
     }
 }

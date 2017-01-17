@@ -5,9 +5,13 @@ package com.meadowsapps.jgameboy.core;
  */
 public interface Mmu {
 
-    int read(int addr);
+    int readByte(int addr);
 
-    void write(int value, int addr);
+    int readWord(int addr);
+
+    void writeByte(int value, int addr);
+
+    void writeWord(int value, int addr);
 
     int[] dump();
 }
