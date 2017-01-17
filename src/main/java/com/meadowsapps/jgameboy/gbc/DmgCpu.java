@@ -787,6 +787,197 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 break;
             }
 
+            // LD H,B
+            case 0x60: {
+                ld(H, B);
+                break;
+            }
+
+            // LD H,C
+            case 0x61: {
+                ld(H, C);
+                break;
+            }
+
+            // LD H,D
+            case 0x62: {
+                ld(H, D);
+                break;
+            }
+
+            // LD H,E
+            case 0x63: {
+                ld(H, E);
+                break;
+            }
+
+            // LD H,H
+            case 0x64: {
+                ld(H, H);
+                break;
+            }
+
+            // LD H,L
+            case 0x65: {
+                ld(H, L);
+                break;
+            }
+
+            // LD H,(HL)
+            case 0x66: {
+                ld_from_addr(H, H, L);
+                break;
+            }
+
+            // LD H,A
+            case 0x67: {
+                ld(H, A);
+                break;
+            }
+
+            // LD L,B
+            case 0x68: {
+                ld(L, B);
+                break;
+            }
+
+            // LD L,C
+            case 0x69: {
+                ld(L, C);
+                break;
+            }
+
+            // LD L,D
+            case 0x6A: {
+                ld(L, D);
+                break;
+            }
+
+            // LD L,E
+            case 0x6B: {
+                ld(L, E);
+                break;
+            }
+
+            // LD L,H
+            case 0x6C: {
+                ld(L, H);
+                break;
+            }
+
+            // LD L,L
+            case 0x6D: {
+                ld(L, L);
+                break;
+            }
+
+            // LD L,(HL)
+            case 0x6E: {
+                ld_from_addr(L, H, L);
+                break;
+            }
+
+            // LD L,A
+            case 0x6F: {
+                ld(L, A);
+                break;
+            }
+
+            // LD (HL),B
+            case 0x70: {
+                ld_to_addr(H, L, B);
+                break;
+            }
+
+            // LD (HL),C
+            case 0x71: {
+                ld_to_addr(H, L, C);
+                break;
+            }
+
+            // LD (HL),D
+            case 0x72: {
+                ld_to_addr(H, L, D);
+                break;
+            }
+
+            // LD (HL),E
+            case 0x73: {
+                ld_to_addr(H, L, E);
+                break;
+            }
+
+            // LD (HL),H
+            case 0x74: {
+                ld_to_addr(H, L, H);
+                break;
+            }
+
+            // LD (HL),L
+            case 0x75: {
+                ld_to_addr(H, L, L);
+                break;
+            }
+
+            // HALT
+            case 0x76: {
+                break;
+            }
+
+            // LD (HL),A
+            case 0x77: {
+                ld_to_addr(H, L, A);
+                break;
+            }
+
+            // LD A,B
+            case 0x78: {
+                ld(A, B);
+                break;
+            }
+
+            // LD A,C
+            case 0x79: {
+                ld(A, C);
+                break;
+            }
+
+            // LD A,D
+            case 0x7A: {
+                ld(A, D);
+                break;
+            }
+
+            // LD A,E
+            case 0x7B: {
+                ld(A, E);
+                break;
+            }
+
+            // LD A,H
+            case 0x7C: {
+                ld(A, H);
+                break;
+            }
+
+            // LD A,L
+            case 0x7D: {
+                ld(A, L);
+                break;
+            }
+
+            // LD A,(HL)
+            case 0x7E: {
+                ld_from_addr(A, H, L);
+                break;
+            }
+
+            // LD A,A
+            case 0x7F: {
+                ld(A, A);
+                break;
+            }
+
             // XOR A
             case 0xAF: {
                 xor(A);
