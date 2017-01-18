@@ -83,8 +83,8 @@ public class GbcMmu extends AbstractMmu {
 
     @Override
     public int readWord(int addr) {
-        int hi = readByte(addr);
-        int lo = readByte(addr + 1);
+        int lo = readByte(addr);
+        int hi = readByte(addr + 1);
         return (hi << 8) + lo;
     }
 

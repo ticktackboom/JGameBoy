@@ -1398,9 +1398,35 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // JP NZ,a16
             case 0xC2: {
                 if (!F.isSet(Z_BIT)) {
-                    PC.add(a16);
+                    PC.write(a16);
                 }
                 length = 3;
+                break;
+            }
+
+            // JP a16
+            case 0xC3: {
+                PC.write(a16);
+                length = 3;
+                break;
+            }
+
+            // CALL NZ,a16
+            case 0xC4: {
+                if (!F.isSet(Z_BIT)) {
+                    SP.subtract(2);
+                    int addr = getAddress(SP);
+                    int value = PC.read() + 3;
+                    writeWord(value, addr);
+                    PC.write(a16);
+                }
+                length = 3;
+                break;
+            }
+
+            // PUSH BC
+            case 0xC5: {
+
                 break;
             }
 
@@ -1841,6 +1867,49 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
     private void cpByteFromAddress(Register8Bit r, int addr) {
         cpImpl(r.read(), readByte(addr));
+    }
+
+    private void popByte(Register8Bit r) {
+        int addr = getAddress(SP);
+        int value = readByte(addr);
+        r.write(value);
+        SP.add(1);
+    }
+
+    private void popWord(Register16Bit r) {
+        int addr = getAddress(SP);
+        int value = readWord(addr);
+        r.write(value);
+        SP.add(2);
+    }
+
+    private void popWord(Register8Bit r1, Register8Bit r2) {
+        int addr = getAddress(SP);
+        int value = readWord(addr);
+        r1.write(value >> 8);
+        r2.write(value & 0xFF);
+        SP.add(2);
+    }
+
+    private void pushByte(Register8Bit r) {
+        SP.subtract(1);
+        int addr = getAddress(SP);
+        int value = r.read();
+        writeByte(value, addr);
+    }
+
+    private void pushWord(Register16Bit r) {
+        SP.subtract(2);
+        int addr = getAddress(SP);
+        int value = r.read();
+        writeWord(value, addr);
+    }
+
+    private void pushWord(Register8Bit r1, Register8Bit r2) {
+        SP.subtract(2);
+        int addr = getAddress(r1, r2);
+        int value = (r1.read() << 8) + r2.read();
+        writeWord(value, addr);
     }
 
     private int getAddress(Register16Bit r) {
