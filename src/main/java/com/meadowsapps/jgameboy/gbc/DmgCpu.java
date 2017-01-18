@@ -37,22 +37,22 @@ public class DmgCpu extends AbstractCpu implements Constants {
     /**
      * Bit index of the Zero Status Flag
      */
-    public static final int Z_FLAG = 7;
+    public static final int Z_BIT = 7;
 
     /**
      * Bit index of the Subtract Status Flag
      */
-    public static final int N_FLAG = 6;
+    public static final int N_BIT = 6;
 
     /**
      * Bit index of the Half Carry Status Flag
      */
-    public static final int H_FLAG = 5;
+    public static final int H_BIT = 5;
 
     /**
      * Bit index of the Carry Status Flag
      */
-    public static final int C_FLAG = 4;
+    public static final int C_BIT = 4;
 
     /**
      * Initializes the CPU's registers
@@ -104,8 +104,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
         int d8 = operand1;
         int d16 = (operand2 << 8) + operand1;
+        int a8 = operand1;
         int a16 = (operand2 << 8) + operand1;
-        int r8 = operand1;
+        int r8 = (byte) operand1;
 
         switch (opcode) {
             // NOP
@@ -156,10 +157,10 @@ public class DmgCpu extends AbstractCpu implements Constants {
             case 0x07: {
                 int bit7 = A.get(7);
                 A.shift(LEFT, 1);
-                F.set(C_FLAG, bit7);
-                F.set(Z_FLAG, 0);
-                F.set(H_FLAG, 0);
-                F.set(N_FLAG, 0);
+                F.set(C_BIT, bit7);
+                F.set(Z_BIT, 0);
+                F.set(H_BIT, 0);
+                F.set(N_BIT, 0);
                 A.set(0, bit7);
                 break;
             }
@@ -213,12 +214,12 @@ public class DmgCpu extends AbstractCpu implements Constants {
             case 0x0F: {
                 int bit0 = A.get(0);
                 A.shift(RIGHT, 1);
-                F.set(C_FLAG, bit0);
+                F.set(C_BIT, bit0);
                 A.set(7, bit0);
 
-                F.set(Z_FLAG, 0);
-                F.set(H_FLAG, 0);
-                F.set(N_FLAG, 0);
+                F.set(Z_BIT, 0);
+                F.set(H_BIT, 0);
+                F.set(N_BIT, 0);
                 break;
             }
 
@@ -270,13 +271,13 @@ public class DmgCpu extends AbstractCpu implements Constants {
             case 0x17: {
                 int bit7 = A.get(7);
                 A.shift(LEFT, 1);
-                int bitC = F.get(C_FLAG);
-                F.set(C_FLAG, bit7);
+                int bitC = F.get(C_BIT);
+                F.set(C_BIT, bit7);
                 A.set(0, bitC);
 
-                F.set(Z_FLAG, 0);
-                F.set(N_FLAG, 0);
-                F.set(H_FLAG, 0);
+                F.set(Z_BIT, 0);
+                F.set(N_BIT, 0);
+                F.set(H_BIT, 0);
                 break;
             }
 
@@ -328,19 +329,19 @@ public class DmgCpu extends AbstractCpu implements Constants {
             case 0x1F: {
                 int bit0 = A.get(0);
                 A.shift(RIGHT, 1);
-                int bitC = F.get(C_FLAG);
-                F.set(C_FLAG, bit0);
+                int bitC = F.get(C_BIT);
+                F.set(C_BIT, bit0);
                 A.set(7, bitC);
 
-                F.set(Z_FLAG, 0);
-                F.set(N_FLAG, 0);
-                F.set(H_FLAG, 0);
+                F.set(Z_BIT, 0);
+                F.set(N_BIT, 0);
+                F.set(H_BIT, 0);
                 break;
             }
 
             // JR NZ,r8
             case 0x20: {
-                if (!F.isSet(Z_FLAG)) {
+                if (!F.isSet(Z_BIT)) {
                     PC.add(r8);
                 }
                 length = 2;
@@ -390,21 +391,21 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // DAA
             case 0x27: {
                 int correctionFactor = 0;
-                if (A.read() > 0x99 || F.isSet(C_FLAG)) {
+                if (A.read() > 0x99 || F.isSet(C_BIT)) {
                     correctionFactor = 0x60 + (correctionFactor & 0x0F);
-                    F.set(C_FLAG, 1);
+                    F.set(C_BIT, 1);
                 } else {
                     correctionFactor = 0x00;
-                    F.set(C_FLAG, 0);
+                    F.set(C_BIT, 0);
                 }
 
-                if ((A.read() & 0x0F) > 0x09 || F.isSet(H_FLAG)) {
+                if ((A.read() & 0x0F) > 0x09 || F.isSet(H_BIT)) {
                     correctionFactor = (correctionFactor & 0xF0) + 0x06;
                 } else {
                     correctionFactor = (correctionFactor & 0xF0) + 0x00;
                 }
 
-                if (!F.isSet(N_FLAG)) {
+                if (!F.isSet(N_BIT)) {
                     A.add(correctionFactor);
                 } else {
                     A.subtract(correctionFactor);
@@ -414,7 +415,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // JR Z,r8
             case 0x28: {
-                if (F.isSet(Z_FLAG)) {
+                if (F.isSet(Z_BIT)) {
                     PC.add(r8);
                 }
                 length = 2;
@@ -463,14 +464,14 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // CPL
             case 0x2F: {
                 A.invert();
-                F.set(N_FLAG, 1);
-                F.set(H_FLAG, 1);
+                F.set(N_BIT, 1);
+                F.set(H_BIT, 1);
                 break;
             }
 
             // JR NC,r8
             case 0x30: {
-                if (!F.isSet(C_FLAG)) {
+                if (!F.isSet(C_BIT)) {
                     PC.add(r8);
                 }
                 length = 2;
@@ -522,15 +523,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // SCF
             case 0x37: {
-                F.set(N_FLAG, 0);
-                F.set(H_FLAG, 0);
-                F.set(C_FLAG, 1);
+                F.set(N_BIT, 0);
+                F.set(H_BIT, 0);
+                F.set(C_BIT, 1);
                 break;
             }
 
             // JR C,r8
             case 0x38: {
-                if (F.isSet(C_FLAG)) {
+                if (F.isSet(C_BIT)) {
                     PC.add(r8);
                 }
                 length = 2;
@@ -578,9 +579,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // CCF
             case 0x3F: {
-                F.set(N_FLAG, 0);
-                F.set(H_FLAG, 0);
-                F.flip(C_FLAG);
+                F.set(N_BIT, 0);
+                F.set(H_BIT, 0);
+                F.flip(C_BIT);
                 break;
             }
 
@@ -1017,9 +1018,389 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 break;
             }
 
+            // ADD A,(HL)
+            case 0x86: {
+                int addr = getAddress(H, L);
+                addByteFromAddress(A, addr);
+                break;
+            }
+
+            // ADD A,A
+            case 0x87: {
+                add(A, A);
+                break;
+            }
+
+            // ADC A,B
+            case 0x88: {
+                adc(A, B);
+                break;
+            }
+
+            // ADC A,C
+            case 0x89: {
+                adc(A, C);
+                break;
+            }
+
+            // ADC A,D
+            case 0x8A: {
+                adc(A, D);
+                break;
+            }
+
+            // ADC A,E
+            case 0x8B: {
+                adc(A, E);
+                break;
+            }
+
+            // ADC A,H
+            case 0x8C: {
+                adc(A, H);
+                break;
+            }
+
+            // ADC A,L
+            case 0x8D: {
+                adc(A, L);
+                break;
+            }
+
+            // ADC A,(HL)
+            case 0x8E: {
+                int addr = getAddress(H, L);
+                adcByteFromAddress(A, addr);
+                break;
+            }
+
+            // ADC A,A
+            case 0x8F: {
+                adc(A, A);
+                break;
+            }
+
+            // SUB B
+            case 0x90: {
+                sub(A, B);
+                break;
+            }
+
+            // SUB C
+            case 0x91: {
+                sub(A, C);
+                break;
+            }
+
+            // SUB D
+            case 0x92: {
+                sub(A, D);
+                break;
+            }
+
+            // SUB E
+            case 0x93: {
+                sub(A, E);
+                break;
+            }
+
+            // SUB H
+            case 0x94: {
+                sub(A, H);
+                break;
+            }
+
+            // SUB L
+            case 0x95: {
+                sub(A, L);
+                break;
+            }
+
+            // SUB (HL)
+            case 0x96: {
+                int addr = getAddress(H, L);
+                subByteFromAddress(A, addr);
+                break;
+            }
+
+            // SUB A
+            case 0x97: {
+                sub(A, A);
+                break;
+            }
+
+            // SBC A,B
+            case 0x98: {
+                sbc(A, B);
+                break;
+            }
+
+            // SBC A,C
+            case 0x99: {
+                sbc(A, C);
+                break;
+            }
+
+            // SBC A,D
+            case 0x9A: {
+                sbc(A, D);
+                break;
+            }
+
+            // SBC A,E
+            case 0x9B: {
+                sbc(A, E);
+                break;
+            }
+
+            // SBC A,H
+            case 0x9C: {
+                sbc(A, H);
+                break;
+            }
+
+            // SBC A,L
+            case 0x9D: {
+                sbc(A, L);
+                break;
+            }
+
+            // SBC A,(HL)
+            case 0x9E: {
+                int addr = getAddress(H, L);
+                sbcByteFromAddress(A, addr);
+                break;
+            }
+
+            // SBC A,A
+            case 0x9F: {
+                sbc(A, A);
+                break;
+            }
+
+            // AND B
+            case 0xA0: {
+                and(A, B);
+                break;
+            }
+
+            // AND C
+            case 0xA1: {
+                and(A, C);
+                break;
+            }
+
+            // AND D
+            case 0xA2: {
+                and(A, D);
+                break;
+            }
+
+            // AND E
+            case 0xA3: {
+                and(A, E);
+                break;
+            }
+
+            // AND H
+            case 0xA4: {
+                and(A, H);
+                break;
+            }
+
+            // AND L
+            case 0xA5: {
+                and(A, L);
+                break;
+            }
+
+            // AND (HL)
+            case 0xA6: {
+                int addr = getAddress(H, L);
+                andByteFromAddress(A, addr);
+                break;
+            }
+
+            // AND A
+            case 0xA7: {
+                and(A, A);
+                break;
+            }
+
+            // XOR B
+            case 0xA8: {
+                xor(A, B);
+                break;
+            }
+
+            // XOR C
+            case 0xA9: {
+                xor(A, C);
+                break;
+            }
+
+            // XOR D
+            case 0xAA: {
+                xor(A, D);
+                break;
+            }
+
+            // XOR E
+            case 0xAB: {
+                xor(A, E);
+                break;
+            }
+
+            // XOR H
+            case 0xAC: {
+                xor(A, H);
+                break;
+            }
+
+            // XOR L
+            case 0xAD: {
+                xor(A, L);
+                break;
+            }
+
+            // XOR (HL)
+            case 0xAE: {
+                int addr = getAddress(H, L);
+                xorByteFromAddress(A, addr);
+                break;
+            }
+
             // XOR A
             case 0xAF: {
-                xor(A);
+                xor(A, A);
+                break;
+            }
+
+            // OR B
+            case 0xB0: {
+                or(A, B);
+                break;
+            }
+
+            // OR C
+            case 0xB1: {
+                or(A, C);
+                break;
+            }
+
+            // OR D
+            case 0xB2: {
+                or(A, D);
+                break;
+            }
+
+            // OR E
+            case 0xB3: {
+                or(A, E);
+                break;
+            }
+
+            // OR H
+            case 0xB4: {
+                or(A, H);
+                break;
+            }
+
+            // OR L
+            case 0xB5: {
+                or(A, L);
+                break;
+            }
+
+            // OR (HL)
+            case 0xB6: {
+                int addr = getAddress(H, L);
+                orByteFromAddress(A, addr);
+                break;
+            }
+
+            // OR A
+            case 0xB7: {
+                or(A, A);
+                break;
+            }
+
+            // CP B
+            case 0xB8: {
+                cp(A, B);
+                break;
+            }
+
+            // CP C
+            case 0xB9: {
+                cp(A, C);
+                break;
+            }
+
+            // CP D
+            case 0xBA: {
+                cp(A, D);
+                break;
+            }
+
+            // CP E
+            case 0xBB: {
+                cp(A, E);
+                break;
+            }
+
+            // CP H
+            case 0xBC: {
+                cp(A, H);
+                break;
+            }
+
+            // CP L
+            case 0xBD: {
+                cp(A, L);
+                break;
+            }
+
+            // CP (HL)
+            case 0xBE: {
+                int addr = getAddress(H, L);
+                cpByteFromAddress(A, addr);
+                break;
+            }
+
+            // CP A
+            case 0xBF: {
+                cp(A, A);
+                break;
+            }
+
+            // RET NZ
+            case 0xC0: {
+                if (!F.isSet(Z_BIT)) {
+                    int addr = getAddress(SP);
+                    int word = readWord(addr);
+                    PC.write(word);
+                    SP.add(2);
+                }
+                break;
+            }
+
+            // POP BC
+            case 0xC1: {
+                int addr = getAddress(SP);
+                int word = readWord(addr);
+                B.write(word >> 8);
+                C.write(word & 0xFF);
+                SP.add(2);
+                break;
+            }
+
+            // JP NZ,a16
+            case 0xC2: {
+                if (!F.isSet(Z_BIT)) {
+                    PC.add(a16);
+                }
+                length = 3;
                 break;
             }
 
@@ -1043,21 +1424,21 @@ public class DmgCpu extends AbstractCpu implements Constants {
      * </br>
      * <b>Flag Alteration:</b>
      * <ul>
-     * <li><code>Z_FLAG</code>: Set if <code>r</code>'s value before incrementing equals
+     * <li><code>Z_BIT</code>: Set if <code>r</code>'s value before incrementing equals
      * the maximum value of an 8-Bit Register (0xFF)</li>
-     * <li><code>N_FLAG</code>: Reset to 0</li>
-     * <li><code>H_FLAG</code>: Set if <code>r</code>'s value before incrementing equals
+     * <li><code>N_BIT</code>: Reset to 0</li>
+     * <li><code>H_BIT</code>: Set if <code>r</code>'s value before incrementing equals
      * 0xFF or 0x0F</li>
-     * <li><code>C_FLAG</code>: Unaffected</li>
+     * <li><code>C_BIT</code>: Unaffected</li>
      * </ul>
      *
      * @param r the register to increment
      */
     private void inc(Register8Bit r) {
         int value = r.read();
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, value == 0xFF || value == 0x0F);
-        F.set(Z_FLAG, value == 0xFF);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, value == 0xFF || value == 0x0F);
+        F.set(Z_BIT, value == 0xFF);
         r.inc();
     }
 
@@ -1066,10 +1447,10 @@ public class DmgCpu extends AbstractCpu implements Constants {
      * </br>
      * <b>Flag Alteration:</b>
      * <ul>
-     * <li><code>Z_FLAG</code>: Unaffected</li>
-     * <li><code>N_FLAG</code>: Unaffected</li>
-     * <li><code>H_FLAG</code>: Unaffected</li>
-     * <li><code>C_FLAG</code>: Unaffected</li>
+     * <li><code>Z_BIT</code>: Unaffected</li>
+     * <li><code>N_BIT</code>: Unaffected</li>
+     * <li><code>H_BIT</code>: Unaffected</li>
+     * <li><code>C_BIT</code>: Unaffected</li>
      * </ul>
      *
      * @param r the register to increment
@@ -1084,10 +1465,10 @@ public class DmgCpu extends AbstractCpu implements Constants {
      * </br>
      * <b>Flag Alteration:</b>
      * <ul>
-     * <li><code>Z_FLAG</code>: Unaffected</li>
-     * <li><code>N_FLAG</code>: Unaffected</li>
-     * <li><code>H_FLAG</code>: Unaffected</li>
-     * <li><code>C_FLAG</code>: Unaffected</li>
+     * <li><code>Z_BIT</code>: Unaffected</li>
+     * <li><code>N_BIT</code>: Unaffected</li>
+     * <li><code>H_BIT</code>: Unaffected</li>
+     * <li><code>C_BIT</code>: Unaffected</li>
      * </ul>
      *
      * @param r1 Register that contains the upper 8 bytes of the value to increment
@@ -1102,9 +1483,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
     private void incByte(int addr) {
         int value = readByte(addr);
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, value == 0xFF || value == 0x0F);
-        F.set(Z_FLAG, value == 0xFF);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, value == 0xFF || value == 0x0F);
+        F.set(Z_BIT, value == 0xFF);
         value = (value + 1) & 0xFF;
         writeByte(value, addr);
     }
@@ -1118,9 +1499,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
     private void dec(Register8Bit r) {
         int value = r.read();
-        F.set(N_FLAG, 1);
-        F.set(H_FLAG, value == 0x00 || value == 0x10);
-        F.set(Z_FLAG, value == 0x01);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, value == 0x00 || value == 0x10);
+        F.set(Z_BIT, value == 0x01);
         r.dec();
     }
 
@@ -1147,9 +1528,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
     private void decByte(int addr) {
         int value = readByte(addr);
-        F.set(N_FLAG, 1);
-        F.set(H_FLAG, value == 0x00 || value == 0x10);
-        F.set(Z_FLAG, value == 0x01);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, value == 0x00 || value == 0x10);
+        F.set(Z_BIT, value == 0x01);
         value = (value - 1) & 0xFF;
         writeByte(value, addr);
     }
@@ -1205,42 +1586,32 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r.write(value);
     }
 
-    private void add(Register8Bit r) {
-        A.add(r.read());
-    }
-
     private void add(Register8Bit r1, Register8Bit r2) {
         int value1 = r1.read();
         int value2 = r2.read();
         int sum = value1 + value2;
         r1.write(sum);
 
-        F.set(Z_FLAG, value1 + value2 == 0);
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
-        F.set(C_FLAG, sum > 0xFF);
+        F.set(Z_BIT, sum == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(C_BIT, sum > 0xFF);
     }
 
+    @Unused
     private void add(Register16Bit r1, Register16Bit r2) {
         int value1 = r1.read();
         int value2 = r2.read();
         int sum = value1 + value2;
         r1.write(sum);
-
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
-        F.set(C_FLAG, sum > 0xFFFF);
     }
 
+    @Unused
     private void add(Register16Bit r1, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = r1.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
         int sum = value1 + value2;
         r1.write(sum);
-
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
-        F.set(C_FLAG, sum > 0xFFFF);
     }
 
     private void add(Register8Bit r1_1, Register8Bit r1_2, Register16Bit r2) {
@@ -1250,9 +1621,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1_1.write(sum >> 8);
         r1_2.write(sum & 0xFF);
 
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
-        F.set(C_FLAG, sum > 0xFFFF);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(C_BIT, sum > 0xFFFF);
     }
 
     private void add(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2_1, Register8Bit r2_2) {
@@ -1262,13 +1633,47 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1_1.write(sum >> 8);
         r1_2.write(sum & 0xFF);
 
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
-        F.set(C_FLAG, sum > 0xFFFF);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0FFF) + (value2 & 0x0FFF)) > 0xFFF);
+        F.set(C_BIT, sum > 0xFFFF);
     }
 
-    private void sub(Register8Bit r) {
-        A.subtract(r.read());
+    private void addByteFromAddress(Register r, int addr) {
+        int value1 = r.read();
+        int value2 = readByte(addr);
+        int sum = value1 + value2;
+        r.write(sum);
+
+        F.set(Z_BIT, value1 + value2 == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(C_BIT, sum > 0xFF);
+    }
+
+    private void adc(Register8Bit r1, Register8Bit r2) {
+        int carryBit = F.get(C_BIT);
+        int value1 = r1.read();
+        int value2 = r2.read() + carryBit;
+        int sum = value1 + value2;
+        r1.write(sum);
+
+        F.set(Z_BIT, value1 + value2 == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(C_BIT, sum > 0xFF);
+    }
+
+    private void adcByteFromAddress(Register r, int addr) {
+        int carryBit = F.get(C_BIT);
+        int value1 = r.read();
+        int value2 = readByte(addr) + carryBit;
+        int sum = value1 + value2;
+        r.write(sum);
+
+        F.set(Z_BIT, value1 + value2 == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(C_BIT, sum > 0xFF);
     }
 
     private void sub(Register8Bit r1, Register8Bit r2) {
@@ -1276,9 +1681,39 @@ public class DmgCpu extends AbstractCpu implements Constants {
         int value2 = r2.read();
         int difference = value1 - value2;
         r1.write(difference);
+
+        F.set(Z_BIT, difference == 0x00);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(C_BIT, difference < 0);
     }
 
+    @Unused
+    private void sub(Register16Bit r1, Register16Bit r2) {
+        int value1 = r1.read();
+        int value2 = r2.read();
+        int difference = value1 - value2;
+        r1.write(difference);
+    }
 
+    @Unused
+    private void sub(Register16Bit r1, Register8Bit r2_1, Register8Bit r2_2) {
+        int value1 = r1.read();
+        int value2 = (r2_1.read() << 8) + r2_2.read();
+        int difference = value1 - value2;
+        r1.write(difference);
+    }
+
+    @Unused
+    private void sub(Register8Bit r1_1, Register8Bit r1_2, Register16Bit r2) {
+        int value1 = (r1_1.read() << 8) + r1_2.read();
+        int value2 = r2.read();
+        int difference = value1 - value2;
+        r1_1.write(difference >> 8);
+        r1_2.write(difference & 0xFF);
+    }
+
+    @Unused
     private void sub(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = (r1_1.read() << 8) + r1_2.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
@@ -1287,16 +1722,125 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1_2.write(difference & 0xFF);
     }
 
-    private void xor(Register8Bit r) {
-        int value1 = A.read();
-        int value2 = r.read();
-        int result = value1 ^ value2;
-        A.write(result);
+    private void subByteFromAddress(Register r, int addr) {
+        int value1 = r.read();
+        int value2 = readByte(addr);
+        int difference = value1 - value2;
+        r.write(difference);
 
-        F.set(Z_FLAG, result == 0);
-        F.set(N_FLAG, 0);
-        F.set(H_FLAG, 0);
-        F.set(C_FLAG, 0);
+        F.set(Z_BIT, difference == 0x00);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(C_BIT, difference < 0);
+    }
+
+    private void sbc(Register8Bit r1, Register8Bit r2) {
+        int carryBit = F.get(C_BIT);
+        int value1 = r1.read();
+        int value2 = r2.read() + carryBit;
+        int difference = value1 - value2;
+        r1.write(difference);
+
+        F.set(Z_BIT, difference == 0x00);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(C_BIT, difference < 0);
+    }
+
+    private void sbcByteFromAddress(Register r, int addr) {
+        int carryBit = F.get(C_BIT);
+        int value1 = r.read();
+        int value2 = readByte(addr) + carryBit;
+        int difference = value1 - value2;
+        r.write(difference);
+
+        F.set(Z_BIT, difference == 0x00);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(C_BIT, difference < 0);
+    }
+
+    private void and(Register8Bit r1, Register8Bit r2) {
+        int value1 = r1.read();
+        int value2 = r2.read();
+        int result = value1 & value2;
+        r1.write(result);
+
+        F.set(Z_BIT, result == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 1);
+        F.set(C_BIT, 0);
+    }
+
+    private void andByteFromAddress(Register8Bit r, int addr) {
+        int value1 = r.read();
+        int value2 = readByte(addr);
+        int result = value1 & value2;
+        r.write(result);
+
+        F.set(Z_BIT, result == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 1);
+        F.set(C_BIT, 0);
+    }
+
+    private void xor(Register8Bit r1, Register8Bit r2) {
+        int value1 = r1.read();
+        int value2 = r2.read();
+        int result = value1 ^ value2;
+        r1.write(result);
+
+        F.set(Z_BIT, result == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, 0);
+    }
+
+    private void xorByteFromAddress(Register8Bit r, int addr) {
+        int value1 = r.read();
+        int value2 = readByte(addr);
+        int result = value1 ^ value2;
+        r.write(result);
+
+        F.set(Z_BIT, result == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, 0);
+    }
+
+    private int orImpl(int value1, int value2) {
+        int result = value1 | value2;
+        F.set(Z_BIT, result == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, 0);
+        return result;
+    }
+
+    private void or(Register8Bit r1, Register8Bit r2) {
+        int result = orImpl(r1.read(), r2.read());
+        r1.write(result);
+    }
+
+    private void orByteFromAddress(Register8Bit r, int addr) {
+        int result = orImpl(r.read(), readByte(addr));
+        r.write(result);
+    }
+
+    private void cpImpl(int value1, int value2) {
+        int difference = value1 - value2;
+        F.set(Z_BIT, difference == 0x00);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(C_BIT, difference < 0);
+    }
+
+    private void cp(Register8Bit r1, Register8Bit r2) {
+        cpImpl(r1.read(), r2.read());
+    }
+
+    private void cpByteFromAddress(Register8Bit r, int addr) {
+        cpImpl(r.read(), readByte(addr));
     }
 
     private int getAddress(Register16Bit r) {
