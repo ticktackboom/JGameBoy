@@ -1,6 +1,9 @@
 package com.meadowsapps.jgameboy.gbc;
 
-import com.meadowsapps.jgameboy.core.*;
+import com.meadowsapps.jgameboy.core.AbstractCpu;
+import com.meadowsapps.jgameboy.core.Register;
+import com.meadowsapps.jgameboy.core.Register16Bit;
+import com.meadowsapps.jgameboy.core.Register8Bit;
 
 /**
  * Emulated CPU found inside of the Nintendo GameBoy.
@@ -1377,21 +1380,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // RET NZ
             case 0xC0: {
                 if (!F.isSet(Z_BIT)) {
-                    int addr = getAddress(SP);
-                    int word = readWord(addr);
-                    PC.write(word);
-                    SP.add(2);
+                    int value = popWordImpl();
+                    PC.write(value);
                 }
                 break;
             }
 
             // POP BC
             case 0xC1: {
-                int addr = getAddress(SP);
-                int word = readWord(addr);
-                B.write(word >> 8);
-                C.write(word & 0xFF);
-                SP.add(2);
+                popWord(B, C);
                 break;
             }
 
@@ -1414,10 +1411,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // CALL NZ,a16
             case 0xC4: {
                 if (!F.isSet(Z_BIT)) {
-                    SP.subtract(2);
-                    int addr = getAddress(SP);
                     int value = PC.read() + 3;
-                    writeWord(value, addr);
+                    pushWordImpl(value);
                     PC.write(a16);
                 }
                 length = 3;
@@ -1426,6 +1421,410 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // PUSH BC
             case 0xC5: {
+                pushWord(B, C);
+                break;
+            }
+
+            // ADD A,d8
+            case 0xC6: {
+                addByte(A, d8);
+                break;
+            }
+
+            // REST 00H
+            case 0xC7: {
+                int value = PC.read() + 1;
+                pushWordImpl(value);
+                PC.write(0x0000);
+                break;
+            }
+
+            // RET Z
+            case 0xC8: {
+                if (F.isSet(Z_BIT)) {
+                    int value = popWordImpl();
+                    PC.write(value);
+                }
+                break;
+            }
+
+            // RET
+            case 0xC9: {
+                int value = popWordImpl();
+                PC.write(value);
+                break;
+            }
+
+            // Z,a16
+            case 0xCA: {
+                if (F.isSet(Z_BIT)) {
+                    PC.write(a16);
+                }
+                length = 3;
+                break;
+            }
+
+            // PREFIX CB
+            case 0xCB: {
+                // TODO: there is something that is done here
+                length = executeCB() + 1;
+                break;
+            }
+
+            // CALL Z,a16
+            case 0xCC: {
+                if (F.isSet(Z_BIT)) {
+                    int value = PC.read() + 3;
+                    pushWordImpl(value);
+                    PC.write(a16);
+                }
+                break;
+            }
+
+            // CALL a16
+            case 0xCD: {
+                int value = PC.read() + 3;
+                pushWordImpl(value);
+                PC.write(a16);
+                break;
+            }
+
+            // ADC A,d8
+            case 0xCE: {
+                adcByte(A, d8);
+                length = 2;
+                break;
+            }
+
+            // RST 08H
+            case 0xCF: {
+                int value = PC.read() + 1;
+                pushByteImpl(value);
+                PC.write(0x0008);
+                break;
+            }
+
+            // RET NC
+            case 0xD0: {
+                if (!F.isSet(N_BIT)) {
+                    int value = popWordImpl();
+                    PC.write(value);
+                }
+                break;
+            }
+
+            // POP DE
+            case 0xD1: {
+                popWord(D, E);
+                break;
+            }
+
+            // JP NC,a16
+            case 0xD2: {
+                if (!F.isSet(C_BIT)) {
+                    PC.write(a16);
+                }
+                length = 3;
+                break;
+            }
+
+            // BLANK
+            case 0xD3: {
+                length = 0;
+                break;
+            }
+
+            // CALL NC,a16
+            case 0xD4: {
+                if (!F.isSet(C_BIT)) {
+                    int value = PC.read() + 3;
+                    pushWordImpl(value);
+                    PC.write(a16);
+                }
+                length = 3;
+                break;
+            }
+
+            // PUSH DE
+            case 0xD5: {
+                pushWord(D, E);
+                break;
+            }
+
+            // SUB d8
+            case 0xD6: {
+                subByte(A, d8);
+                length = 2;
+                break;
+            }
+
+            // RST 10H
+            case 0xD7: {
+                int value = PC.read() + 1;
+                pushWordImpl(value);
+                PC.write(0x0010);
+                break;
+            }
+
+            // RET C
+            case 0xD8: {
+                if (F.isSet(C_BIT)) {
+                    int value = popWordImpl();
+                    PC.write(value);
+                }
+                break;
+            }
+
+            // RETI
+            case 0xD9: {
+                int value = popWordImpl();
+                PC.write(value);
+                // TODO: enable interrupts
+                break;
+            }
+
+            // JP C,a16
+            case 0xDA: {
+                if (F.isSet(C_BIT)) {
+                    PC.write(a16);
+                }
+                length = 3;
+                break;
+            }
+
+            // BLANK
+            case 0xDB: {
+                length = 0;
+                break;
+            }
+
+            // CALL C,a16
+            case 0xDC: {
+                if (F.isSet(C_BIT)) {
+                    int value = PC.read() + 3;
+                    pushWordImpl(value);
+                    PC.write(a16);
+                }
+                length = 3;
+                break;
+            }
+
+            // BLANK
+            case 0xDD: {
+                length = 0;
+                break;
+            }
+
+            // SBC A,d8
+            case 0xDE: {
+                sbcByte(A, d8);
+                length = 2;
+                break;
+            }
+
+            // RST 18H
+            case 0xDF: {
+                int value = PC.read() + 1;
+                pushWordImpl(value);
+                PC.write(0x0018);
+                break;
+            }
+
+            // LDH (a8),A
+            case 0xE0: {
+                int addr = 0xFF00 + a8;
+                writeByte(A.read(), addr);
+                length = 2;
+                break;
+            }
+
+            // POP HL
+            case 0xE1: {
+                popWord(H, L);
+                break;
+            }
+
+            // LD (C),A
+            case 0xE2: {
+                int addr = 0xFF00 + C.read();
+                writeByte(A.read(), addr);
+                length = 2;
+                break;
+            }
+
+            // BLANK
+            case 0xE3: {
+                length = 0;
+                break;
+            }
+
+            // BLANK
+            case 0xE4: {
+                length = 0;
+                break;
+            }
+
+            // PUSH HL
+            case 0xE5: {
+                pushWord(H, L);
+                break;
+            }
+
+            // AND d8
+            case 0xE6: {
+                andByte(A, d8);
+                length = 2;
+                break;
+            }
+
+            // RST 20H
+            case 0xE7: {
+                int value = PC.read() + 1;
+                pushWordImpl(value);
+                PC.write(0x0020);
+                break;
+            }
+
+            // ADD SP,r8
+            case 0xE8: {
+
+                break;
+            }
+
+            // JP (HL)
+            case 0xE9: {
+
+                break;
+            }
+
+            // LD (a16),A
+            case 0xEA: {
+
+                break;
+            }
+
+            // BLANK
+            case 0xEB: {
+                length = 0;
+                break;
+            }
+
+            // BLANK
+            case 0xEC: {
+                length = 0;
+                break;
+            }
+
+            // BLANK
+            case 0xED: {
+                length = 0;
+                break;
+            }
+
+            // XOR d8
+            case 0xEE: {
+
+                break;
+            }
+
+            // RST 28H
+            case 0xEF: {
+
+                break;
+            }
+
+            // LDH A,(a8)
+            case 0xF0: {
+
+                break;
+            }
+
+            // POP AF
+            case 0xF1: {
+
+                break;
+            }
+
+            // LD A,(C)
+            case 0xF2: {
+
+                break;
+            }
+
+            // DI
+            case 0xF3: {
+
+                break;
+            }
+
+            // BLANK
+            case 0xF4: {
+                length = 0;
+                break;
+            }
+
+            // PUSH AF
+            case 0xF5: {
+
+                break;
+            }
+
+            // OR d8
+            case 0xF6: {
+
+                break;
+            }
+
+            // RST 30H
+            case 0xF7: {
+
+                break;
+            }
+
+            // LD HL,SP+r8
+            case 0xF8: {
+
+                break;
+            }
+
+            // LD SP,HL
+            case 0xF9: {
+
+                break;
+            }
+
+            // LD A,(a16)
+            case 0xFA: {
+
+                break;
+            }
+
+            // EI
+            case 0xFB: {
+
+                break;
+            }
+
+            // BLANK
+            case 0xFC: {
+                length = 0;
+                break;
+            }
+
+            // BLANK
+            case 0xFD: {
+                length = 0;
+                break;
+            }
+
+            // CP d8
+            case 0xFE: {
+
+                break;
+            }
+
+            // RST 38H
+            case 0xFF: {
 
                 break;
             }
@@ -1441,7 +1840,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
     }
 
     private int executeCB() {
-        return -1;
+        return 2;
     }
 
     /**
@@ -1516,7 +1915,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
         writeByte(value, addr);
     }
 
-    @Unused
     private void incWord(int addr) {
         int value = readWord(addr);
         value = (value + 1) & 0xFFFF;
@@ -1561,11 +1959,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
         writeByte(value, addr);
     }
 
-    @Unused
     private void decWord(int addr) {
         int value = readWord(addr);
         value = (value - 1) & 0xFFFF;
         writeWord(value, addr);
+    }
+
+    private void ld(Register8Bit r1, Register8Bit r2) {
+        int value = r2.read();
+        r1.write(value);
     }
 
     private void ldByte(Register8Bit r, int d8) {
@@ -1579,11 +1981,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
     private void ldWord(Register r1, Register r2, int d16) {
         r1.write(d16 >> 8);
         r2.write(d16 & 0xFF);
-    }
-
-    private void ld(Register8Bit r1, Register8Bit r2) {
-        int value = r2.read();
-        r1.write(value);
     }
 
     private void ldByteToAddress(int addr, int value) {
@@ -1612,6 +2009,33 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r.write(value);
     }
 
+    private void addByte(Register8Bit r, int value) {
+        int value1 = r.read();
+        int value2 = value;
+        int sum = value1 + value2;
+        r.write(sum);
+
+        F.set(Z_BIT, sum == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(C_BIT, sum > 0xFF);
+    }
+
+    private void addWord(Register16Bit r, int value) {
+        int value1 = r.read();
+        int value2 = value;
+        int sum = value1 + value2;
+        r.write(sum);
+    }
+
+    private void addWord(Register8Bit r1, Register8Bit r2, int value) {
+        int value1 = (r1.read() << 8) + r2.read();
+        int value2 = value;
+        int sum = value1 + value2;
+        r1.write(sum >> 8);
+        r2.write(sum & 0xFF);
+    }
+
     private void add(Register8Bit r1, Register8Bit r2) {
         int value1 = r1.read();
         int value2 = r2.read();
@@ -1624,7 +2048,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(C_BIT, sum > 0xFF);
     }
 
-    @Unused
     private void add(Register16Bit r1, Register16Bit r2) {
         int value1 = r1.read();
         int value2 = r2.read();
@@ -1632,7 +2055,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1.write(sum);
     }
 
-    @Unused
     private void add(Register16Bit r1, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = r1.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
@@ -1683,7 +2105,20 @@ public class DmgCpu extends AbstractCpu implements Constants {
         int sum = value1 + value2;
         r1.write(sum);
 
-        F.set(Z_BIT, value1 + value2 == 0);
+        F.set(Z_BIT, sum == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(C_BIT, sum > 0xFF);
+    }
+
+    private void adcByte(Register8Bit r, int value) {
+        int carryBit = F.get(C_BIT);
+        int value1 = r.read();
+        int value2 = value + carryBit;
+        int sum = value1 + value2;
+        r.write(sum);
+
+        F.set(Z_BIT, sum == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
         F.set(C_BIT, sum > 0xFF);
@@ -1714,7 +2149,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(C_BIT, difference < 0);
     }
 
-    @Unused
     private void sub(Register16Bit r1, Register16Bit r2) {
         int value1 = r1.read();
         int value2 = r2.read();
@@ -1722,7 +2156,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1.write(difference);
     }
 
-    @Unused
     private void sub(Register16Bit r1, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = r1.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
@@ -1730,7 +2163,6 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1.write(difference);
     }
 
-    @Unused
     private void sub(Register8Bit r1_1, Register8Bit r1_2, Register16Bit r2) {
         int value1 = (r1_1.read() << 8) + r1_2.read();
         int value2 = r2.read();
@@ -1739,13 +2171,24 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r1_2.write(difference & 0xFF);
     }
 
-    @Unused
     private void sub(Register8Bit r1_1, Register8Bit r1_2, Register8Bit r2_1, Register8Bit r2_2) {
         int value1 = (r1_1.read() << 8) + r1_2.read();
         int value2 = (r2_1.read() << 8) + r2_2.read();
         int difference = value1 - value2;
         r1_1.write(difference >> 8);
         r1_2.write(difference & 0xFF);
+    }
+
+    private void subByte(Register r, int value) {
+        int value1 = r.read();
+        int value2 = value;
+        int difference = value1 - value2;
+        r.write(difference);
+
+        F.set(Z_BIT, difference == 0x00);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(C_BIT, difference < 0);
     }
 
     private void subByteFromAddress(Register r, int addr) {
@@ -1773,6 +2216,18 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(C_BIT, difference < 0);
     }
 
+    private void sbcByte(Register8Bit r, int value) {
+        int carryBit = F.get(C_BIT);
+        int value1 = r.read();
+        int value2 = value + carryBit;
+        int difference = value1 - value2;
+
+        F.set(Z_BIT, difference == 0x00);
+        F.set(N_BIT, 1);
+        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(C_BIT, difference < 0);
+    }
+
     private void sbcByteFromAddress(Register r, int addr) {
         int carryBit = F.get(C_BIT);
         int value1 = r.read();
@@ -1791,6 +2246,18 @@ public class DmgCpu extends AbstractCpu implements Constants {
         int value2 = r2.read();
         int result = value1 & value2;
         r1.write(result);
+
+        F.set(Z_BIT, result == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 1);
+        F.set(C_BIT, 0);
+    }
+
+    private void andByte(Register8Bit r, int value) {
+        int value1 = r.read();
+        int value2 = value;
+        int result = value1 & value2;
+        r.write(result);
 
         F.set(Z_BIT, result == 0);
         F.set(N_BIT, 0);
@@ -1869,47 +2336,67 @@ public class DmgCpu extends AbstractCpu implements Constants {
         cpImpl(r.read(), readByte(addr));
     }
 
+    private int popByteImpl() {
+        try {
+            int addr = getAddress(SP);
+            int value = readByte(addr);
+            return value;
+        } finally {
+            SP.add(1);
+        }
+    }
+
     private void popByte(Register8Bit r) {
-        int addr = getAddress(SP);
-        int value = readByte(addr);
+        int value = popByteImpl();
         r.write(value);
-        SP.add(1);
+    }
+
+    private int popWordImpl() {
+        try {
+            int addr = getAddress(SP);
+            int value = readWord(addr);
+            return value;
+        } finally {
+            SP.add(2);
+        }
     }
 
     private void popWord(Register16Bit r) {
-        int addr = getAddress(SP);
-        int value = readWord(addr);
+        int value = popWordImpl();
         r.write(value);
-        SP.add(2);
     }
 
     private void popWord(Register8Bit r1, Register8Bit r2) {
-        int addr = getAddress(SP);
-        int value = readWord(addr);
+        int value = popWordImpl();
         r1.write(value >> 8);
         r2.write(value & 0xFF);
-        SP.add(2);
     }
 
-    private void pushByte(Register8Bit r) {
+    private void pushByteImpl(int value) {
         SP.subtract(1);
         int addr = getAddress(SP);
-        int value = r.read();
         writeByte(value, addr);
     }
 
-    private void pushWord(Register16Bit r) {
+    private void pushByte(Register8Bit r) {
+        int value = r.read();
+        pushByteImpl(value);
+    }
+
+    private void pushWordImpl(int value) {
         SP.subtract(2);
         int addr = getAddress(SP);
-        int value = r.read();
         writeWord(value, addr);
     }
 
+    private void pushWord(Register16Bit r) {
+        int value = r.read();
+        pushWordImpl(value);
+    }
+
     private void pushWord(Register8Bit r1, Register8Bit r2) {
-        SP.subtract(2);
-        int addr = getAddress(r1, r2);
         int value = (r1.read() << 8) + r2.read();
-        writeWord(value, addr);
+        pushByteImpl(value);
     }
 
     private int getAddress(Register16Bit r) {
