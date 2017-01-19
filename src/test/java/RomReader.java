@@ -11,7 +11,7 @@ import java.net.URL;
  */
 public class RomReader {
     public static void main(String[] args) throws Exception {
-        URL url = RomReader.class.getClassLoader().getResource("DMG_ROM.bin");
+        URL url = RomReader.class.getClassLoader().getResource("gbc/DMG_ROM.bin");
         File rom = new File(url.toURI());
 
         EmulatorCore core = CoreFactory.getCore();
