@@ -157,13 +157,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // RLCA
             case 0x07: {
-                int bit7 = A.get(7);
-                A.shift(LEFT, 1);
-                F.set(C_BIT, bit7);
-                F.set(Z_BIT, 0);
-                F.set(H_BIT, 0);
-                F.set(N_BIT, 0);
-                A.set(0, bit7);
+                rlc(A);
                 break;
             }
 
@@ -1511,6 +1505,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // ADD A,d8
             case 0xC6: {
                 add(A, d8);
+                length = 2;
                 break;
             }
 
@@ -1550,7 +1545,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // PREFIX CB
             case 0xCB: {
                 // TODO: there is something that is done here
-                length = executeCB() + 1;
+                length = executeCB(operand1);
                 break;
             }
 
@@ -1561,6 +1556,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
                     pushImpl(value);
                     PC.write(a16);
                 }
+                length = 3;
                 break;
             }
 
@@ -1569,6 +1565,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 int value = PC.read() + 3;
                 pushImpl(value);
                 PC.write(a16);
+                length = 3;
                 break;
             }
 
@@ -1717,7 +1714,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LDH (a8),A
             case 0xE0: {
                 int addr = 0xFF00 + a8;
-                writeByte(A.read(), addr);
+                ld(addr, A.read());
                 length = 2;
                 break;
             }
@@ -1772,27 +1769,23 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // ADD SP,r8
             case 0xE8: {
-                int value1 = SP.read();
-                int value2 = r8;
-                int sum = value1 + value2;
-                SP.write(sum);
-
+                add(SP, r8);
                 F.set(Z_BIT, 0);
-                F.set(N_BIT, 0);
-                F.set(H_BIT, (value1 & 0xFFF) + (value2 & 0xFFF) > 0xFFF);
-                F.set(C_BIT, sum > 0xFFFF);
+                length = 2;
                 break;
             }
 
             // JP (HL)
             case 0xE9: {
-
+                int addr = getAddress(H, L);
+                PC.write(addr);
                 break;
             }
 
             // LD (a16),A
             case 0xEA: {
-
+                ld(a16, A.read());
+                length = 3;
                 break;
             }
 
@@ -1816,31 +1809,38 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // XOR d8
             case 0xEE: {
-
+                xor(A, d8);
+                length = 2;
                 break;
             }
 
             // RST 28H
             case 0xEF: {
-
+                int value = PC.read() + 1;
+                pushImpl(value);
+                PC.write(0x0028);
                 break;
             }
 
             // LDH A,(a8)
             case 0xF0: {
-
+                int addr = 0xFF00 + a8;
+                ld(A, readByte(addr));
+                length = 2;
                 break;
             }
 
             // POP AF
             case 0xF1: {
-
+                pop(A, F);
                 break;
             }
 
             // LD A,(C)
             case 0xF2: {
-
+                int addr = 0xFF00 + C.read();
+                ld(A, readByte(addr));
+                length = 2;
                 break;
             }
 
@@ -1858,19 +1858,23 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // PUSH AF
             case 0xF5: {
-
+                int value = (A.read() << 8) + F.read();
+                push(value);
                 break;
             }
 
             // OR d8
             case 0xF6: {
-
+                or(A, d8);
+                length = 2;
                 break;
             }
 
             // RST 30H
             case 0xF7: {
-
+                int value = PC.read() + 1;
+                pushImpl(value);
+                PC.write(0x0030);
                 break;
             }
 
@@ -1882,19 +1886,21 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD SP,HL
             case 0xF9: {
-
+                int value = (H.read() << 8) + L.read();
+                ld(SP, value);
                 break;
             }
 
             // LD A,(a16)
             case 0xFA: {
-
+                ld(A, readByte(a16));
+                length = 3;
                 break;
             }
 
             // EI
             case 0xFB: {
-
+                // TODO: do something here
                 break;
             }
 
@@ -1912,13 +1918,16 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // CP d8
             case 0xFE: {
-
+                cp(A, d8);
+                length = 2;
                 break;
             }
 
             // RST 38H
             case 0xFF: {
-
+                int value = PC.read() + 1;
+                pushImpl(value);
+                PC.write(0x0038);
                 break;
             }
 
@@ -1932,7 +1941,63 @@ public class DmgCpu extends AbstractCpu implements Constants {
         return length;
     }
 
-    private int executeCB() {
+    /**
+     * Executes the prefix CB operation and returns the returns the length
+     * of the instructions to add to the <code>PC</code> register.
+     *
+     * @return the length of the instruction
+     */
+    private int executeCB(int operation) {
+        switch (operation) {
+            // RLC B
+            case 0x00: {
+                rlc(B);
+                break;
+            }
+
+            // RLC C
+            case 0x01: {
+                rlc(C);
+                break;
+            }
+
+            // RLC D
+            case 0x02: {
+                rlc(D);
+                break;
+            }
+
+            // RLC E
+            case 0x03: {
+                rlc(E);
+                break;
+            }
+
+            // RLC H
+            case 0x04: {
+                rlc(H);
+                break;
+            }
+
+            // RLC L
+            case 0x05: {
+                rlc(L);
+                break;
+            }
+
+            // RLC (HL)
+            case 0x06: {
+                int addr = getAddress(H, L);
+                rlc(addr);
+                break;
+            }
+
+            // RLC A
+            case 0x07: {
+                rlc(A);
+                break;
+            }
+        }
         return 2;
     }
 
@@ -2176,6 +2241,10 @@ public class DmgCpu extends AbstractCpu implements Constants {
         int sum = value1 + value2;
         r1.write(sum >> 8);
         r2.write(sum & 0xFF);
+
+        F.set(N_BIT, 0);
+        F.set(H_BIT, (value1 & 0x0FFF) + (value2 & 0x0FFF) > 0x0FFF);
+        F.set(C_BIT, sum > 0xFFFF);
     }
 
     private void adc(Register8Bit r, int value) {
@@ -2272,6 +2341,41 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(N_BIT, 1);
         F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
         F.set(C_BIT, difference < 0);
+    }
+
+    private void rlc(int addr) {
+        int value = readByte(addr);
+        int bit7 = (value >> 7) & 1;
+        value = value << 1;
+        F.set(C_BIT, bit7);
+        F.set(Z_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(N_BIT, 0);
+        if (bit7 == 1) {
+            value |= (1 << 0);
+        } else {
+            value &= ~(1 << 0);
+        }
+        value &= 0xFF;
+        writeByte(value, addr);
+    }
+
+    private void rlc(Register8Bit r) {
+        int bit7 = r.get(7);
+        r.shift(LEFT, 1);
+        F.set(C_BIT, bit7);
+        F.set(Z_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(N_BIT, 0);
+        r.set(0, bit7);
+    }
+
+    private void rrc(int addr) {
+
+    }
+
+    private void rrc(Register8Bit r) {
+
     }
 
     private int getAddress(Register16Bit r) {

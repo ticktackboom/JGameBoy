@@ -20,7 +20,7 @@ public class RomReader {
         RandomAccessFile raf = new RandomAccessFile(rom, "r");
         long start = System.currentTimeMillis();
         try {
-            for (int i = 0; i < raf.length(); ) {
+            for (int i = 0; i <= raf.length(); ) {
                 raf.seek(i);
                 raf.read(buffer);
 
@@ -28,8 +28,13 @@ public class RomReader {
                 int operand1 = Byte.toUnsignedInt(buffer[1]);
                 int operand2 = Byte.toUnsignedInt(buffer[2]);
 
+                if (opcode == 0xDD) {
+                    System.exit(-1);
+                }
+
                 String hex = String.format("%2s", Integer.toHexString(opcode));
                 hex = "0x" + ((hex.replace(" ", "0")).toUpperCase());
+                System.out.printf("OFFSET:   %d\n", i);
                 System.out.printf("OPCODE:   %s\n", hex);
                 System.out.printf("OPERAND1: %d\n", operand1);
                 System.out.printf("OPERAND2: %d\n", operand2);
