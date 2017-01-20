@@ -35,6 +35,7 @@ Arithmetic/Logical
     [x] void sub(Register16Bit r, int value);
     [x] void sub(Register8Bit r1, Register8Bit r2, int value);
     [x] void sbc(Register8Bit r, int value);
-    [] void and(Register8Bit r, int value);
-    [] void xor(Register8Bit r, int value);
-    [] void or(Register8Bit r, int value);
+    [x] void and(Register8Bit r, int value);
+    [x] void xor(Register8Bit r, int value);
+    [x] void or(Register8Bit r, int value);
+    [x] void cp(Register8Bit r, int value);

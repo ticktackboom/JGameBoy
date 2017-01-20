@@ -126,7 +126,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (BC),A
             case 0x02: {
                 int addr = getAddress(B, C);
-                ld(addr, getValue(A));
+                ld(addr, A.read());
                 break;
             }
 
@@ -169,21 +169,22 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD (a16),SP
             case 0x08: {
-                ld(a16, getValue(SP));
+                ld(a16, SP.read());
                 length = 3;
                 break;
             }
 
             // ADD HL,BC
             case 0x09: {
-                add(H, L, getValue(B, C));
+                int value = (B.read() << 8) + C.read();
+                add(H, L, value);
                 break;
             }
 
             // LD A,(BC)
             case 0x0A: {
                 int addr = getAddress(B, C);
-                ld(A, getValue(addr));
+                ld(A, readByte(addr));
                 break;
             }
 
@@ -242,7 +243,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (DE),A
             case 0x12: {
                 int addr = getAddress(D, E);
-                ld(addr, getValue(A));
+                ld(addr, A.read());
                 break;
             }
 
@@ -294,14 +295,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // ADD HL,DE
             case 0x19: {
-                add(H, L, getValue(D, E));
+                int value = (D.read() << 8) + E.read();
+                add(H, L, value);
                 break;
             }
 
             // LD A,(DE)
             case 0x1A: {
                 int addr = getAddress(D, E);
-                ld(A, getValue(addr));
+                ld(A, readByte(addr));
                 break;
             }
 
@@ -363,7 +365,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL+),A
             case 0x22: {
                 int addr = getAddress(H, L);
-                ld(addr, getValue(A));
+                ld(addr, A.read());
                 inc(H, L);
                 break;
             }
@@ -429,14 +431,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // ADD HL,HL
             case 0x29: {
-                add(H, L, getValue(H, L));
+                int value = (H.read() << 8) + L.read();
+                add(H, L, value);
                 break;
             }
 
             // LD A,(HL+)
             case 0x2A: {
                 int addr = getAddress(H, L);
-                ld(A, getValue(addr));
+                ld(A, readByte(addr));
                 inc(H, L);
                 break;
             }
@@ -493,7 +496,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL-),A
             case 0x32: {
                 int addr = getAddress(H, L);
-                ld(addr, getValue(A));
+                ld(addr, A.read());
                 dec(H, L);
                 break;
             }
@@ -545,14 +548,14 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // ADD HL,SP
             case 0x39: {
-                add(H, L, getValue(SP));
+                add(H, L, SP.read());
                 break;
             }
 
             // LD A,(HL-)
             case 0x3A: {
                 int addr = getAddress(H, L);
-                ld(A, getValue(addr));
+                ld(A, readByte(addr));
                 dec(H, L);
                 break;
             }
@@ -592,206 +595,186 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // LD B,B
             case 0x40: {
-                ld(B, getValue(B));
+                ld(B, B.read());
                 break;
             }
 
             // LD B,C
             case 0x41: {
-                ld(B, getValue(C));
+                ld(B, C.read());
                 break;
             }
 
             // LD B,D
             case 0x42: {
-                ld(B, getValue(D));
+                ld(B, D.read());
                 break;
             }
 
             // LD B,E
             case 0x43: {
-                ld(B, getValue(E));
+                ld(B, E.read());
                 break;
             }
 
             // LD B,H
             case 0x44: {
-                ld(B, getValue(H));
+                ld(B, H.read());
                 break;
             }
 
             // LD B,L
             case 0x45: {
-                ld(B, getValue(L));
+                ld(B, L.read());
                 break;
             }
 
             // LD B,(HL)
             case 0x46: {
                 int addr = getAddress(H, L);
-                ld(B, getValue(addr));
+                ld(B, readByte(addr));
                 break;
             }
 
             // LD B,A
             case 0x47: {
-                int value = getValue(A);
-                ld(B, value);
+                ld(B, A.read());
                 break;
             }
 
             // LD C,B
             case 0x48: {
-                int value = getValue(B);
-                ld(C, value);
+                ld(C, B.read());
                 break;
             }
 
             // LD C,C
             case 0x49: {
-                int value = getValue(C);
-                ld(C, value);
+                ld(C, C.read());
                 break;
             }
 
             // LD C,D
             case 0x4A: {
-                int value = getValue(D);
-                ld(C, value);
+                ld(C, D.read());
                 break;
             }
 
             // LD C,E
             case 0x4B: {
-                int value = getValue(E);
-                ld(C, value);
+                ld(C, E.read());
                 break;
             }
 
             // LD C,H
             case 0x4C: {
-                int value = getValue(H);
-                ld(C, value);
+                ld(C, H.read());
                 break;
             }
 
             // LD C,L
             case 0x4D: {
-                int value = getValue(L);
-                ld(C, value);
+                ld(C, L.read());
                 break;
             }
 
             // LD C,(HL)
             case 0x4E: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
-                ld(C, value);
+                ld(C, readByte(addr));
                 break;
             }
 
             // LD C,A
             case 0x4F: {
-                int value = getValue(A);
-                ld(C, value);
+                ld(C, A.read());
                 break;
             }
 
             // LD D,B
             case 0x50: {
-                int value = getValue(B);
-                ld(D, value);
+                ld(D, B.read());
                 break;
             }
 
             // LD D,C
             case 0x51: {
-                int value = getValue(C);
-                ld(D, value);
+                ld(D, C.read());
                 break;
             }
 
             // LD D,D
             case 0x52: {
-                int value = getValue(D);
-                ld(D, value);
+                ld(D, D.read());
                 break;
             }
 
             // LD D,E
             case 0x53: {
-                int value = getValue(E);
-                ld(D, value);
+                ld(D, E.read());
                 break;
             }
 
             // LD D,H
             case 0x54: {
-                int value = getValue(H);
-                ld(D, value);
+                ld(D, H.read());
                 break;
             }
 
             // LD D,L
             case 0x55: {
-                int value = getValue(L);
-                ld(D, value);
+                ld(D, L.read());
                 break;
             }
 
             // LD D,(HL)
             case 0x56: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
-                ld(D, value);
+                ld(D, readByte(addr));
                 break;
             }
 
             // LD D,A
             case 0x57: {
-                int value = getValue(A);
-                ld(D, value);
+                ld(D, A.read());
                 break;
             }
 
             // LD E,B
             case 0x58: {
-                int value = getValue(B);
-                ld(E, value);
+                ld(E, B.read());
                 break;
             }
 
             // LD E,C
             case 0x59: {
-                int value = getValue(C);
-                ld(E, value);
+                ld(E, C.read());
                 break;
             }
 
             // LD E,D
             case 0x5A: {
-                int value = getValue(D);
-                ld(E, value);
+                ld(E, D.read());
                 break;
             }
 
             // LD E,E
             case 0x5B: {
-                int value = getValue(E);
+                int value = E.read();
                 ld(E, value);
                 break;
             }
 
             // LD E,H
             case 0x5C: {
-                int value = getValue(H);
+                int value = H.read();
                 ld(E, value);
                 break;
             }
 
             // LD E,L
             case 0x5D: {
-                int value = getValue(L);
+                int value = L.read();
                 ld(E, value);
                 break;
             }
@@ -799,56 +782,56 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD E,(HL)
             case 0x5E: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 ld(E, value);
                 break;
             }
 
             // LD E,A
             case 0x5F: {
-                int value = getValue(A);
+                int value = A.read();
                 ld(E, value);
                 break;
             }
 
             // LD H,B
             case 0x60: {
-                int value = getValue(B);
+                int value = B.read();
                 ld(H, value);
                 break;
             }
 
             // LD H,C
             case 0x61: {
-                int value = getValue(C);
+                int value = C.read();
                 ld(H, value);
                 break;
             }
 
             // LD H,D
             case 0x62: {
-                int value = getValue(D);
+                int value = D.read();
                 ld(H, value);
                 break;
             }
 
             // LD H,E
             case 0x63: {
-                int value = getValue(E);
+                int value = E.read();
                 ld(H, value);
                 break;
             }
 
             // LD H,H
             case 0x64: {
-                int value = getValue(H);
+                int value = H.read();
                 ld(H, value);
                 break;
             }
 
             // LD H,L
             case 0x65: {
-                int value = getValue(L);
+                int value = L.read();
                 ld(H, value);
                 break;
             }
@@ -856,56 +839,56 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD H,(HL)
             case 0x66: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 ld(H, value);
                 break;
             }
 
             // LD H,A
             case 0x67: {
-                int value = getValue(A);
+                int value = A.read();
                 ld(H, value);
                 break;
             }
 
             // LD L,B
             case 0x68: {
-                int value = getValue(B);
+                int value = B.read();
                 ld(L, value);
                 break;
             }
 
             // LD L,C
             case 0x69: {
-                int value = getValue(C);
+                int value = C.read();
                 ld(L, value);
                 break;
             }
 
             // LD L,D
             case 0x6A: {
-                int value = getValue(D);
+                int value = D.read();
                 ld(L, value);
                 break;
             }
 
             // LD L,E
             case 0x6B: {
-                int value = getValue(E);
+                int value = E.read();
                 ld(L, value);
                 break;
             }
 
             // LD L,H
             case 0x6C: {
-                int value = getValue(H);
+                int value = H.read();
                 ld(L, value);
                 break;
             }
 
             // LD L,L
             case 0x6D: {
-                int value = getValue(L);
+                int value = L.read();
                 ld(L, value);
                 break;
             }
@@ -913,14 +896,14 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD L,(HL)
             case 0x6E: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 ld(L, value);
                 break;
             }
 
             // LD L,A
             case 0x6F: {
-                int value = getValue(A);
+                int value = A.read();
                 ld(L, value);
                 break;
             }
@@ -928,7 +911,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL),B
             case 0x70: {
                 int addr = getAddress(H, L);
-                int value = getValue(B);
+                int value = B.read();
                 ld(addr, value);
                 break;
             }
@@ -936,7 +919,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL),C
             case 0x71: {
                 int addr = getAddress(H, L);
-                int value = getValue(C);
+                int value = C.read();
                 ld(addr, value);
                 break;
             }
@@ -944,7 +927,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL),D
             case 0x72: {
                 int addr = getAddress(H, L);
-                int value = getValue(D);
+                int value = D.read();
                 ld(addr, value);
                 break;
             }
@@ -952,7 +935,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL),E
             case 0x73: {
                 int addr = getAddress(H, L);
-                int value = getValue(E);
+                int value = E.read();
                 ld(addr, value);
                 break;
             }
@@ -960,7 +943,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL),H
             case 0x74: {
                 int addr = getAddress(H, L);
-                int value = getValue(H);
+                int value = H.read();
                 ld(addr, value);
                 break;
             }
@@ -968,7 +951,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL),L
             case 0x75: {
                 int addr = getAddress(H, L);
-                int value = getValue(L);
+                int value = L.read();
                 ld(addr, value);
                 break;
             }
@@ -981,49 +964,49 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD (HL),A
             case 0x77: {
                 int addr = getAddress(H, L);
-                int value = getValue(A);
+                int value = A.read();
                 ld(addr, value);
                 break;
             }
 
             // LD A,B
             case 0x78: {
-                int value = getValue(B);
+                int value = B.read();
                 ld(A, value);
                 break;
             }
 
             // LD A,C
             case 0x79: {
-                int value = getValue(C);
+                int value = C.read();
                 ld(A, value);
                 break;
             }
 
             // LD A,D
             case 0x7A: {
-                int value = getValue(D);
+                int value = D.read();
                 ld(A, value);
                 break;
             }
 
             // LD A,E
             case 0x7B: {
-                int value = getValue(E);
+                int value = E.read();
                 ld(A, value);
                 break;
             }
 
             // LD A,H
             case 0x7C: {
-                int value = getValue(H);
+                int value = H.read();
                 ld(A, value);
                 break;
             }
 
             // LD A,L
             case 0x7D: {
-                int value = getValue(L);
+                int value = L.read();
                 ld(A, value);
                 break;
             }
@@ -1031,56 +1014,56 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // LD A,(HL)
             case 0x7E: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 ld(A, value);
                 break;
             }
 
             // LD A,A
             case 0x7F: {
-                int value = getValue(A);
+                int value = A.read();
                 ld(A, value);
                 break;
             }
 
             // ADD A,B
             case 0x80: {
-                int value = getValue(B);
+                int value = B.read();
                 add(A, value);
                 break;
             }
 
             // ADD A,C
             case 0x81: {
-                int value = getValue(C);
+                int value = C.read();
                 add(A, value);
                 break;
             }
 
             // ADD A,D
             case 0x82: {
-                int value = getValue(D);
+                int value = D.read();
                 add(A, value);
                 break;
             }
 
             // ADD A,E
             case 0x83: {
-                int value = getValue(E);
+                int value = E.read();
                 add(A, value);
                 break;
             }
 
             // ADD A,H
             case 0x84: {
-                int value = getValue(H);
+                int value = H.read();
                 add(A, value);
                 break;
             }
 
             // ADD A,L
             case 0x85: {
-                int value = getValue(L);
+                int value = L.read();
                 add(A, value);
                 break;
             }
@@ -1088,56 +1071,56 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // ADD A,(HL)
             case 0x86: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 add(A, value);
                 break;
             }
 
             // ADD A,A
             case 0x87: {
-                int value = getValue(A);
+                int value = A.read();
                 add(A, value);
                 break;
             }
 
             // ADC A,B
             case 0x88: {
-                int value = getValue(B);
+                int value = B.read();
                 adc(A, value);
                 break;
             }
 
             // ADC A,C
             case 0x89: {
-                int value = getValue(C);
+                int value = C.read();
                 adc(A, value);
                 break;
             }
 
             // ADC A,D
             case 0x8A: {
-                int value = getValue(D);
+                int value = D.read();
                 adc(A, value);
                 break;
             }
 
             // ADC A,E
             case 0x8B: {
-                int value = getValue(E);
+                int value = E.read();
                 adc(A, value);
                 break;
             }
 
             // ADC A,H
             case 0x8C: {
-                int value = getValue(H);
+                int value = H.read();
                 adc(A, value);
                 break;
             }
 
             // ADC A,L
             case 0x8D: {
-                int value = getValue(L);
+                int value = L.read();
                 adc(A, value);
                 break;
             }
@@ -1145,56 +1128,56 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // ADC A,(HL)
             case 0x8E: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 adc(A, value);
                 break;
             }
 
             // ADC A,A
             case 0x8F: {
-                int value = getValue(A);
+                int value = A.read();
                 adc(A, value);
                 break;
             }
 
             // SUB B
             case 0x90: {
-                int value = getValue(B);
+                int value = B.read();
                 sub(A, value);
                 break;
             }
 
             // SUB C
             case 0x91: {
-                int value = getValue(C);
+                int value = C.read();
                 sub(A, value);
                 break;
             }
 
             // SUB D
             case 0x92: {
-                int value = getValue(D);
+                int value = D.read();
                 sub(A, value);
                 break;
             }
 
             // SUB E
             case 0x93: {
-                int value = getValue(E);
+                int value = E.read();
                 sub(A, value);
                 break;
             }
 
             // SUB H
             case 0x94: {
-                int value = getValue(H);
+                int value = H.read();
                 sub(A, value);
                 break;
             }
 
             // SUB L
             case 0x95: {
-                int value = getValue(L);
+                int value = L.read();
                 sub(A, value);
                 break;
             }
@@ -1202,56 +1185,56 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // SUB (HL)
             case 0x96: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 sub(A, value);
                 break;
             }
 
             // SUB A
             case 0x97: {
-                int value = getValue(A);
+                int value = A.read();
                 sub(A, value);
                 break;
             }
 
             // SBC A,B
             case 0x98: {
-                int value = getValue(B);
+                int value = B.read();
                 sbc(A, value);
                 break;
             }
 
             // SBC A,C
             case 0x99: {
-                int value = getValue(C);
+                int value = C.read();
                 sbc(A, value);
                 break;
             }
 
             // SBC A,D
             case 0x9A: {
-                int value = getValue(D);
+                int value = D.read();
                 sbc(A, value);
                 break;
             }
 
             // SBC A,E
             case 0x9B: {
-                int value = getValue(E);
+                int value = E.read();
                 sbc(A, value);
                 break;
             }
 
             // SBC A,H
             case 0x9C: {
-                int value = getValue(H);
+                int value = H.read();
                 sbc(A, value);
                 break;
             }
 
             // SBC A,L
             case 0x9D: {
-                int value = getValue(L);
+                int value = L.read();
                 sbc(A, value);
                 break;
             }
@@ -1259,56 +1242,56 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // SBC A,(HL)
             case 0x9E: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 sbc(A, value);
                 break;
             }
 
             // SBC A,A
             case 0x9F: {
-                int value = getValue(A);
+                int value = A.read();
                 sbc(A, value);
                 break;
             }
 
             // AND B
             case 0xA0: {
-                int value = getValue(B);
+                int value = B.read();
                 and(A, value);
                 break;
             }
 
             // AND C
             case 0xA1: {
-                int value = getValue(C);
+                int value = C.read();
                 and(A, value);
                 break;
             }
 
             // AND D
             case 0xA2: {
-                int value = getValue(D);
+                int value = D.read();
                 and(A, value);
                 break;
             }
 
             // AND E
             case 0xA3: {
-                int value = getValue(E);
+                int value = E.read();
                 and(A, value);
                 break;
             }
 
             // AND H
             case 0xA4: {
-                int value = getValue(H);
+                int value = H.read();
                 and(A, value);
                 break;
             }
 
             // AND L
             case 0xA5: {
-                int value = getValue(L);
+                int value = L.read();
                 and(A, value);
                 break;
             }
@@ -1316,163 +1299,163 @@ public class DmgCpu extends AbstractCpu implements Constants {
             // AND (HL)
             case 0xA6: {
                 int addr = getAddress(H, L);
-                int value = getValue(addr);
+                int value = readByte(addr);
                 and(A, value);
                 break;
             }
 
             // AND A
             case 0xA7: {
-                int value = getValue(A);
+                int value = A.read();
                 and(A, value);
                 break;
             }
 
             // XOR B
             case 0xA8: {
-                int value = getValue(B);
+                int value = B.read();
                 xor(A, value);
                 break;
             }
 
             // XOR C
             case 0xA9: {
-                xor(A, getValue(C));
+                xor(A, C.read());
                 break;
             }
 
             // XOR D
             case 0xAA: {
-                xor(A, getValue(D));
+                xor(A, D.read());
                 break;
             }
 
             // XOR E
             case 0xAB: {
-                xor(A, getValue(E));
+                xor(A, E.read());
                 break;
             }
 
             // XOR H
             case 0xAC: {
-                xor(A, getValue(H));
+                xor(A, H.read());
                 break;
             }
 
             // XOR L
             case 0xAD: {
-                xor(A, getValue(L));
+                xor(A, L.read());
                 break;
             }
 
             // XOR (HL)
             case 0xAE: {
                 int addr = getAddress(H, L);
-                xor(A, getValue(addr));
+                xor(A, readByte(addr));
                 break;
             }
 
             // XOR A
             case 0xAF: {
-                xor(A, getValue(A));
+                xor(A, A.read());
                 break;
             }
 
             // OR B
             case 0xB0: {
-                or(A, B);
+                or(A, B.read());
                 break;
             }
 
             // OR C
             case 0xB1: {
-                or(A, C);
+                or(A, C.read());
                 break;
             }
 
             // OR D
             case 0xB2: {
-                or(A, D);
+                or(A, D.read());
                 break;
             }
 
             // OR E
             case 0xB3: {
-                or(A, E);
+                or(A, E.read());
                 break;
             }
 
             // OR H
             case 0xB4: {
-                or(A, H);
+                or(A, H.read());
                 break;
             }
 
             // OR L
             case 0xB5: {
-                or(A, L);
+                or(A, L.read());
                 break;
             }
 
             // OR (HL)
             case 0xB6: {
                 int addr = getAddress(H, L);
-                orByteFromAddress(A, addr);
+                or(A, readByte(addr));
                 break;
             }
 
             // OR A
             case 0xB7: {
-                or(A, A);
+                or(A, A.read());
                 break;
             }
 
             // CP B
             case 0xB8: {
-                cp(A, B);
+                cp(A, B.read());
                 break;
             }
 
             // CP C
             case 0xB9: {
-                cp(A, C);
+                cp(A, C.read());
                 break;
             }
 
             // CP D
             case 0xBA: {
-                cp(A, D);
+                cp(A, D.read());
                 break;
             }
 
             // CP E
             case 0xBB: {
-                cp(A, E);
+                cp(A, E.read());
                 break;
             }
 
             // CP H
             case 0xBC: {
-                cp(A, H);
+                cp(A, H.read());
                 break;
             }
 
             // CP L
             case 0xBD: {
-                cp(A, L);
+                cp(A, L.read());
                 break;
             }
 
             // CP (HL)
             case 0xBE: {
                 int addr = getAddress(H, L);
-                cpByteFromAddress(A, addr);
+                cp(A, readByte(addr));
                 break;
             }
 
             // CP A
             case 0xBF: {
-                cp(A, A);
+                cp(A, A.read());
                 break;
             }
 
@@ -1520,7 +1503,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // PUSH BC
             case 0xC5: {
-                int value = getValue(B, C);
+                int value = (B.read() << 8) + C.read();
                 push(value);
                 break;
             }
@@ -1647,7 +1630,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // PUSH DE
             case 0xD5: {
-                int value = getValue(D, E);
+                int value = (D.read() << 8) + E.read();
                 push(value);
                 break;
             }
@@ -1767,7 +1750,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // PUSH HL
             case 0xE5: {
-                int value = getValue(H, L);
+                int value = (H.read() << 8) + L.read();
                 push(value);
                 break;
             }
@@ -1789,7 +1772,15 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // ADD SP,r8
             case 0xE8: {
+                int value1 = SP.read();
+                int value2 = r8;
+                int sum = value1 + value2;
+                SP.write(sum);
 
+                F.set(Z_BIT, 0);
+                F.set(N_BIT, 0);
+                F.set(H_BIT, (value1 & 0xFFF) + (value2 & 0xFFF) > 0xFFF);
+                F.set(C_BIT, sum > 0xFFFF);
                 break;
             }
 
@@ -2263,82 +2254,24 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(C_BIT, 0);
     }
 
-
-    /**
-     * Reads and returns the value found at the memory location, <code>addr</code>.
-     *
-     * @param addr the memory location of the desired value
-     * @return the value in memory located at address <code>addr</code>
-     */
-    private int getValue(int addr) {
-        return readByte(addr);
-    }
-
-    /**
-     * Reads and returns the value from the register.
-     *
-     * @param r the 8-bit register to read the value from
-     * @return the value stored in the 8-bit register, <code>r</code>
-     */
-    private int getValue(Register8Bit r) {
-        return r.read();
-    }
-
-    /**
-     * Reads and returns the value from the register.
-     *
-     * @param r the 16-bit register to read the value from
-     * @return the value stored in the 16-bit register, <code>r</code>
-     */
-    private int getValue(Register16Bit r) {
-        return r.read();
-    }
-
-    /**
-     * Reads and returns the value stored across the two 8-bit registers,
-     * <code>r1</code> and <code>r2</code>.
-     *
-     * @param r1 the 8-bit register that stores the hi bytes
-     * @param r2 the 8-bit register that stores the lo bytes
-     * @return the value stored across <code>r1</code> and <code>r2</code>
-     */
-    private int getValue(Register8Bit r1, Register8Bit r2) {
-        return (r1.read() << 8) + r2.read();
-    }
-
-    private int orImpl(int value1, int value2) {
+    private void or(Register8Bit r, int value) {
+        int value1 = r.read();
+        int value2 = value;
         int result = value1 | value2;
         F.set(Z_BIT, result == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
         F.set(C_BIT, 0);
-        return result;
     }
 
-    private void or(Register8Bit r1, Register8Bit r2) {
-        int result = orImpl(r1.read(), r2.read());
-        r1.write(result);
-    }
-
-    private void orByteFromAddress(Register8Bit r, int addr) {
-        int result = orImpl(r.read(), readByte(addr));
-        r.write(result);
-    }
-
-    private void cpImpl(int value1, int value2) {
+    private void cp(Register8Bit r, int value) {
+        int value1 = r.read();
+        int value2 = value;
         int difference = value1 - value2;
         F.set(Z_BIT, difference == 0x00);
         F.set(N_BIT, 1);
         F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
         F.set(C_BIT, difference < 0);
-    }
-
-    private void cp(Register8Bit r1, Register8Bit r2) {
-        cpImpl(r1.read(), r2.read());
-    }
-
-    private void cpByteFromAddress(Register8Bit r, int addr) {
-        cpImpl(r.read(), readByte(addr));
     }
 
     private int getAddress(Register16Bit r) {
