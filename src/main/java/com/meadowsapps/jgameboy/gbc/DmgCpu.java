@@ -157,7 +157,14 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
             // RLCA
             case 0x07: {
-                rlc(A);
+                int bit7 = A.get(7);
+                A.shift(LEFT, 1);
+                A.set(0, bit7);
+
+                F.set(Z_BIT, 0);
+                F.set(H_BIT, 0);
+                F.set(N_BIT, 0);
+                F.set(C_BIT, bit7);
                 break;
             }
 
@@ -211,12 +218,12 @@ public class DmgCpu extends AbstractCpu implements Constants {
             case 0x0F: {
                 int bit0 = A.get(0);
                 A.shift(RIGHT, 1);
-                F.set(C_BIT, bit0);
                 A.set(7, bit0);
 
                 F.set(Z_BIT, 0);
                 F.set(H_BIT, 0);
                 F.set(N_BIT, 0);
+                F.set(C_BIT, bit0);
                 break;
             }
 
@@ -271,12 +278,12 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 int bit7 = A.get(7);
                 A.shift(LEFT, 1);
                 int bitC = F.get(C_BIT);
-                F.set(C_BIT, bit7);
                 A.set(0, bitC);
 
                 F.set(Z_BIT, 0);
                 F.set(N_BIT, 0);
                 F.set(H_BIT, 0);
+                F.set(C_BIT, bit7);
                 break;
             }
 
@@ -1997,6 +2004,153 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 rlc(A);
                 break;
             }
+
+            // RRC B
+            case 0x08: {
+                rrc(B);
+                break;
+            }
+
+            // RRC C
+            case 0x09: {
+                rrc(C);
+                break;
+            }
+
+            // RRC D
+            case 0x0A: {
+                rrc(D);
+                break;
+            }
+
+            // RRC E
+            case 0x0B: {
+                rrc(E);
+                break;
+            }
+
+            // RRC H
+            case 0x0C: {
+                rrc(H);
+                break;
+            }
+
+            // RRC L
+            case 0x0D: {
+                rrc(L);
+                break;
+            }
+
+            // RRC (HL)
+            case 0x0E: {
+                int addr = getAddress(H, L);
+                rrc(addr);
+                break;
+            }
+
+            // RRC A
+            case 0x0F: {
+                rrc(A);
+                break;
+            }
+
+            // RL B
+            case 0x10: {
+                rl(B);
+                break;
+            }
+
+            // RL C
+            case 0x11: {
+                rl(C);
+                break;
+            }
+
+            // RL D
+            case 0x12: {
+                rl(D);
+                break;
+            }
+
+            // RL E
+            case 0x13: {
+                rl(E);
+                break;
+            }
+
+            // RL H
+            case 0x14: {
+                rl(H);
+                break;
+            }
+
+            // RL L
+            case 0x15: {
+                rl(L);
+                break;
+            }
+
+            // RL (HL)
+            case 0x16: {
+                int addr = getAddress(H, L);
+                rl(addr);
+                break;
+            }
+
+            // RL A
+            case 0x17: {
+                rl(A);
+                break;
+            }
+
+            // RR B
+            case 0x18: {
+                rr(B);
+                break;
+            }
+
+            // RR C
+            case 0x19: {
+                rr(C);
+                break;
+            }
+
+            // RR D
+            case 0x1A: {
+                rr(D);
+                break;
+            }
+
+            // RR E
+            case 0x1B: {
+                rr(E);
+                break;
+            }
+
+            // RR H
+            case 0x1C: {
+                rr(H);
+                break;
+            }
+
+            // RR L
+            case 0x1D: {
+                rr(L);
+                break;
+            }
+
+            // RR (HL)
+            case 0x1E: {
+                int addr = getAddress(H, L);
+                rr(addr);
+                break;
+            }
+
+            // RR A
+            case 0x1F: {
+                rr(A);
+                break;
+            }
         }
         return 2;
     }
@@ -2347,35 +2501,110 @@ public class DmgCpu extends AbstractCpu implements Constants {
         int value = readByte(addr);
         int bit7 = (value >> 7) & 1;
         value = value << 1;
-        F.set(C_BIT, bit7);
-        F.set(Z_BIT, 0);
-        F.set(H_BIT, 0);
-        F.set(N_BIT, 0);
         if (bit7 == 1) {
             value |= (1 << 0);
         } else {
             value &= ~(1 << 0);
         }
         value &= 0xFF;
+        F.set(Z_BIT, value == 0);
+        F.set(H_BIT, 0);
+        F.set(N_BIT, 0);
+        F.set(C_BIT, bit7);
         writeByte(value, addr);
     }
 
     private void rlc(Register8Bit r) {
         int bit7 = r.get(7);
         r.shift(LEFT, 1);
-        F.set(C_BIT, bit7);
-        F.set(Z_BIT, 0);
+        r.set(0, bit7);
+        F.set(Z_BIT, r.read() == 0);
         F.set(H_BIT, 0);
         F.set(N_BIT, 0);
-        r.set(0, bit7);
+        F.set(C_BIT, bit7);
     }
 
     private void rrc(int addr) {
-
+        int value = readByte(addr);
+        int bit0 = (value >> 0) & 1;
+        value = value >> 1;
+        if (bit0 == 1) {
+            value |= (1 << 7);
+        } else {
+            value &= ~(1 << 7);
+        }
+        value &= 0xFF;
+        F.set(Z_BIT, value == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit0);
+        writeByte(value, addr);
     }
 
     private void rrc(Register8Bit r) {
+        int bit0 = r.get(0);
+        r.shift(RIGHT, 1);
+        r.set(7, bit0);
+        F.set(Z_BIT, r.read() == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit0);
+    }
 
+    private void rl(int addr) {
+        int value = readByte(addr);
+        int bit7 = (value >> 7) & 1;
+        int cBit = F.get(C_BIT);
+        value = value << 1;
+        if (cBit == 1) {
+            value |= (1 << 0);
+        } else {
+            value &= ~(1 << 0);
+        }
+        F.set(Z_BIT, value == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit7);
+        writeByte(value, addr);
+    }
+
+    private void rl(Register8Bit r) {
+        int bit7 = r.get(7);
+        int cBit = F.get(C_BIT);
+        r.shift(LEFT, 1);
+        r.set(0, cBit);
+        F.set(Z_BIT, r.read() == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit7);
+    }
+
+    private void rr(int addr) {
+        int value = readByte(addr);
+        int bit0 = (value >> 0) & 1;
+        int cBit = F.get(C_BIT);
+        value = value >> 1;
+        if (cBit == 1) {
+            value |= (1 << 7);
+        } else {
+            value &= ~(1 << 7);
+        }
+        F.set(Z_BIT, value == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit0);
+        writeByte(value, addr);
+    }
+
+    private void rr(Register8Bit r) {
+        int bit0 = r.get(0);
+        int cBit = F.get(C_BIT);
+        r.shift(RIGHT, 1);
+        r.set(7, cBit);
+        F.set(Z_BIT, r.read() == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit0);
     }
 
     private int getAddress(Register16Bit r) {
