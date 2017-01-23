@@ -5,7 +5,7 @@ import com.meadowsapps.jgameboy.core.Register8Bit;
  */
 public class TestGround {
     public static void main(String[] args) {
-        bitTest1();
+        bitTest2();
     }
 
     static void bitFlip() {
@@ -83,5 +83,16 @@ public class TestGround {
             binary = builder.toString();
         }
         return binary;
+    }
+
+    static void bitTest2() {
+        int value = Integer.parseInt("10010101", 2);
+        System.out.println(toBinary(value, 8, false));
+        int hi = value >> 4;
+        int lo = value & 0xF;
+        System.out.println(hi);
+        System.out.println(lo);
+        value = (lo << 4) + hi;
+        System.out.println(toBinary(value, 8, false));
     }
 }
