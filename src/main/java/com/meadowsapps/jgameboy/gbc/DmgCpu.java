@@ -2298,6 +2298,153 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 swap(A);
                 break;
             }
+
+            // SRL B
+            case 0x38: {
+                srl(B);
+                break;
+            }
+
+            // SRL C
+            case 0x39: {
+                srl(C);
+                break;
+            }
+
+            // SRL D
+            case 0x3A: {
+                srl(D);
+                break;
+            }
+
+            // SRL E
+            case 0x3B: {
+                srl(E);
+                break;
+            }
+
+            // SRL H
+            case 0x3C: {
+                srl(H);
+                break;
+            }
+
+            // SRL L
+            case 0x3D: {
+                srl(L);
+                break;
+            }
+
+            // SRL (HL)
+            case 0x3E: {
+                int addr = getAddress(H, L);
+                srl(addr);
+                break;
+            }
+
+            // SRL A
+            case 0x3F: {
+                srl(A);
+                break;
+            }
+
+            // BIT 0,B
+            case 0x40: {
+                bit(0, B);
+                break;
+            }
+
+            // BIT 0,C
+            case 0x41: {
+                bit(0, C);
+                break;
+            }
+
+            // BIT 0,D
+            case 0x42: {
+                bit(0, D);
+                break;
+            }
+
+            // BIT 0,E
+            case 0x43: {
+                bit(0, E);
+                break;
+            }
+
+            // BIT 0,H
+            case 0x44: {
+                bit(0, H);
+                break;
+            }
+
+            // BIT 0,L
+            case 0x45: {
+                bit(0, L);
+                break;
+            }
+
+            // BIT 0,(HL)
+            case 0x46: {
+                int addr = getAddress(H, L);
+                bit(0, addr);
+                break;
+            }
+
+            // BIT 0,A
+            case 0x47: {
+                bit(0, A);
+                break;
+            }
+
+            // BIT 1,B
+            case 0x48: {
+                bit(1, B);
+                break;
+            }
+
+            // BIT 1,C
+            case 0x49: {
+                bit(1, C);
+                break;
+            }
+
+            // BIT 1,D
+            case 0x4A: {
+                bit(1, D);
+                break;
+            }
+
+            // BIT 1,E
+            case 0x4B: {
+                bit(1, E);
+                break;
+            }
+
+            // BIT 1,H
+            case 0x4C: {
+                bit(1, H);
+                break;
+            }
+
+            // BIT 1,L
+            case 0x4D: {
+                bit(1, L);
+                break;
+            }
+
+            // BIT 1,(HL)
+            case 0x4E: {
+                int addr = getAddress(H, L);
+                bit(1, addr);
+                break;
+            }
+
+            // BIT 1,A
+            case 0x4F: {
+                bit(1, A);
+                break;
+            }
         }
         return 2;
     }
@@ -2409,9 +2556,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
      */
     private void inc(int addr) {
         int value = readByte(addr);
+        F.set(Z_BIT, value == 0xFF);
         F.set(N_BIT, 0);
         F.set(H_BIT, value == 0xFF || value == 0x0F);
-        F.set(Z_BIT, value == 0xFF);
         value = (value + 1) & 0xFF;
         writeByte(value, addr);
     }
@@ -2434,9 +2581,9 @@ public class DmgCpu extends AbstractCpu implements Constants {
      */
     private void inc(Register8Bit r) {
         int value = r.read();
+        F.set(Z_BIT, value == 0xFF);
         F.set(N_BIT, 0);
         F.set(H_BIT, value == 0xFF || value == 0x0F);
-        F.set(Z_BIT, value == 0xFF);
         r.inc();
     }
 
@@ -2481,18 +2628,18 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
     private void dec(int addr) {
         int value = readByte(addr);
+        F.set(Z_BIT, value == 0x01);
         F.set(N_BIT, 1);
         F.set(H_BIT, value == 0x00 || value == 0x10);
-        F.set(Z_BIT, value == 0x01);
         value = (value - 1) & 0xFF;
         writeByte(value, addr);
     }
 
     private void dec(Register8Bit r) {
         int value = r.read();
+        F.set(Z_BIT, value == 0x01);
         F.set(N_BIT, 1);
         F.set(H_BIT, value == 0x00 || value == 0x10);
-        F.set(Z_BIT, value == 0x01);
         r.dec();
     }
 
@@ -2651,8 +2798,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
         value = setBit(0, value, bit7);
         writeByte(value, addr);
         F.set(Z_BIT, value == 0);
-        F.set(H_BIT, 0);
         F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
         F.set(C_BIT, bit7);
     }
 
@@ -2661,8 +2808,8 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r.shift(LEFT, 1);
         r.set(0, bit7);
         F.set(Z_BIT, r.read() == 0);
-        F.set(H_BIT, 0);
         F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
         F.set(C_BIT, bit7);
     }
 
@@ -2805,12 +2952,40 @@ public class DmgCpu extends AbstractCpu implements Constants {
     }
 
     private void srl(int addr) {
-
+        int value = readByte(addr);
+        int bit0 = getBit(0, value);
+        value = (value >> 1) & 0xFF;
+        value = setBit(7, value, 0);
+        writeByte(value, addr);
+        F.set(Z_BIT, value == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit0);
     }
 
     private void srl(Register8Bit r) {
         int bit0 = r.get(0);
+        r.shift(RIGHT, 1);
+        r.set(7, 0);
+        F.set(Z_BIT, r.read() == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit0);
+    }
 
+    private void bit(int bit, int addr) {
+        int value = readByte(addr);
+        int b = getBit(bit, value);
+        F.set(Z_BIT, b == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 1);
+    }
+
+    private void bit(int bit, Register8Bit r) {
+        int b = r.get(bit);
+        F.set(Z_BIT, b == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 1);
     }
 
     private int getBit(int bit, int value) {
