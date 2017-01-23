@@ -2445,6 +2445,398 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 bit(1, A);
                 break;
             }
+
+            // BIT 2,B
+            case 0x50: {
+                bit(2, B);
+                break;
+            }
+
+            // BIT 2,C
+            case 0x51: {
+                bit(2, C);
+                break;
+            }
+
+            // BIT 2,D
+            case 0x52: {
+                bit(2, D);
+                break;
+            }
+
+            // BIT 2,E
+            case 0x53: {
+                bit(2, E);
+                break;
+            }
+
+            // BIT 2,H
+            case 0x54: {
+                bit(2, H);
+                break;
+            }
+
+            // BIT 2,L
+            case 0x55: {
+                bit(2, L);
+                break;
+            }
+
+            // BIT 2,(HL)
+            case 0x56: {
+                int addr = getAddress(H, L);
+                bit(2, addr);
+                break;
+            }
+
+            // BIT 2,A
+            case 0x57: {
+                bit(2, A);
+                break;
+            }
+
+            // BIT 3,B
+            case 0x58: {
+                bit(3, B);
+                break;
+            }
+
+            // BIT 3,C
+            case 0x59: {
+                bit(3, C);
+                break;
+            }
+
+            // BIT 3,D
+            case 0x5A: {
+                bit(3, D);
+                break;
+            }
+
+            // BIT 3,E
+            case 0x5B: {
+                bit(3, E);
+                break;
+            }
+
+            // BIT 3,H
+            case 0x5C: {
+                bit(3, H);
+                break;
+            }
+
+            // BIT 3,L
+            case 0x5D: {
+                bit(3, L);
+                break;
+            }
+
+            // BIT 3,(HL)
+            case 0x5E: {
+                int addr = getAddress(H, L);
+                bit(3, addr);
+                break;
+            }
+
+            // BIT 3,A
+            case 0x5F: {
+                bit(3, A);
+                break;
+            }
+
+            // BIT 4,B
+            case 0x60: {
+                bit(4, B);
+                break;
+            }
+
+            // BIT 4,C
+            case 0x61: {
+                bit(4, C);
+                break;
+            }
+
+            // BIT 4,D
+            case 0x62: {
+                bit(4, D);
+                break;
+            }
+
+            // BIT 4,E
+            case 0x63: {
+                bit(4, E);
+                break;
+            }
+
+            // BIT 4,H
+            case 0x64: {
+                bit(4, H);
+                break;
+            }
+
+            // BIT 4,L
+            case 0x65: {
+                bit(4, L);
+                break;
+            }
+
+            // BIT 4,(HL)
+            case 0x66: {
+                int addr = getAddress(H, L);
+                bit(4, addr);
+                break;
+            }
+
+            // BIT 4,A
+            case 0x67: {
+                bit(4, A);
+                break;
+            }
+
+            // BIT 5,B
+            case 0x68: {
+                bit(5, B);
+                break;
+            }
+
+            // BIT 5,C
+            case 0x69: {
+                bit(5, C);
+                break;
+            }
+
+            // BIT 5,D
+            case 0x6A: {
+                bit(5, D);
+                break;
+            }
+
+            // BIT 5,E
+            case 0x6B: {
+                bit(5, E);
+                break;
+            }
+
+            // BIT 5,H
+            case 0x6C: {
+                bit(5, H);
+                break;
+            }
+
+            // BIT 5,L
+            case 0x6D: {
+                bit(5, L);
+                break;
+            }
+
+            // BIT 5,(HL)
+            case 0x6E: {
+                int addr = getAddress(H, L);
+                bit(5, addr);
+                break;
+            }
+
+            // BIT 5,A
+            case 0x6F: {
+                bit(5, A);
+                break;
+            }
+
+            // BIT 6,B
+            case 0x70: {
+                bit(6, B);
+                break;
+            }
+
+            // BIT 6,C
+            case 0x71: {
+                bit(6, C);
+                break;
+            }
+
+            // BIT 6,D
+            case 0x72: {
+                bit(6, D);
+                break;
+            }
+
+            // BIT 6,E
+            case 0x73: {
+                bit(6, E);
+                break;
+            }
+
+            // BIT 6,H
+            case 0x74: {
+                bit(6, H);
+                break;
+            }
+
+            // BIT 6,L
+            case 0x75: {
+                bit(6, L);
+                break;
+            }
+
+            // BIT 6,(HL)
+            case 0x76: {
+                int addr = getAddress(H, L);
+                bit(6, addr);
+                break;
+            }
+
+            // BIT 6,A
+            case 0x77: {
+                bit(6, A);
+                break;
+            }
+
+            // BIT 7,B
+            case 0x78: {
+                bit(7, B);
+                break;
+            }
+
+            // BIT 7,C
+            case 0x79: {
+                bit(7, C);
+                break;
+            }
+
+            // BIT 7,D
+            case 0x7A: {
+                bit(7, D);
+                break;
+            }
+
+            // BIT 7,E
+            case 0x7B: {
+                bit(7, E);
+                break;
+            }
+
+            // BIT 7,H
+            case 0x7C: {
+                bit(7, H);
+                break;
+            }
+
+            // BIT 7,L
+            case 0x7D: {
+                bit(7, L);
+                break;
+            }
+
+            // BIT 7,(HL)
+            case 0x7E: {
+                int addr = getAddress(H, L);
+                bit(7, addr);
+                break;
+            }
+
+            // BIT 7,A
+            case 0x7F: {
+                bit(7, A);
+                break;
+            }
+
+            // RES 0,B
+            case 0x80: {
+                res(0, B);
+                break;
+            }
+
+            // RES 0,C
+            case 0x81: {
+                res(0, C);
+                break;
+            }
+
+            // RES 0,D
+            case 0x82: {
+                res(0, D);
+                break;
+            }
+
+            // RES 0,E
+            case 0x83: {
+                res(0, E);
+                break;
+            }
+
+            // RES 0,H
+            case 0x84: {
+                res(0, H);
+                break;
+            }
+
+            // RES 0,L
+            case 0x85: {
+                res(0, L);
+                break;
+            }
+
+            // RES 0,(HL)
+            case 0x86: {
+                int addr = getAddress(H, L);
+                res(0, addr);
+                break;
+            }
+
+            // RES 0,A
+            case 0x87: {
+                res(0, A);
+                break;
+            }
+
+            // RES 1,B
+            case 0x88: {
+                res(1, B);
+                break;
+            }
+
+            // RES 1,C
+            case 0x89: {
+                res(1, C);
+                break;
+            }
+
+            // RES 1,D
+            case 0x8A: {
+                res(1, D);
+                break;
+            }
+
+            // RES 1,E
+            case 0x8B: {
+                res(1, E);
+                break;
+            }
+
+            // RES 1,H
+            case 0x8C: {
+                res(1, H);
+                break;
+            }
+
+            // RES 1,L
+            case 0x8D: {
+                res(1, L);
+                break;
+            }
+
+            // RES 1,(HL)
+            case 0x8E: {
+                int addr = getAddress(H, L);
+                res(1, addr);
+                break;
+            }
+
+            // RES 1,A
+            case 0x8F: {
+                res(1, A);
+                break;
+            }
         }
         return 2;
     }
@@ -2986,6 +3378,16 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(Z_BIT, b == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 1);
+    }
+
+    private void res(int bit, int addr) {
+        int value = readByte(addr);
+        value = setBit(bit, value, 0);
+        writeByte(value, addr);
+    }
+
+    private void res(int bit, Register8Bit r) {
+        r.set(bit, 0);
     }
 
     private int getBit(int bit, int value) {
