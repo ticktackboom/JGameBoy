@@ -2151,6 +2151,12 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 rr(A);
                 break;
             }
+
+            // SLA B
+            case 0x20: {
+
+                break;
+            }
         }
         return 2;
     }
@@ -2605,6 +2611,28 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
         F.set(C_BIT, bit0);
+    }
+
+    private void sla(int addr) {
+        int value = readByte(addr);
+        int bit7 = (value >> 7) & 1;
+        value = value << 1;
+        value &= ~(1 << 0);
+        writeByte(value, addr);
+        F.set(Z_BIT, value == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit7);
+    }
+
+    private void sla(Register8Bit r) {
+        int bit7 = r.get(7);
+        r.shift(LEFT, 1);
+        r.set(0, 0);
+        F.set(Z_BIT, r.read() == 0);
+        F.set(N_BIT, 0);
+        F.set(H_BIT, 0);
+        F.set(C_BIT, bit7);
     }
 
     private int getAddress(Register16Bit r) {

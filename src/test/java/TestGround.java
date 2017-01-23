@@ -5,7 +5,7 @@ import com.meadowsapps.jgameboy.core.Register8Bit;
  */
 public class TestGround {
     public static void main(String[] args) {
-        bitTest();
+        bitTest1();
     }
 
     static void bitFlip() {
@@ -61,5 +61,27 @@ public class TestGround {
         System.out.println(r.read());
         r.set(12, 1);
         System.out.println(r.read());
+    }
+
+    static void bitTest1() {
+        int value = 15;
+        String binary = toBinary(value, 8, false);
+        for (int i = 0; i < binary.length(); i++) {
+            int tmp = value & ~(1 << i);
+            System.out.println(toBinary(tmp, 8, false));
+        }
+    }
+
+    static String toBinary(int value, int length, boolean space) {
+        String binary = String.format("%" + length + "s", Integer.toBinaryString(value));
+        binary = binary.replace(" ", "0");
+        if (space) {
+            StringBuilder builder = new StringBuilder(binary);
+            for (int i = builder.length() - 1; i >= 0; i -= 4) {
+                builder.insert(i, " ");
+            }
+            binary = builder.toString();
+        }
+        return binary;
     }
 }
