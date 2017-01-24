@@ -1,65 +1,67 @@
-package com.meadowsapps.jgameboy.gbc;
+package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractCpu;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
+import com.meadowsapps.jgameboy.gbc.Constants;
+import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 /**
  * Emulated CPU found inside of the Nintendo GameBoy.
  * Custom 8-bit Sharp LR35902 based on the Intel 8080
  * and the Z80 microprocessors.
  */
-public class DmgCpu extends AbstractCpu implements Constants {
+public class GbcCpu extends AbstractCpu implements Constants {
 
     /**
      * Accumulator Register
      */
-    private Register8Bit A;
+    private final Register8Bit A;
 
     /**
      * Status Register
      */
-    private Register8Bit F;
+    private final Register8Bit F;
 
     /**
      * General purpose Register
      */
-    private Register8Bit B, C, D, E, H, L;
+    private final Register8Bit B, C, D, E, H, L;
 
     /**
      * Stack Pointer Register
      */
-    private Register16Bit SP;
+    private final Register16Bit SP;
 
     /**
      * Program Counter Register
      */
-    private Register16Bit PC;
+    private final Register16Bit PC;
 
     /**
      * Bit index of the Zero Status Flag
      */
-    public static final int Z_BIT = 7;
+    private static final int Z_BIT = 7;
 
     /**
      * Bit index of the Subtract Status Flag
      */
-    public static final int N_BIT = 6;
+    private static final int N_BIT = 6;
 
     /**
      * Bit index of the Half Carry Status Flag
      */
-    public static final int H_BIT = 5;
+    private static final int H_BIT = 5;
 
     /**
      * Bit index of the Carry Status Flag
      */
-    public static final int C_BIT = 4;
+    private static final int C_BIT = 4;
 
     /**
      * Initializes the CPU's registers
      */
-    public DmgCpu(GbcCore core) {
+    GbcCpu(GbcCore core) {
         super(core);
         A = new Register8Bit();
         F = new Register8Bit();
@@ -410,7 +412,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 if ((A.read() & 0x0F) > 0x09 || F.isSet(H_BIT)) {
                     correctionFactor = (correctionFactor & 0xF0) + 0x06;
                 } else {
-                    correctionFactor = (correctionFactor & 0xF0) + 0x00;
+                    correctionFactor = (correctionFactor & 0xF0);
                 }
 
                 if (!F.isSet(N_BIT)) {
@@ -1946,6 +1948,11 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 throw new IllegalArgumentException(message.replace("%OPCODE%", hex));
         }
         return length;
+    }
+
+    @Override
+    public void reset() {
+
     }
 
     /**
@@ -3578,8 +3585,7 @@ public class DmgCpu extends AbstractCpu implements Constants {
     private int popImpl() {
         try {
             int addr = getAddress(SP);
-            int value = readWord(addr);
-            return value;
+            return readWord(addr);
         } finally {
             SP.add(2);
         }
@@ -3742,34 +3748,31 @@ public class DmgCpu extends AbstractCpu implements Constants {
         r2.write(value & 0xFF);
     }
 
-    private void add(Register8Bit r, int value) {
-        int value1 = r.read();
-        int value2 = value;
-        int sum = value1 + value2;
+    private void add(Register8Bit r, int addValue) {
+        int value = r.read();
+        int sum = value + addValue;
         r.write(sum);
 
         F.set(Z_BIT, sum == 0);
         F.set(N_BIT, 0);
-        F.set(H_BIT, ((value1 & 0x0F) + (value2 & 0x0F)) > 0xF);
+        F.set(H_BIT, ((value & 0x0F) + (addValue & 0x0F)) > 0xF);
         F.set(C_BIT, sum > 0xFF);
     }
 
-    private void add(Register16Bit r, int value) {
-        int value1 = r.read();
-        int value2 = value;
-        int sum = value1 + value2;
+    private void add(Register16Bit r, int addValue) {
+        int value = r.read();
+        int sum = value + addValue;
         r.write(sum);
     }
 
-    private void add(Register8Bit r1, Register8Bit r2, int value) {
-        int value1 = (r1.read() << 8) + r2.read();
-        int value2 = value;
-        int sum = value1 + value2;
+    private void add(Register8Bit r1, Register8Bit r2, int addValue) {
+        int value = (r1.read() << 8) + r2.read();
+        int sum = value + addValue;
         r1.write(sum >> 8);
         r2.write(sum & 0xFF);
 
         F.set(N_BIT, 0);
-        F.set(H_BIT, (value1 & 0x0FFF) + (value2 & 0x0FFF) > 0x0FFF);
+        F.set(H_BIT, (value & 0x0FFF) + (addValue & 0x0FFF) > 0x0FFF);
         F.set(C_BIT, sum > 0xFFFF);
     }
 
@@ -3786,29 +3789,26 @@ public class DmgCpu extends AbstractCpu implements Constants {
         F.set(C_BIT, sum > 0xFF);
     }
 
-    private void sub(Register8Bit r, int value) {
-        int value1 = r.read();
-        int value2 = value;
-        int difference = value1 - value2;
+    private void sub(Register8Bit r, int subValue) {
+        int value = r.read();
+        int difference = value - subValue;
         r.write(difference);
 
         F.set(Z_BIT, difference == 0x00);
         F.set(N_BIT, 1);
-        F.set(H_BIT, (difference & 0xF) > (value1 & 0xF));
+        F.set(H_BIT, (difference & 0xF) > (value & 0xF));
         F.set(C_BIT, difference < 0);
     }
 
-    private void sub(Register16Bit r, int value) {
-        int value1 = r.read();
-        int value2 = value;
-        int difference = value1 - value2;
+    private void sub(Register16Bit r, int subValue) {
+        int value = r.read();
+        int difference = value - subValue;
         r.write(difference);
     }
 
-    private void sub(Register8Bit r1, Register8Bit r2, int value) {
-        int value1 = (r1.read() << 8) + r2.read();
-        int value2 = value;
-        int difference = value1 - value2;
+    private void sub(Register8Bit r1, Register8Bit r2, int subValue) {
+        int value = (r1.read() << 8) + r2.read();
+        int difference = value - subValue;
         r1.write(difference >> 8);
         r2.write(difference & 0xFF);
     }

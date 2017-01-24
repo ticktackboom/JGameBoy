@@ -9,4 +9,6 @@ public interface EmulatorCore {
 
     Mmu getMmu();
 
+    Display getDisplay();
+
 }

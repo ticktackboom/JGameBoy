@@ -141,7 +141,6 @@ class NoiseGenerator {
         cycleOffset = 0;
     }
 
-
     public void setSampleRate(int sr) {
         sampleRate = sr;
     }

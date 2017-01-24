@@ -16,4 +16,6 @@ public interface Cpu {
     void writeByte(int value, int addr);
 
     void writeWord(int value, int addr);
+
+    void reset();
 }

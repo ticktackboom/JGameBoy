@@ -1,6 +1,7 @@
-package com.meadowsapps.jgameboy.gbc;
+package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractMmu;
+import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 /**
  * Created by Dylan on 1/12/17.
@@ -30,7 +31,7 @@ public class GbcMmu extends AbstractMmu {
     public static final int HIGH_RAM = 0xFF80;
     public static final int INTERRUPT = 0xFFFF;
 
-    public GbcMmu(GbcCore core) {
+    GbcMmu(GbcCore core) {
         super(core);
     }
 
