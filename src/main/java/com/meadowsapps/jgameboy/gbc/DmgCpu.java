@@ -2837,6 +2837,692 @@ public class DmgCpu extends AbstractCpu implements Constants {
                 res(1, A);
                 break;
             }
+
+            // RES 2,B
+            case 0x90: {
+                res(2, B);
+                break;
+            }
+
+            // RES 2,C
+            case 0x91: {
+                res(2, C);
+                break;
+            }
+
+            // RES 2,D
+            case 0x92: {
+                res(2, D);
+                break;
+            }
+
+            // RES 2,E
+            case 0x93: {
+                res(2, E);
+                break;
+            }
+
+            // RES 2,H
+            case 0x94: {
+                res(2, H);
+                break;
+            }
+
+            // RES 2,L
+            case 0x95: {
+                res(2, L);
+                break;
+            }
+
+            // RES 2,(HL)
+            case 0x96: {
+                int addr = getAddress(H, L);
+                res(2, addr);
+                break;
+            }
+
+            // RES 2,A
+            case 0x97: {
+                res(2, A);
+                break;
+            }
+
+            // RES 3,B
+            case 0x98: {
+                res(3, B);
+                break;
+            }
+
+            // RES 3,C
+            case 0x99: {
+                res(3, C);
+                break;
+            }
+
+            // RES 3,D
+            case 0x9A: {
+                res(3, D);
+                break;
+            }
+
+            // RES 3,E
+            case 0x9B: {
+                res(3, E);
+                break;
+            }
+
+            // RES 3,H
+            case 0x9C: {
+                res(3, H);
+                break;
+            }
+
+            // RES 3,L
+            case 0x9D: {
+                res(3, L);
+                break;
+            }
+
+            // RES 3,(HL)
+            case 0x9E: {
+                int addr = getAddress(H, L);
+                res(3, addr);
+                break;
+            }
+
+            // RES 3,A
+            case 0x9F: {
+                res(3, A);
+                break;
+            }
+
+            // RES 4,B
+            case 0xA0: {
+                res(4, B);
+                break;
+            }
+
+            // RES 4,C
+            case 0xA1: {
+                res(4, C);
+                break;
+            }
+
+            // RES 4,D
+            case 0xA2: {
+                res(4, D);
+                break;
+            }
+
+            // RES 4,E
+            case 0xA3: {
+                res(4, E);
+                break;
+            }
+
+            // RES 4,H
+            case 0xA4: {
+                res(4, H);
+                break;
+            }
+
+            // RES 4,L
+            case 0xA5: {
+                res(4, L);
+                break;
+            }
+
+            // RES 4,(HL)
+            case 0xA6: {
+                int addr = getAddress(H, L);
+                res(4, addr);
+                break;
+            }
+
+            // RES 4,A
+            case 0xA7: {
+                res(4, A);
+                break;
+            }
+
+            // RES 5,B
+            case 0xA8: {
+                res(5, B);
+                break;
+            }
+
+            // RES 5,C
+            case 0xA9: {
+                res(5, C);
+                break;
+            }
+
+            // RES 5,D
+            case 0xAA: {
+                res(5, D);
+                break;
+            }
+
+            // RES 5,E
+            case 0xAB: {
+                res(5, E);
+                break;
+            }
+
+            // RES 5,H
+            case 0xAC: {
+                res(5, H);
+                break;
+            }
+
+            // RES 5,L
+            case 0xAD: {
+                res(5, L);
+                break;
+            }
+
+            // RES 5,(HL)
+            case 0xAE: {
+                int addr = getAddress(H, L);
+                res(5, addr);
+                break;
+            }
+
+            // RES 5,A
+            case 0xAF: {
+                res(5, A);
+                break;
+            }
+
+            // RES 6,B
+            case 0xB0: {
+                res(6, B);
+                break;
+            }
+
+            // RES 6,C
+            case 0xB1: {
+                res(6, C);
+                break;
+            }
+
+            // RES 6,D
+            case 0xB2: {
+                res(6, D);
+                break;
+            }
+
+            // RES 6,E
+            case 0xB3: {
+                res(6, E);
+                break;
+            }
+
+            // RES 6,H
+            case 0xB4: {
+                res(6, H);
+                break;
+            }
+
+            // RES 6,L
+            case 0xB5: {
+                res(6, L);
+                break;
+            }
+
+            // RES 6,(HL)
+            case 0xB6: {
+                int addr = getAddress(H, L);
+                res(6, addr);
+                break;
+            }
+
+            // RES 6,A
+            case 0xB7: {
+                res(6, A);
+                break;
+            }
+
+            // RES 7,B
+            case 0xB8: {
+                res(7, B);
+                break;
+            }
+
+            // RES 7,C
+            case 0xB9: {
+                res(7, C);
+                break;
+            }
+
+            // RES 7,D
+            case 0xBA: {
+                res(7, D);
+                break;
+            }
+
+            // RES 7,E
+            case 0xBB: {
+                res(7, E);
+                break;
+            }
+
+            // RES 7,H
+            case 0xBC: {
+                res(7, H);
+                break;
+            }
+
+            // RES 7,L
+            case 0xBD: {
+                res(7, L);
+                break;
+            }
+
+            // RES 7,(HL)
+            case 0xBE: {
+                int addr = getAddress(H, L);
+                res(7, addr);
+                break;
+            }
+
+            // RES 7,A
+            case 0xBF: {
+                res(7, A);
+                break;
+            }
+
+            // SET 0,B
+            case 0xC0: {
+                set(0, B);
+                break;
+            }
+
+            // SET 0,C
+            case 0xC1: {
+                set(0, C);
+                break;
+            }
+
+            // SET 0,D
+            case 0xC2: {
+                set(0, D);
+                break;
+            }
+
+            // SET 0,E
+            case 0xC3: {
+                set(0, E);
+                break;
+            }
+
+            // SET 0,H
+            case 0xC4: {
+                set(0, H);
+                break;
+            }
+
+            // SET 0,L
+            case 0xC5: {
+                set(0, L);
+                break;
+            }
+
+            // SET 0,(HL)
+            case 0xC6: {
+                int addr = getAddress(H, L);
+                set(0, addr);
+                break;
+            }
+
+            // SET 0,A
+            case 0xC7: {
+                set(0, A);
+                break;
+            }
+
+            // SET 1,B
+            case 0xC8: {
+                set(1, B);
+                break;
+            }
+
+            // SET 1,C
+            case 0xC9: {
+                set(1, C);
+                break;
+            }
+
+            // SET 1,D
+            case 0xCA: {
+                set(1, D);
+                break;
+            }
+
+            // SET 1,E
+            case 0xCB: {
+                set(1, E);
+                break;
+            }
+
+            // SET 1,H
+            case 0xCC: {
+                set(1, H);
+                break;
+            }
+
+            // SET 1,L
+            case 0xCD: {
+                set(1, L);
+                break;
+            }
+
+            // SET 1,(HL)
+            case 0xCE: {
+                int addr = getAddress(H, L);
+                set(1, addr);
+                break;
+            }
+
+            // SET 1,A
+            case 0xCF: {
+                set(1, A);
+                break;
+            }
+
+            // SET 2,B
+            case 0xD0: {
+                set(2, B);
+                break;
+            }
+
+            // SET 2,C
+            case 0xD1: {
+                set(2, C);
+                break;
+            }
+
+            // SET 2,D
+            case 0xD2: {
+                set(2, D);
+                break;
+            }
+
+            // SET 2,E
+            case 0xD3: {
+                set(2, E);
+                break;
+            }
+
+            // SET 2,H
+            case 0xD4: {
+                set(2, H);
+                break;
+            }
+
+            // SET 2,L
+            case 0xD5: {
+                set(2, L);
+                break;
+            }
+
+            // SET 2,(HL)
+            case 0xD6: {
+                int addr = getAddress(H, L);
+                set(2, addr);
+                break;
+            }
+
+            // SET 2,A
+            case 0xD7: {
+                set(2, A);
+                break;
+            }
+
+            // SET 3,B
+            case 0xD8: {
+                set(3, B);
+                break;
+            }
+
+            // SET 3,C
+            case 0xD9: {
+                set(3, C);
+                break;
+            }
+
+            // SET 3,D
+            case 0xDA: {
+                set(3, D);
+                break;
+            }
+
+            // SET 3,E
+            case 0xDB: {
+                set(3, E);
+                break;
+            }
+
+            // SET 3,H
+            case 0xDC: {
+                set(3, H);
+                break;
+            }
+
+            // SET 3,L
+            case 0xDD: {
+                set(3, L);
+                break;
+            }
+
+            // SET 3,(HL)
+            case 0xDE: {
+                int addr = getAddress(H, L);
+                set(3, addr);
+                break;
+            }
+
+            // SET 3,A
+            case 0xDF: {
+                set(3, A);
+                break;
+            }
+
+            // SET 4,B
+            case 0xE0: {
+                set(4, B);
+                break;
+            }
+
+            // SET 4,C
+            case 0xE1: {
+                set(4, C);
+                break;
+            }
+
+            // SET 4,D
+            case 0xE2: {
+                set(4, D);
+                break;
+            }
+
+            // SET 4,E
+            case 0xE3: {
+                set(4, E);
+                break;
+            }
+
+            // SET 4,H
+            case 0xE4: {
+                set(4, H);
+                break;
+            }
+
+            // SET 4,L
+            case 0xE5: {
+                set(4, L);
+                break;
+            }
+
+            // SET 4,(HL)
+            case 0xE6: {
+                int addr = getAddress(H, L);
+                set(4, addr);
+                break;
+            }
+
+            // SET 4,A
+            case 0xE7: {
+                set(4, A);
+                break;
+            }
+
+            // SET 5,B
+            case 0xE8: {
+                set(5, B);
+                break;
+            }
+
+            // SET 5,C
+            case 0xE9: {
+                set(5, C);
+                break;
+            }
+
+            // SET 5,D
+            case 0xEA: {
+                set(5, D);
+                break;
+            }
+
+            // SET 5,E
+            case 0xEB: {
+                set(5, E);
+                break;
+            }
+
+            // SET 5,H
+            case 0xEC: {
+                set(5, H);
+                break;
+            }
+
+            // SET 5,L
+            case 0xED: {
+                set(5, L);
+                break;
+            }
+
+            // SET 5,(HL)
+            case 0xEE: {
+                int addr = getAddress(H, L);
+                set(5, addr);
+                break;
+            }
+
+            // SET 5,A
+            case 0xEF: {
+                set(5, A);
+                break;
+            }
+
+            // SET 6,B
+            case 0xF0: {
+                set(6, B);
+                break;
+            }
+
+            // SET 6,C
+            case 0xF1: {
+                set(6, C);
+                break;
+            }
+
+            // SET 6,D
+            case 0xF2: {
+                set(6, D);
+                break;
+            }
+
+            // SET 6,E
+            case 0xF3: {
+                set(6, E);
+                break;
+            }
+
+            // SET 6,H
+            case 0xF4: {
+                set(6, H);
+                break;
+            }
+
+            // SET 6,L
+            case 0xF5: {
+                set(6, L);
+                break;
+            }
+
+            // SET 6,(HL)
+            case 0xF6: {
+                int addr = getAddress(H, L);
+                set(6, addr);
+                break;
+            }
+
+            // SET 6,A
+            case 0xF7: {
+                set(6, A);
+                break;
+            }
+
+            // SET 7,B
+            case 0xF8: {
+                set(7, B);
+                break;
+            }
+
+            // SET 7,C
+            case 0xF9: {
+                set(7, C);
+                break;
+            }
+
+            // SET 7,D
+            case 0xFA: {
+                set(7, D);
+                break;
+            }
+
+            // SET 7,E
+            case 0xFB: {
+                set(7, E);
+                break;
+            }
+
+            // SET 7,H
+            case 0xFC: {
+                set(7, H);
+                break;
+            }
+
+            // SET 7,L
+            case 0xFD: {
+                set(7, L);
+                break;
+            }
+
+            // SET 7,(HL)
+            case 0xFE: {
+                int addr = getAddress(H, L);
+                set(7, addr);
+                break;
+            }
+
+            // SET 7,A
+            case 0xFF: {
+                set(7, A);
+                break;
+            }
         }
         return 2;
     }
@@ -3388,6 +4074,16 @@ public class DmgCpu extends AbstractCpu implements Constants {
 
     private void res(int bit, Register8Bit r) {
         r.set(bit, 0);
+    }
+
+    private void set(int bit, int addr) {
+        int value = readByte(addr);
+        value = setBit(bit, value, 1);
+        writeByte(value, addr);
+    }
+
+    private void set(int bit, Register8Bit r) {
+        r.set(bit, 1);
     }
 
     private int getBit(int bit, int value) {
