@@ -1,7 +1,6 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractMmu;
-import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 /**
  * Created by Dylan on 1/12/17.
@@ -9,11 +8,14 @@ import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 public class GbcMmu extends AbstractMmu {
 
     private int[] mem = new int[0xFFFF];
+    private int[] bios = new int[0xFF1];
+    private int[][] rom = new int[0xFF][0x4000];
     private int[] vram = new int[0x2000];
     private int[] eram = new int[0x2000];
     private int[] wram = new int[0x2000];
     private int[] zram = new int[0x7F];
     private int[] oam = new int[0xA0];
+    private int activeRomBank = 1;
 
     public static final int RESTART_INTERRUPT_VECTORS = 0x0000;
     public static final int CARTRIDGE_HEADER = 0x0100;
@@ -44,11 +46,14 @@ public class GbcMmu extends AbstractMmu {
             case 0x1000:
             case 0x2000:
             case 0x3000:
+                value = rom[0][addr];
+                break;
             case 0x4000:
             case 0x5000:
             case 0x6000:
             case 0x7000:
-                // read cartridge
+                addr -= 0x4000;
+                value = rom[activeRomBank][addr];
                 break;
             case 0x8000:
             case 0x9000:
@@ -61,11 +66,9 @@ public class GbcMmu extends AbstractMmu {
                 value = eram[addr];
                 break;
             case 0xC000:
+            case 0xD000:
                 addr -= 0xC000;
                 value = wram[addr];
-                break;
-            case 0xD000:
-                // read gbc bank
                 break;
             case 0xE000:
                 addr -= 0xE000;
@@ -91,11 +94,13 @@ public class GbcMmu extends AbstractMmu {
 
     @Override
     public void writeByte(int value, int addr) {
+        value &= 0xFF;
         mem[addr] = value;
     }
 
     @Override
     public void writeWord(int value, int addr) {
+        value &= 0xFFFF;
         int hi = value >> 8;
         int lo = value & 0xFF;
         writeByte(lo, addr);

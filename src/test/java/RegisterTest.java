@@ -7,6 +7,10 @@ import com.meadowsapps.jgameboy.core.Register8Bit;
  */
 public class RegisterTest {
     public static void main(String[] args) {
+        rTest2(new Register16Bit());
+    }
+
+    static void rTest1() {
         Register B = new Register8Bit();
         Register C = new Register8Bit();
         Register SP = new Register16Bit();
@@ -29,6 +33,14 @@ public class RegisterTest {
             System.out.printf("Shifting LEFT by %d...\n", 1);
             C.shift(Register.LEFT, 1);
             System.out.printf("C = %d\n", C.read());
+        }
+    }
+
+    static void rTest2(Register r) {
+        System.out.println(r);
+        for (int i = 0; i <= r.size(); i++) {
+            r.inc();
+            System.out.println(r);
         }
     }
 

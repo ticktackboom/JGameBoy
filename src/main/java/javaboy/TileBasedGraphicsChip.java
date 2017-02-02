@@ -22,7 +22,8 @@ Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.DirectColorModel;
+import java.awt.image.MemoryImageSource;
 
 
 /**

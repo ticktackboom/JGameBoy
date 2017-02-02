@@ -1,33 +1,24 @@
 package com.meadowsapps.jgameboy.core;
 
-import org.joou.UShort;
-
-import static org.joou.Unsigned.ushort;
-
 /**
  * Created by dmeadows on 1/13/2017.
  */
 public class Register16Bit extends AbstractRegister {
 
-    private UShort value;
-
-    public Register16Bit() {
-        value = ushort(0);
-    }
+    private short value;
 
     @Override
     public int read() {
-        return value.intValue();
+        return Short.toUnsignedInt(value);
     }
 
     @Override
     public void write(int value) {
-        value &= size();
-        this.value = ushort(value);
+        this.value = (short) value;
     }
 
     @Override
     public int size() {
-        return UShort.MAX_VALUE;
+        return 0xFFFF;
     }
 }
