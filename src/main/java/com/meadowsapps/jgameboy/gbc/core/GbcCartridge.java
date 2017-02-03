@@ -1,5 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
+import com.meadowsapps.jgameboy.gbc.core.mbc.MemoryBankController;
+
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
@@ -11,11 +13,15 @@ public class GbcCartridge {
 
     private Header header;
 
+    private MemoryBankController mbc;
+
     private byte[] contents;
 
     public GbcCartridge(byte[] contents) {
         this.contents = contents;
         this.header = new Header();
+        GbcMbcFactory factory = GbcMbcFactory.getFactory();
+        this.mbc = factory.getMbc(header.getCartridgeType());
     }
 
     public static GbcCartridge load(File file) throws Exception {
@@ -103,6 +109,10 @@ public class GbcCartridge {
 
         public String getNewLicenseeCode() {
             return newLicenseeCode;
+        }
+
+        public int getSgbFlag() {
+            return sgbFlag & 0xFF;
         }
 
         public int getCartridgeType() {
