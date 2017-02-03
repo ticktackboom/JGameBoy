@@ -8,7 +8,7 @@ import java.net.URL;
  */
 public class CartridgeTest {
     public static void main(String[] args) throws Exception {
-        URL resource = CartridgeTest.class.getClassLoader().getResource("gbc/Pokemon Silver.gbc");
+        URL resource = CartridgeTest.class.getClassLoader().getResource("gbc/Pokemon Blue.gb");
         File file = new File(resource.toURI());
         GbcCartridge.load(file);
     }
