@@ -5,6 +5,9 @@ package com.meadowsapps.jgameboy.gbc.audio;
  */
 public class SquareWaveGenerator extends GbcSoundGenerator {
 
+    private int dutyCycle;
+
+
 
     public SquareWaveGenerator(int sampleRate) {
         super(sampleRate);

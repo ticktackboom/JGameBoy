@@ -12,12 +12,20 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
+import java.util.ResourceBundle;
+
 /**
  * Created by Dylan on 1/6/17.
  */
 public class JGameBoy extends Application {
 
+    private Menu file;
     private Canvas canvas;
+    private ResourceBundle bundle;
+
+    public JGameBoy() {
+        bundle = ResourceBundle.getBundle("JGameBoyResource");
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -26,7 +34,9 @@ public class JGameBoy extends Application {
 
         BorderPane layout = new BorderPane();
         MenuBar menu = new MenuBar();
-        menu.getMenus().add(new Menu("File"));
+        file = buildFileMenu();
+
+
         layout.setTop(menu);
 
         GridPane gridPane = new GridPane();
@@ -37,6 +47,11 @@ public class JGameBoy extends Application {
 
         stage.setScene(new Scene(layout));
         stage.show();
+    }
+
+    private Menu buildFileMenu() {
+        Menu menu = new Menu(bundle.getString("File.text"));
+        return menu;
     }
 
     public static void main(String[] args) {
