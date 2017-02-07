@@ -11,9 +11,12 @@ public class GbcCore implements EmulatorCore {
 
     private final GbcMmu mmu;
 
+    private final GbcCartridge cartridge;
+
     public GbcCore() {
         cpu = new GbcCpu(this);
         mmu = new GbcMmu(this);
+        cartridge = new GbcCartridge(this);
     }
 
     @Override
@@ -26,4 +29,8 @@ public class GbcCore implements EmulatorCore {
         return mmu;
     }
 
+    @Override
+    public GbcCartridge getCartridge() {
+        return cartridge;
+    }
 }

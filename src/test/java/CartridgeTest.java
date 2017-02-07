@@ -1,4 +1,6 @@
 import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
+import com.meadowsapps.jgameboy.gbc.core.GbcCartridgeHeader;
+import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 import java.io.File;
 import java.net.URL;
@@ -8,8 +10,11 @@ import java.net.URL;
  */
 public class CartridgeTest {
     public static void main(String[] args) throws Exception {
-        URL resource = CartridgeTest.class.getClassLoader().getResource("gbc/Pokemon Silver.gbc");
-        File file = new File(resource.toURI());
-        GbcCartridge.load(file);
+        URL resource = CartridgeTest.class.getClassLoader().getResource("gbc/Tetris (World).gb");
+        File rom = new File(resource.toURI());
+
+        GbcCartridge cartridge = new GbcCartridge(new GbcCore());
+        cartridge.load(rom);
+        System.out.println();
     }
 }

@@ -1,6 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractCpu;
+import com.meadowsapps.jgameboy.core.EmulatorCore;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
 
@@ -9,7 +10,7 @@ import com.meadowsapps.jgameboy.core.Register8Bit;
  * Custom 8-bit Sharp LR35902 based on the Intel 8080
  * and the Z80 microprocessors.
  */
-public class GbcCpu extends AbstractCpu {
+public class GbcCpu extends AbstractCpu implements GbcCoreElement {
 
     /**
      * Accumulator Register
@@ -1961,6 +1962,11 @@ public class GbcCpu extends AbstractCpu {
     @Override
     public void reset() {
 
+    }
+
+    @Override
+    public GbcCore getCore() {
+        return (GbcCore) super.getCore();
     }
 
     /**

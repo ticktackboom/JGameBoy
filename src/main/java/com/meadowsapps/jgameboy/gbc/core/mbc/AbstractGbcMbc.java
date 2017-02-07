@@ -7,32 +7,15 @@ import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
  */
 public abstract class AbstractGbcMbc implements MemoryBankController {
 
-    private boolean hasRam;
-
-    private boolean hasBattery;
-
     private GbcCartridge cartridge;
 
-    public AbstractGbcMbc(boolean hasRam, boolean hasBattery) {
-        this.hasRam = hasRam;
-        this.hasBattery = hasBattery;
-    }
-
-    public boolean hasRam() {
-        return hasRam;
-    }
-
-    public boolean hasBattery() {
-        return hasBattery;
+    public AbstractGbcMbc(GbcCartridge cartridge) {
+        this.cartridge = cartridge;
     }
 
     @Override
-    public GbcCartridge getCartridge() {
+    public GbcCartridge cartridge() {
         return cartridge;
     }
 
-    @Override
-    public void setCartridge(GbcCartridge cartridge) {
-        this.cartridge = cartridge;
-    }
 }

@@ -1,3 +1,4 @@
+import com.meadowsapps.jgameboy.core.Constants;
 import com.meadowsapps.jgameboy.core.Register;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
@@ -31,17 +32,13 @@ public class RegisterTest {
         System.out.printf("C = %d\n", C.read());
         for (int i = 0; i < 7; i++) {
             System.out.printf("Shifting LEFT by %d...\n", 1);
-            C.shift(Register.LEFT, 1);
+            C.shift(Constants.LEFT, 1);
             System.out.printf("C = %d\n", C.read());
         }
     }
 
     static void rTest2(Register r) {
         System.out.println(r);
-        for (int i = 0; i <= r.size(); i++) {
-            r.inc();
-            System.out.println(r);
-        }
     }
 
     static String toBinary(int value) {

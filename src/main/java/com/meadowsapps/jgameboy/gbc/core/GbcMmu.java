@@ -5,16 +5,11 @@ import com.meadowsapps.jgameboy.core.AbstractMmu;
 /**
  * Created by Dylan on 1/12/17.
  */
-public class GbcMmu extends AbstractMmu {
+public class GbcMmu extends AbstractMmu implements GbcCoreElement {
 
-    private int[] mem = new int[0xFFFF];
-    private int[] bios = new int[0xFF1];
-    private int[] vram = new int[0x2000];
-    private int[] eram = new int[0x2000];
     private int[] wram = new int[0x2000];
     private int[] zram = new int[0x7F];
     private int[] oam = new int[0xA0];
-    private int activeRomBank = 1;
 
     public static final int RESTART_INTERRUPT_VECTORS = 0x0000;
     public static final int CARTRIDGE_HEADER = 0x0100;
@@ -38,50 +33,46 @@ public class GbcMmu extends AbstractMmu {
 
     @Override
     public int readByte(int addr) {
-        int value = -1;
+        int rv = -1;
 
         addr &= 0xFFFF;
         switch (addr & 0xF000) {
+            case 0x0000:
             case 0x1000:
             case 0x2000:
             case 0x3000:
-                value = rom[0][addr];
-                break;
             case 0x4000:
             case 0x5000:
             case 0x6000:
             case 0x7000:
-                addr -= 0x4000;
-                value = rom[activeRomBank][addr];
+                rv = getCore().getCartridge().read(addr);
                 break;
             case 0x8000:
             case 0x9000:
                 addr -= 0x8000;
-                value = vram[addr];
+//                rv = vram[addr];
                 break;
             case 0xA000:
             case 0xB000:
-                addr -= 0xA000;
-                value = eram[addr];
+                rv = getCore().getCartridge().read(addr);
                 break;
             case 0xC000:
             case 0xD000:
                 addr -= 0xC000;
-                value = wram[addr];
+                rv = wram[addr];
                 break;
             case 0xE000:
                 addr -= 0xE000;
-                value = wram[addr];
+                rv = wram[addr];
             case 0xF000:
                 if (addr < OAM) {
                     // read ram
                 } else if (addr < HARDWARE_IO) {
 
                 }
-
-
         }
-        return value;
+
+        return rv;
     }
 
     @Override
@@ -94,7 +85,6 @@ public class GbcMmu extends AbstractMmu {
     @Override
     public void writeByte(int value, int addr) {
         value &= 0xFF;
-        mem[addr] = value;
     }
 
     @Override
@@ -108,6 +98,11 @@ public class GbcMmu extends AbstractMmu {
 
     @Override
     public int[] dump() {
-        return mem;
+        return wram;
+    }
+
+    @Override
+    public GbcCore getCore() {
+        return (GbcCore) super.getCore();
     }
 }

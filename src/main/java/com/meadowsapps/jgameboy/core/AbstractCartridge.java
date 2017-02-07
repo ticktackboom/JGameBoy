@@ -11,6 +11,7 @@ public abstract class AbstractCartridge implements Cartridge {
         this.core = core;
     }
 
+    @Override
     public EmulatorCore getCore() {
         return core;
     }

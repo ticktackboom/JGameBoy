@@ -7,17 +7,21 @@ import com.meadowsapps.jgameboy.gbc.core.mbc.MemoryBankController;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 /**
  * Created by dmeadows on 2/2/2017.
  */
-public class GbcCartridge extends AbstractCartridge {
+public class GbcCartridge extends AbstractCartridge implements GbcCoreElement {
+
+    private int[][] rom;
+
+    private int[][] ram;
 
     private GbcCartridgeHeader header;
 
     private MemoryBankController mbc;
-
-    private byte[] contents;
 
     public GbcCartridge(GbcCore core) {
         super(core);
@@ -26,16 +30,42 @@ public class GbcCartridge extends AbstractCartridge {
     @Override
     public void load(File file) throws IOException {
         RandomAccessFile raf = new RandomAccessFile(file, "r");
-        contents = new byte[(int) raf.length()];
-        raf.readFully(contents);
+        this.header = new GbcCartridgeHeader();
+        this.header.load(raf);
 
-        this.header = new GbcCartridgeHeader(contents);
+        // get the memory bank controller
         GbcMbcFactory factory = GbcMbcFactory.getFactory();
         int type = header.getCartridgeType();
-        int romSize = header.getRomSize();
-        int ramSize = header.getRamSize();
-        this.mbc = factory.getMbc(type, romSize, ramSize);
-        this.mbc.setCartridge(this);
+        this.mbc = factory.getMbc(type, this);
+
+        // initialize rom banks
+        int romBankCount = header.getRomBankCount();
+        romBankCount = (romBankCount == 0) ? 1 : romBankCount;
+        int romBankSize = (romBankCount == 1) ? 0x8000 : 0x4000;
+        rom = new int[romBankCount][romBankSize];
+
+        // initialize ram banks
+        int ramBankCount = header.getRamBankCount();
+        ramBankCount = (ramBankCount == 0) ? 1 : ramBankCount;
+        int ramBankSize = header.getRamSize();
+        ramBankSize = (ramBankCount == 1) ? ramBankSize : 0x2000;
+        ram = new int[ramBankCount][ramBankSize];
+
+        // read in the rom contents
+        int bank = 0;
+        raf.seek(0x0000);
+        for (int pos = 0; pos < file.length(); pos += romBankSize) {
+            // go to pos and read into buffer
+            raf.seek(pos);
+            byte[] buffer = new byte[romBankSize];
+            raf.read(buffer);
+
+            // store buffer as int[] to proper rom bank
+            IntBuffer intBuf = ByteBuffer.wrap(buffer).asIntBuffer();
+            rom[bank] = new int[intBuf.remaining()];
+            intBuf.get(rom[bank]);
+            bank++;
+        }
     }
 
     @Override
@@ -48,7 +78,16 @@ public class GbcCartridge extends AbstractCartridge {
         mbc.write(value, addr);
     }
 
-    byte[] getContents() {
-        return contents;
+    @Override
+    public GbcCore getCore() {
+        return (GbcCore) super.getCore();
+    }
+
+    public int[][] getRom() {
+        return rom;
+    }
+
+    public int[][] getRam() {
+        return ram;
     }
 }

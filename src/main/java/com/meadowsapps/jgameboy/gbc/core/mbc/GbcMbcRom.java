@@ -1,21 +1,23 @@
 package com.meadowsapps.jgameboy.gbc.core.mbc;
 
+import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
+
 /**
  * Created by Dylan on 2/6/17.
  */
 public class GbcMbcRom extends AbstractGbcMbc {
 
-    private byte[] ram;
-
-    public GbcMbcRom(boolean hasRam, boolean hasBattery) {
-        super(hasRam, hasBattery);
-        ram = new byte[0];
+    public GbcMbcRom(GbcCartridge cartridge) {
+        super(cartridge);
     }
 
     @Override
     public int read(int addr) {
-        byte rv = -1;
-        byte[] contents = getCartridge().getContents();
+        int rv = -1;
+
+        int[] rom = cartridge().getRom()[0];
+        int[] ram = cartridge().getRam()[0];
+
         switch (addr & 0xF000) {
             case 0x1000:
             case 0x2000:
@@ -25,14 +27,15 @@ public class GbcMbcRom extends AbstractGbcMbc {
             case 0x6000:
             case 0x7000:
             case 0x8000:
-                rv = contents[addr];
+                rv = rom[addr];
                 break;
             case 0xA000:
             case 0xB000:
                 rv = ram[addr - 0xA000];
                 break;
         }
-        return Byte.toUnsignedInt(rv);
+
+        return rv;
     }
 
     @Override

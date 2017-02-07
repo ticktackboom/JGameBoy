@@ -1,12 +1,14 @@
 package com.meadowsapps.jgameboy.gbc.core.mbc;
 
+import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
+
 /**
  * Created by dmeadows on 2/3/2017.
  */
-public class GbcMbc3 extends AbstractTimerGbcMbc {
+public class GbcMbc3 extends AbstractGbcMbc {
 
-    public GbcMbc3(boolean hasRam, boolean hasBattery, boolean hasTimer) {
-        super(hasRam, hasBattery, hasTimer);
+    public GbcMbc3(GbcCartridge cartridge) {
+        super(cartridge);
     }
 
     @Override

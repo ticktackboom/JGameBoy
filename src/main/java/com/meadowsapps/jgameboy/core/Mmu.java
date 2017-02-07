@@ -3,7 +3,7 @@ package com.meadowsapps.jgameboy.core;
 /**
  * Created by dmeadows on 1/17/2017.
  */
-public interface Mmu {
+public interface Mmu extends CoreElement {
 
     int readByte(int addr);
 

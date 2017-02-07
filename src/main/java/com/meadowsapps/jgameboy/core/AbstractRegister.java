@@ -20,7 +20,7 @@ public abstract class AbstractRegister implements Register {
     @Override
     public final void shift(int dir, int by) {
         int value = read();
-        int result = (dir == LEFT) ? value << by : value >> by;
+        int result = (dir == Constants.LEFT) ? value << by : value >> by;
         write(result);
     }
 

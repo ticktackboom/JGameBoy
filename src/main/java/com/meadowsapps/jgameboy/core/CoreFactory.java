@@ -7,7 +7,7 @@ import com.meadowsapps.jgameboy.gbc.core.GbcCore;
  */
 public class CoreFactory {
 
-    private static CoreFactory factory;
+    private static CoreFactory factory = new CoreFactory();
 
     private CoreFactory() {
     }

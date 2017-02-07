@@ -6,7 +6,7 @@ import java.io.IOException;
 /**
  * Created by Dylan on 2/6/17.
  */
-public interface Cartridge {
+public interface Cartridge extends CoreElement {
 
     void load(File file) throws IOException;
 

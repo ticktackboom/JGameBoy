@@ -11,7 +11,8 @@ public abstract class AbstractMmu implements Mmu {
         this.core = core;
     }
 
-    protected EmulatorCore getCore() {
+    @Override
+    public EmulatorCore getCore() {
         return core;
     }
 }

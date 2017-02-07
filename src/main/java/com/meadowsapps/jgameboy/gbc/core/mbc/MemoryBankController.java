@@ -11,7 +11,6 @@ public interface MemoryBankController {
 
     void write(int value, int addr);
 
-    GbcCartridge getCartridge();
+    GbcCartridge cartridge();
 
-    void setCartridge(GbcCartridge cartridge);
 }

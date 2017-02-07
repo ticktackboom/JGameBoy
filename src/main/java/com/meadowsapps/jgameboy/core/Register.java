@@ -3,7 +3,7 @@ package com.meadowsapps.jgameboy.core;
 /**
  * Created by dmeadows on 1/12/2017.
  */
-public interface Register extends Constants {
+public interface Register {
 
     int read();
 

@@ -35,6 +35,7 @@ public abstract class AbstractCpu implements Cpu {
         mmu.writeWord(value, addr);
     }
 
+    @Override
     public EmulatorCore getCore() {
         return core;
     }

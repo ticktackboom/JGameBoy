@@ -1,5 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core.mbc;
 
+import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
+
 /**
  * Created by dmeadows on 2/3/2017.
  */
@@ -39,7 +41,7 @@ public class GbcMbcFactory {
     private GbcMbcFactory() {
     }
 
-    public MemoryBankController getMbc(int type, int romBankCount, int ramBankCount) {
+    public MemoryBankController getMbc(int type, GbcCartridge cartridge) {
         boolean hasRam = hasRam(type);
         boolean hasBattery = hasBattery(type);
         boolean hasTimer = hasTimer(type);
@@ -50,33 +52,33 @@ public class GbcMbcFactory {
             case ROM:
             case ROM_RAM:
             case ROM_RAM_BATTERY:
-                rv = new GbcMbcRom(hasRam, hasBattery);
+                rv = new GbcMbcRom(cartridge);
                 break;
             case MBC1:
             case MBC1_RAM:
             case MBC1_RAM_BATTERY:
-                rv = new GbcMbc1(hasRam, hasBattery);
+                rv = new GbcMbc1(cartridge);
                 break;
             case MBC2:
             case MBC2_BATTERY:
-                rv = new GbcMbc2(hasRam, hasBattery);
+                rv = new GbcMbc2(cartridge);
                 break;
             case MMM01:
             case MMM01_RAM:
             case MMM01_RAM_BATTERY:
-                rv = new GbcMbcMmm01(hasRam, hasBattery);
+                rv = new GbcMbcMmm01(cartridge);
                 break;
             case MBC3:
             case MBC3_RAM:
             case MBC3_RAM_BATTERY:
             case MBC3_TIMER_BATTERY:
             case MBC3_TIMER_RAM_BATTERY:
-                rv = new GbcMbc3(hasRam, hasBattery, hasTimer);
+                rv = new GbcMbc3(cartridge);
                 break;
             case MBC4:
             case MBC4_RAM:
             case MBC4_RAM_BATTERY:
-                rv = new GbcMbc4(hasRam, hasBattery);
+                rv = new GbcMbc4(cartridge);
                 break;
             case MBC5:
             case MBC5_RAM:
@@ -84,7 +86,7 @@ public class GbcMbcFactory {
             case MBC5_RUMBLE:
             case MBC5_RUMBLE_RAM:
             case MBC5_RUMBLE_RAM_BATTERY:
-                rv = new GbcMbc5(hasRam, hasBattery, hasRumble);
+                rv = new GbcMbc5(cartridge);
                 break;
             case POCKET_CAMERA:
                 break;
