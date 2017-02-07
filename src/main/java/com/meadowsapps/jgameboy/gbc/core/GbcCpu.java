@@ -1,7 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractCpu;
-import com.meadowsapps.jgameboy.core.EmulatorCore;
+import com.meadowsapps.jgameboy.core.Mmu;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
 
@@ -1967,6 +1967,26 @@ public class GbcCpu extends AbstractCpu implements GbcCoreElement {
     @Override
     public GbcCore getCore() {
         return (GbcCore) super.getCore();
+    }
+
+    public int readByte(int addr) {
+        Mmu mmu = getCore().getMmu();
+        return mmu.readByte(addr);
+    }
+
+    public int readWord(int addr) {
+        Mmu mmu = getCore().getMmu();
+        return mmu.readWord(addr);
+    }
+
+    public void writeByte(int value, int addr) {
+        Mmu mmu = getCore().getMmu();
+        mmu.writeByte(value, addr);
+    }
+
+    public void writeWord(int value, int addr) {
+        Mmu mmu = getCore().getMmu();
+        mmu.writeWord(value, addr);
     }
 
     /**

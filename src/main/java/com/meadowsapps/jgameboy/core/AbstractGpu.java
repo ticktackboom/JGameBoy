@@ -1,13 +1,13 @@
 package com.meadowsapps.jgameboy.core;
 
 /**
- * Created by dmeadows on 1/17/2017.
+ * Created by dmeadows on 2/7/2017.
  */
-public abstract class AbstractCpu implements Cpu {
+public abstract class AbstractGpu implements Gpu {
 
     private EmulatorCore core;
 
-    protected AbstractCpu(EmulatorCore core) {
+    public AbstractGpu(EmulatorCore core) {
         this.core = core;
     }
 

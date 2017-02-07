@@ -9,13 +9,5 @@ public interface Cpu extends CoreElement {
 
     int execute(int opcode, int operand1, int operand2);
 
-    int readByte(int addr);
-
-    int readWord(int addr);
-
-    void writeByte(int value, int addr);
-
-    void writeWord(int value, int addr);
-
     void reset();
 }

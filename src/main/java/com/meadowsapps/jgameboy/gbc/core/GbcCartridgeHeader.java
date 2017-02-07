@@ -156,17 +156,17 @@ public class GbcCartridgeHeader implements Constants {
 
             // 1.1MByte (72 banks)
             case 0x52:
-                rv = (int) 1.1 * MEGABYTE;
+                rv = MEGABYTE + (128 * KILOBYTE);
                 break;
 
             // 1.2MByte (80 banks)
             case 0x53:
-                rv = (int) 1.2 * MEGABYTE;
+                rv = MEGABYTE + (256 * KILOBYTE);
                 break;
 
             // 1.5MByte (96 banks)
             case 0x54:
-                rv = (int) 1.5 * MEGABYTE;
+                rv = MEGABYTE + (512 * KILOBYTE);
                 break;
         }
 
@@ -175,21 +175,8 @@ public class GbcCartridgeHeader implements Constants {
 
     public int getRomBankCount() {
         int rv = 0;
-        int type = getRomSizeType();
-        if (0x01 <= type && type <= 0x07) {
-            rv = (getRomSize() / (32 * KILOBYTE)) * 2;
-        } else if (0x52 <= type && type <= 0x54) {
-            switch (type) {
-                case 0x52:
-                    rv = 72;
-                    break;
-                case 0x53:
-                    rv = 80;
-                    break;
-                case 0x54:
-                    rv = 96;
-                    break;
-            }
+        if (getRomSizeType() != 0) {
+            rv = (getRomSize() / (16 * KILOBYTE));
         }
         return rv;
     }
@@ -222,13 +209,23 @@ public class GbcCartridgeHeader implements Constants {
             case 0x03:
                 rv = 32 * KILOBYTE;
                 break;
+
+            // 1MByte
+            case 0x04:
+                rv = MEGABYTE;
+                break;
         }
 
         return rv;
     }
 
     public int getRamBankCount() {
-        return (getRamSizeType() == 0x03) ? 4 : 0;
+        int rv = 0;
+        int ramSize = getRamSize();
+        if (ramSize > 0x2000) {
+            rv = ramSize / 0x2000;
+        }
+        return rv;
     }
 
     public int getDestinationCode() {
@@ -250,4 +247,5 @@ public class GbcCartridgeHeader implements Constants {
     public short getGlobalChecksum() {
         return globalChecksum;
     }
+
 }
