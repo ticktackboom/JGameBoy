@@ -1,25 +1,26 @@
 package com.meadowsapps.jgameboy.core;
 
+import com.meadowsapps.jgameboy.core.uint.uint8;
+
 /**
  * Created by dmeadows on 1/13/2017.
  */
 public class Register8Bit extends AbstractRegister {
 
-    private byte value;
+    private uint8 value;
+
+    public Register8Bit() {
+        value = new uint8();
+    }
 
     @Override
     public int read() {
-        return Byte.toUnsignedInt(value);
+        return value.intValue();
     }
 
     @Override
     public void write(int value) {
-        this.value = (byte) value;
-    }
-
-    @Override
-    public int size() {
-        return 0xFF;
+        this.value = new uint8(value);
     }
 
 }

@@ -1,4 +1,5 @@
-import com.meadowsapps.jgameboy.CoreFactory;
+import com.meadowsapps.jgameboy.core.CoreFactory;
+import com.meadowsapps.jgameboy.core.CoreType;
 import com.meadowsapps.jgameboy.core.Cpu;
 import com.meadowsapps.jgameboy.core.EmulatorCore;
 
@@ -14,7 +15,7 @@ public class RomReader {
         URL url = RomReader.class.getClassLoader().getResource("gbc/DMG_ROM.bin");
         File rom = new File(url.toURI());
 
-        EmulatorCore core = CoreFactory.getCore();
+        EmulatorCore core = CoreFactory.getFactory().getCore(CoreType.GAMEBOY);
         Cpu cpu = core.getCpu();
         byte[] buffer = new byte[3];
         RandomAccessFile raf = new RandomAccessFile(rom, "r");

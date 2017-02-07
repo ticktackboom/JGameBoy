@@ -1,7 +1,5 @@
 package com.meadowsapps.jgameboy.core;
 
-import com.meadowsapps.jgameboy.gbc.Constants;
-
 /**
  * Created by dmeadows on 1/12/2017.
  */
@@ -10,8 +8,6 @@ public interface Register extends Constants {
     int read();
 
     void write(int value);
-
-    int size();
 
     void inc();
 

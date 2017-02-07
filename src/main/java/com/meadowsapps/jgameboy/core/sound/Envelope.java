@@ -1,4 +1,4 @@
-package com.meadowsapps.jgameboy.core;
+package com.meadowsapps.jgameboy.core.sound;
 
 /**
  * Created by dmeadows on 1/24/2017.

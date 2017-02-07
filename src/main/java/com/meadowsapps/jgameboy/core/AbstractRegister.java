@@ -7,46 +7,39 @@ public abstract class AbstractRegister implements Register {
 
     @Override
     public final void inc() {
-        int value = read();
-        value = (value + 1) & size();
-        write(value);
+        int result = read() + 1;
+        write(result);
     }
 
     @Override
     public final void dec() {
-        int value = read();
-        value = (value - 1) & size();
-        write(value);
+        int result = read() - 1;
+        write(result);
     }
 
     @Override
     public final void shift(int dir, int by) {
         int value = read();
-        value = (dir == LEFT) ? value << by : value >> by;
-        value &= size();
-        write(value);
+        int result = (dir == LEFT) ? value << by : value >> by;
+        write(result);
     }
 
     @Override
     public final void invert() {
-        int value = read();
-        write(~value);
+        int result = ~read();
+        write(result);
     }
 
     @Override
     public final void add(int value) {
-        int current = read();
-        int sum = current + value;
-        sum &= size();
-        write(sum);
+        int result = read() + value;
+        write(result);
     }
 
     @Override
     public final void subtract(int value) {
-        int current = read();
-        int difference = current - value;
-        difference &= size();
-        write(difference);
+        int result = read() - value;
+        write(result);
     }
 
     @Override
@@ -57,13 +50,14 @@ public abstract class AbstractRegister implements Register {
     @Override
     public final void set(int bit, int set) {
         int value = read();
+
+        int result;
         if (set == 1) {
-            value |= (1 << bit);
+            result = value | (1 << bit);
         } else {
-            value &= ~(1 << bit);
+            result = value & ~(1 << bit);
         }
-        value &= size();
-        write(value);
+        write(result);
     }
 
     @Override
@@ -74,8 +68,8 @@ public abstract class AbstractRegister implements Register {
     @Override
     public final void flip(int bit) {
         int value = read();
-        value = (value ^ (1 << bit));
-        write(value);
+        int result = (value ^ (1 << bit));
+        write(result);
     }
 
     @Override
@@ -85,6 +79,9 @@ public abstract class AbstractRegister implements Register {
 
     @Override
     public String toString() {
-        return "" + read();
+        return getClass().getSimpleName() + '{' +
+                "value: " + read() +
+                '}';
     }
+
 }

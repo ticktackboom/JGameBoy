@@ -9,7 +9,6 @@ public class GbcMmu extends AbstractMmu {
 
     private int[] mem = new int[0xFFFF];
     private int[] bios = new int[0xFF1];
-    private int[][] rom = new int[0xFF][0x4000];
     private int[] vram = new int[0x2000];
     private int[] eram = new int[0x2000];
     private int[] wram = new int[0x2000];

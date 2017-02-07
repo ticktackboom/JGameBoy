@@ -11,12 +11,9 @@ public class GbcCore implements EmulatorCore {
 
     private final GbcMmu mmu;
 
-    private final GbcDisplay display;
-
     public GbcCore() {
         cpu = new GbcCpu(this);
         mmu = new GbcMmu(this);
-        display = new GbcDisplay(this);
     }
 
     @Override
@@ -29,8 +26,4 @@ public class GbcCore implements EmulatorCore {
         return mmu;
     }
 
-    @Override
-    public GbcDisplay getDisplay() {
-        return display;
-    }
 }

@@ -1,6 +1,4 @@
-package com.meadowsapps.jgameboy.gbc.core;
-
-import com.meadowsapps.jgameboy.gbc.core.mbc.*;
+package com.meadowsapps.jgameboy.gbc.core.mbc;
 
 /**
  * Created by dmeadows on 2/3/2017.
@@ -41,7 +39,7 @@ public class GbcMbcFactory {
     private GbcMbcFactory() {
     }
 
-    public MemoryBankController getMbc(int type) {
+    public MemoryBankController getMbc(int type, int romBankCount, int ramBankCount) {
         boolean hasRam = hasRam(type);
         boolean hasBattery = hasBattery(type);
         boolean hasTimer = hasTimer(type);
@@ -52,6 +50,7 @@ public class GbcMbcFactory {
             case ROM:
             case ROM_RAM:
             case ROM_RAM_BATTERY:
+                rv = new GbcMbcRom(hasRam, hasBattery);
                 break;
             case MBC1:
             case MBC1_RAM:

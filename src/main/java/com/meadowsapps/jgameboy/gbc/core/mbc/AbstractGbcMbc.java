@@ -1,17 +1,17 @@
 package com.meadowsapps.jgameboy.gbc.core.mbc;
 
+import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
+
 /**
  * Created by dmeadows on 2/3/2017.
  */
 public abstract class AbstractGbcMbc implements MemoryBankController {
 
-    private int romBank;
-
-    private int ramBank;
-
     private boolean hasRam;
 
     private boolean hasBattery;
+
+    private GbcCartridge cartridge;
 
     public AbstractGbcMbc(boolean hasRam, boolean hasBattery) {
         this.hasRam = hasRam;
@@ -26,19 +26,13 @@ public abstract class AbstractGbcMbc implements MemoryBankController {
         return hasBattery;
     }
 
-    public int getRomBank() {
-        return romBank;
+    @Override
+    public GbcCartridge getCartridge() {
+        return cartridge;
     }
 
-    public void setRomBank(int romBank) {
-        this.romBank = romBank;
-    }
-
-    public int getRamBank() {
-        return ramBank;
-    }
-
-    public void setRamBank(int ramBank) {
-        this.ramBank = ramBank;
+    @Override
+    public void setCartridge(GbcCartridge cartridge) {
+        this.cartridge = cartridge;
     }
 }

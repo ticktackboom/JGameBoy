@@ -5,6 +5,8 @@ package com.meadowsapps.jgameboy.gbc.core.mbc;
  */
 public class GbcMbc1 extends AbstractGbcMbc {
 
+
+
     private byte[][] romBanks = new byte[0x7F - 0x01][0x7FFF - 0x4000];
 
     private byte[][] ramBanks = new byte[0x03 - 0x00][0xBFFF - 0xA000];
@@ -14,7 +16,7 @@ public class GbcMbc1 extends AbstractGbcMbc {
     }
 
     @Override
-    public int read(int addr, byte[] contents) {
+    public int read(int addr) {
         int rv = -1;
 
         addr &= 0xFFFF;
@@ -23,13 +25,12 @@ public class GbcMbc1 extends AbstractGbcMbc {
             case 0x1000:
             case 0x2000:
             case 0x3000:
-                rv = contents[addr];
                 break;
             case 0x4000:
             case 0x5000:
             case 0x6000:
             case 0x7000:
-                int romBank = getRomBank();
+                int romBank = getNumRomBank();
                 rv = romBanks[romBank][addr - 0x4000];
                 break;
             case 0x8000:
@@ -38,7 +39,7 @@ public class GbcMbc1 extends AbstractGbcMbc {
             case 0xA000:
             case 0xB000:
                 if (hasRam()) {
-                    int ramBank = getRamBank();
+                    int ramBank = getNumRamBank();
                     rv = ramBanks[ramBank][addr - 0xA000];
                 }
                 break;

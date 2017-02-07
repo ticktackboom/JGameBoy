@@ -3,15 +3,13 @@ package com.meadowsapps.jgameboy.gbc.core;
 import com.meadowsapps.jgameboy.core.AbstractCpu;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
-import com.meadowsapps.jgameboy.gbc.Constants;
-import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 /**
  * Emulated CPU found inside of the Nintendo GameBoy.
  * Custom 8-bit Sharp LR35902 based on the Intel 8080
  * and the Z80 microprocessors.
  */
-public class GbcCpu extends AbstractCpu implements Constants {
+public class GbcCpu extends AbstractCpu {
 
     /**
      * Accumulator Register
@@ -37,6 +35,16 @@ public class GbcCpu extends AbstractCpu implements Constants {
      * Program Counter Register
      */
     private final Register16Bit PC;
+
+    /**
+     * Left direction for bit shifting
+     */
+    private static final int LEFT = 0;
+
+    /**
+     * Right direction for bit shifting
+     */
+    private static final int RIGHT = 1;
 
     /**
      * Bit index of the Zero Status Flag
@@ -4106,4 +4114,5 @@ public class GbcCpu extends AbstractCpu implements Constants {
     private int getAddress(Register8Bit r1, Register8Bit r2) {
         return (r1.read() << 8) + r2.read();
     }
+
 }

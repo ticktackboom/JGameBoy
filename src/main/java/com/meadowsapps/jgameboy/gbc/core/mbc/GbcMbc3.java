@@ -10,7 +10,7 @@ public class GbcMbc3 extends AbstractTimerGbcMbc {
     }
 
     @Override
-    public int read(int addr, byte[] contents) {
+    public int read(int addr) {
         return 0;
     }
 

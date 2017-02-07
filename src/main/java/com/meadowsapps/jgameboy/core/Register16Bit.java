@@ -1,24 +1,26 @@
 package com.meadowsapps.jgameboy.core;
 
+import com.meadowsapps.jgameboy.core.uint.uint16;
+
 /**
  * Created by dmeadows on 1/13/2017.
  */
 public class Register16Bit extends AbstractRegister {
 
-    private short value;
+    private uint16 value;
+
+    public Register16Bit() {
+        value = new uint16();
+    }
 
     @Override
     public int read() {
-        return Short.toUnsignedInt(value);
+        return value.intValue();
     }
 
     @Override
     public void write(int value) {
-        this.value = (short) value;
+        this.value = new uint16(value);
     }
 
-    @Override
-    public int size() {
-        return 0xFFFF;
-    }
 }
