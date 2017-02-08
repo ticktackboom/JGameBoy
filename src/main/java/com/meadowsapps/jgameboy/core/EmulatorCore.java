@@ -5,10 +5,12 @@ package com.meadowsapps.jgameboy.core;
  */
 public interface EmulatorCore {
 
-    Cpu getCpu();
+    Cpu cpu();
 
-    Mmu getMmu();
+    Gpu gpu();
 
-    Cartridge getCartridge();
+    Mmu mmu();
+
+    Cartridge cartridge();
 
 }

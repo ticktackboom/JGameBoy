@@ -1,6 +1,6 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
-import com.meadowsapps.jgameboy.core.AbstractCartridge;
+import com.meadowsapps.jgameboy.core.Cartridge;
 import com.meadowsapps.jgameboy.gbc.core.mbc.GbcMbcFactory;
 import com.meadowsapps.jgameboy.gbc.core.mbc.MemoryBankController;
 
@@ -13,7 +13,7 @@ import java.nio.IntBuffer;
 /**
  * Created by dmeadows on 2/2/2017.
  */
-public class GbcCartridge extends AbstractCartridge implements GbcCoreElement {
+public class GbcCartridge extends AbstractGbcCoreElement implements Cartridge {
 
     private int[][] rom;
 
@@ -76,11 +76,6 @@ public class GbcCartridge extends AbstractCartridge implements GbcCoreElement {
     @Override
     public void write(int value, int addr) {
         mbc.write(value, addr);
-    }
-
-    @Override
-    public GbcCore getCore() {
-        return (GbcCore) super.getCore();
     }
 
     public int[][] getRom() {

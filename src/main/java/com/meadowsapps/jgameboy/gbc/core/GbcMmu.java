@@ -1,11 +1,11 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
-import com.meadowsapps.jgameboy.core.AbstractMmu;
+import com.meadowsapps.jgameboy.core.Mmu;
 
 /**
  * Created by Dylan on 1/12/17.
  */
-public class GbcMmu extends AbstractMmu implements GbcCoreElement {
+public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
 
     private int[] wram = new int[0x2000];
     private int[] zram = new int[0x7F];
@@ -45,16 +45,15 @@ public class GbcMmu extends AbstractMmu implements GbcCoreElement {
             case 0x5000:
             case 0x6000:
             case 0x7000:
-                rv = getCore().getCartridge().read(addr);
+                rv = cartridge().read(addr);
                 break;
             case 0x8000:
             case 0x9000:
-                addr -= 0x8000;
-//                rv = vram[addr];
+                rv = gpu().read(addr);
                 break;
             case 0xA000:
             case 0xB000:
-                rv = getCore().getCartridge().read(addr);
+                rv = cartridge().read(addr);
                 break;
             case 0xC000:
             case 0xD000:
@@ -64,12 +63,9 @@ public class GbcMmu extends AbstractMmu implements GbcCoreElement {
             case 0xE000:
                 addr -= 0xE000;
                 rv = wram[addr];
+                break;
             case 0xF000:
-                if (addr < OAM) {
-                    // read ram
-                } else if (addr < HARDWARE_IO) {
 
-                }
         }
 
         return rv;
@@ -85,6 +81,39 @@ public class GbcMmu extends AbstractMmu implements GbcCoreElement {
     @Override
     public void writeByte(int value, int addr) {
         value &= 0xFF;
+
+        addr &= 0xFFFF;
+        switch (addr & 0xF000) {
+            case 0x0000:
+            case 0x1000:
+            case 0x2000:
+            case 0x3000:
+            case 0x4000:
+            case 0x5000:
+            case 0x6000:
+            case 0x7000:
+                cartridge().write(value, addr);
+                break;
+            case 0x8000:
+            case 0x9000:
+                gpu().write(value, addr);
+                break;
+            case 0xA000:
+            case 0xB000:
+                cartridge().write(value, addr);
+                break;
+            case 0xC000:
+            case 0xD000:
+                addr -= 0xC000;
+                wram[addr] = value;
+                break;
+            case 0xE000:
+                addr -= 0xE000;
+                wram[addr] = value;
+                break;
+            case 0xF000:
+
+        }
     }
 
     @Override
@@ -101,8 +130,4 @@ public class GbcMmu extends AbstractMmu implements GbcCoreElement {
         return wram;
     }
 
-    @Override
-    public GbcCore getCore() {
-        return (GbcCore) super.getCore();
-    }
 }

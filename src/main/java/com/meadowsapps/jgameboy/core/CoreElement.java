@@ -5,6 +5,12 @@ package com.meadowsapps.jgameboy.core;
  */
 public interface CoreElement extends Constants {
 
-    EmulatorCore getCore();
+    Cpu cpu();
+
+    Gpu gpu();
+
+    Mmu mmu();
+
+    Cartridge cartridge();
 
 }

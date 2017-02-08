@@ -7,6 +7,11 @@ import com.meadowsapps.jgameboy.core.CoreElement;
  */
 public interface GbcCoreElement extends CoreElement {
 
-    @Override
-    GbcCore getCore();
+    GbcCpu cpu();
+
+    GbcGpu gpu();
+
+    GbcMmu mmu();
+
+    GbcCartridge cartridge();
 }
