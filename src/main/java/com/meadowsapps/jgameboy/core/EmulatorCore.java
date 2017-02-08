@@ -11,6 +11,10 @@ public interface EmulatorCore {
 
     Mmu mmu();
 
+    Display display();
+
     Cartridge cartridge();
+
+    Joypad joypad();
 
 }

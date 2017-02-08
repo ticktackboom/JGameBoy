@@ -27,7 +27,17 @@ public abstract class AbstractCoreElement implements CoreElement {
     }
 
     @Override
+    public Display display() {
+        return core.display();
+    }
+
+    @Override
     public Cartridge cartridge() {
         return core.cartridge();
+    }
+
+    @Override
+    public Joypad joypad() {
+        return core.joypad();
     }
 }

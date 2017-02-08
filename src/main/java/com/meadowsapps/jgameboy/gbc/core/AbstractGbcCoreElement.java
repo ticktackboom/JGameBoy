@@ -1,6 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractCoreElement;
+import com.meadowsapps.jgameboy.core.Display;
 
 /**
  * Created by Dylan on 2/7/17.
@@ -27,7 +28,17 @@ public abstract class AbstractGbcCoreElement extends AbstractCoreElement impleme
     }
 
     @Override
+    public GbcDisplay display() {
+        return (GbcDisplay) super.display();
+    }
+
+    @Override
     public GbcCartridge cartridge() {
         return (GbcCartridge) super.cartridge();
+    }
+
+    @Override
+    public GbcJoypad joypad() {
+        return (GbcJoypad) super.joypad();
     }
 }

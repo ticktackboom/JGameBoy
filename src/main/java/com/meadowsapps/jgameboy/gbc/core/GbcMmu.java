@@ -8,8 +8,6 @@ import com.meadowsapps.jgameboy.core.Mmu;
 public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
 
     private int[] wram = new int[0x2000];
-    private int[] zram = new int[0x7F];
-    private int[] oam = new int[0xA0];
 
     public static final int RESTART_INTERRUPT_VECTORS = 0x0000;
     public static final int CARTRIDGE_HEADER = 0x0100;
@@ -65,7 +63,9 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
                 rv = wram[addr];
                 break;
             case 0xF000:
-
+                if (addr == 0xFF00) {
+                    rv = joypad().read();
+                }
         }
 
         return rv;
@@ -112,6 +112,9 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
                 wram[addr] = value;
                 break;
             case 0xF000:
+                if (addr == 0xFF00) {
+
+                }
 
         }
     }

@@ -1,10 +1,12 @@
 package com.meadowsapps.jgameboy;
 
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -24,7 +26,7 @@ public class JGameBoyView extends BorderPane {
 
     private GridPane layout;
 
-    private ResourceBundle bundle = ResourceBundle.getBundle("JGameBoyView");
+    private ResourceBundle bundle = ResourceBundle.getBundle("JGameBoyViewResource");
 
     private static JGameBoyView view = new JGameBoyView();
 

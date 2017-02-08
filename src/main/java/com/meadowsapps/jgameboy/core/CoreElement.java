@@ -11,6 +11,10 @@ public interface CoreElement extends Constants {
 
     Mmu mmu();
 
+    Display display();
+
     Cartridge cartridge();
+
+    Joypad joypad();
 
 }

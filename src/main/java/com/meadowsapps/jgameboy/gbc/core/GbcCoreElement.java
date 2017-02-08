@@ -13,5 +13,9 @@ public interface GbcCoreElement extends CoreElement {
 
     GbcMmu mmu();
 
+    GbcDisplay display();
+
     GbcCartridge cartridge();
+
+    GbcJoypad joypad();
 }

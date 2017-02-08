@@ -9,7 +9,7 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
 
     private int[] oam = new int[0xA0];
 
-    private int[] vram = new int[0x2000];
+    private int[] vram = new int[0x4000];
 
     public GbcGpu(GbcCore core) {
         super(core);
