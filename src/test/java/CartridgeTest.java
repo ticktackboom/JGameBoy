@@ -10,7 +10,7 @@ import java.net.URL;
  */
 public class CartridgeTest {
     public static void main(String[] args) throws Exception {
-        URL resource = CartridgeTest.class.getClassLoader().getResource("gbc/Tetris (World).gb");
+        URL resource = CartridgeTest.class.getClassLoader().getResource("gbc/Pokemon Silver.gbc");
         File rom = new File(resource.toURI());
 
         GbcCartridge cartridge = new GbcCartridge(new GbcCore());

@@ -1,6 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.Constants;
+import com.meadowsapps.jgameboy.gbc.core.mbc.GbcMbcFactory;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

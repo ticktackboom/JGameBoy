@@ -7,9 +7,9 @@ import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
  */
 public class GbcMbc1 extends AbstractGbcMbc {
 
-    private int romBankNumber;
+    private int romBank;
 
-    private int ramBankNumber;
+    private int ramBank;
 
     private boolean ramEnabled;
 
@@ -38,15 +38,17 @@ public class GbcMbc1 extends AbstractGbcMbc {
             case 0x5000:
             case 0x6000:
             case 0x7000:
-                int romBank = romBankNumber;
+                addr -= 0x4000;
+                int romBank = this.romBank;
                 if (romBank == 0x00) {
                     romBank = 0x01;
                 }
-                rv = rom[romBank][addr - 0x4000];
+                rv = rom[romBank][addr];
                 break;
             case 0xA000:
             case 0xB000:
-                rv = ram[ramBankNumber][addr - 0xA000];
+                addr -= 0xA000;
+                rv = ram[ramBank][addr];
                 break;
         }
         return rv;
@@ -54,33 +56,43 @@ public class GbcMbc1 extends AbstractGbcMbc {
 
     @Override
     public void write(int value, int addr) {
+
+        int[][] ram = cartridge().getRam();
+
         addr &= 0xFFFF;
         switch (addr & 0xF000) {
             case 0x0000:
             case 0x1000:
-                ramEnabled = (value & 0xF) == 0xA;
+                ramEnabled = (value & 0x0F) == 0x0A;
                 break;
             case 0x2000:
             case 0x3000:
                 int lower5 = value & 0x1F;
-                romBankNumber &= 0xE0;
-                romBankNumber |= lower5;
+                romBank &= 0xE0;
+                romBank |= lower5;
                 break;
             case 0x4000:
             case 0x5000:
                 if (romBanking) {
-                    romBankNumber &= 0x1F;
+                    romBank &= 0x1F;
                     value &= 0xE0;
-                    romBankNumber |= value;
+                    romBank |= value;
                 } else {
-                    ramBankNumber = value & 0x03;
+                    ramBank = value & 0x03;
                 }
                 break;
             case 0x6000:
             case 0x7000:
                 romBanking = (value & 0x01) == 0;
                 if (romBanking) {
-                    ramBankNumber = 0;
+                    ramBank = 0;
+                }
+                break;
+            case 0xA000:
+            case 0xB000:
+                addr -= 0xA000;
+                if (ramEnabled) {
+                    ram[ramBank][addr] = value;
                 }
                 break;
         }

@@ -16,7 +16,7 @@ public class RomReader {
         File rom = new File(url.toURI());
 
         EmulatorCore core = CoreFactory.getFactory().getCore(CoreType.GAMEBOY);
-        Cpu cpu = core.getCpu();
+        Cpu cpu = core.cpu();
         byte[] buffer = new byte[3];
         RandomAccessFile raf = new RandomAccessFile(rom, "r");
         long start = System.currentTimeMillis();
