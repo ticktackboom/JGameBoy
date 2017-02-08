@@ -2,7 +2,6 @@ package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.Display;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 /**
  * Created by dmeadows on 2/8/2017.

@@ -7,26 +7,42 @@ import com.meadowsapps.jgameboy.core.Mmu;
  */
 public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
 
-    private int[] wram = new int[0x2000];
-
-    public static final int RESTART_INTERRUPT_VECTORS = 0x0000;
-    public static final int CARTRIDGE_HEADER = 0x0100;
-    public static final int CARTRIDGE_ROM_BANK = 0x0150;
-    public static final int CARTRIDGE_SECOND_ROM_BANK = 0x4000;
+    private int[] wram;
 
     public static final int CARTRIDGE = 0x0000;
+
     public static final int VIDEO_RAM = 0x8000;
+
     public static final int EXTERNAL_RAM = 0xA000;
+
     public static final int WORKING_RAM = 0xC000;
+
     public static final int WORKING_ECHO = 0xE000;
+
     public static final int OAM = 0xFE00;
+
     public static final int UNUSED = 0xFEA0;
+
     public static final int HARDWARE_IO = 0xFF00;
+
     public static final int HIGH_RAM = 0xFF80;
+
     public static final int INTERRUPT = 0xFFFF;
+
+    public static final int JOYPAD = 0xFF00;
 
     GbcMmu(GbcCore core) {
         super(core);
+    }
+
+    @Override
+    public void initialize() {
+        wram = new int[0x2000];
+    }
+
+    @Override
+    public void reset() {
+        wram = new int[0x2000];
     }
 
     @Override
@@ -34,38 +50,68 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
         int rv = -1;
 
         addr &= 0xFFFF;
-        switch (addr & 0xF000) {
-            case 0x0000:
-            case 0x1000:
-            case 0x2000:
-            case 0x3000:
-            case 0x4000:
-            case 0x5000:
-            case 0x6000:
-            case 0x7000:
-                rv = cartridge().read(addr);
-                break;
-            case 0x8000:
-            case 0x9000:
-                rv = gpu().read(addr);
-                break;
-            case 0xA000:
-            case 0xB000:
-                rv = cartridge().read(addr);
-                break;
-            case 0xC000:
-            case 0xD000:
-                addr -= 0xC000;
-                rv = wram[addr];
-                break;
-            case 0xE000:
-                addr -= 0xE000;
-                rv = wram[addr];
-                break;
-            case 0xF000:
-                if (addr == 0xFF00) {
-                    rv = joypad().read();
-                }
+
+        // Cartridge
+        // 0x0000 - 0x7FFF
+        if (isCartridge(addr)) {
+            return cartridge().read(addr);
+        }
+
+        // Video RAM
+        // 0x8000 - 0x9FFF
+        if (isVram(addr)) {
+            return gpu().read(addr);
+        }
+
+        // External RAM
+        // 0xA000 - 0xB000
+        if (isExternalRam(addr)) {
+            return cartridge().read(addr);
+        }
+
+        // Working RAM
+        // 0xC000 - 0xDFFF
+        if (isWorkingRam(addr)) {
+            addr -= 0xC000;
+            return wram[addr];
+        }
+
+        // Working RAM Echo
+        // 0xE000 - 0xFDFF
+        if (isWorkingEcho(addr)) {
+            addr -= 0xE000;
+            return wram[addr];
+        }
+
+        // OAM
+        // 0xFE00 - 0xFE9F
+        if (isOam(addr)) {
+            return gpu().read(addr);
+        }
+
+        // Unused
+        // 0xFEA0 - 0xFEFF
+        if (isUnused(addr)) {
+        }
+
+        // Hardware I/O
+        // 0xFF00 - 0xFF7F
+        if (isHardwareIO(addr)) {
+            // Joypad
+            // 0xFF00
+            if (addr == JOYPAD) {
+                return joypad().read();
+            }
+        }
+
+        // High RAM
+        // 0xFF80 - 0xFFFE
+        if (isHighRam(addr)) {
+        }
+
+        // Interrupt
+        // 0xFFFF
+        if (isInterrupt(addr)) {
         }
 
         return rv;
@@ -108,15 +154,42 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
                 wram[addr] = value;
                 break;
             case 0xE000:
-                addr -= 0xE000;
-                wram[addr] = value;
-                break;
             case 0xF000:
-                if (addr == 0xFF00) {
-
+                // Working RAM Echo
+                if (isWorkingEcho(addr)) {
+                    addr -= 0xE000;
+                    wram[addr] = value;
+                    break;
                 }
 
+                // OAM
+                if (isOam(addr)) {
+                    gpu().write(value, addr);
+                    break;
+                }
+
+                // Unused
+                if (isUnused(addr)) {
+                    break;
+                }
+
+                // Hardware I/O
+                if (isHardwareIO(addr)) {
+                    break;
+                }
+
+                // High RAM
+                if (isHighRam(addr)) {
+                    break;
+                }
+
+                // Interrupt
+                if (isInterrupt(addr)) {
+                    break;
+                }
+                break;
         }
+
     }
 
     @Override
@@ -131,6 +204,46 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
     @Override
     public int[] dump() {
         return wram;
+    }
+
+    private boolean isCartridge(int addr) {
+        return CARTRIDGE <= addr && addr < VIDEO_RAM;
+    }
+
+    private boolean isVram(int addr) {
+        return VIDEO_RAM <= addr && addr < EXTERNAL_RAM;
+    }
+
+    private boolean isExternalRam(int addr) {
+        return EXTERNAL_RAM <= addr && addr < WORKING_RAM;
+    }
+
+    private boolean isWorkingRam(int addr) {
+        return WORKING_RAM <= addr && addr < WORKING_ECHO;
+    }
+
+    private boolean isWorkingEcho(int addr) {
+        return WORKING_ECHO <= addr && addr < OAM;
+    }
+
+    private boolean isOam(int addr) {
+        return OAM <= addr && addr < UNUSED;
+    }
+
+    private boolean isUnused(int addr) {
+        return UNUSED <= addr && addr < HARDWARE_IO;
+    }
+
+    private boolean isHardwareIO(int addr) {
+        return HARDWARE_IO <= addr && addr < HIGH_RAM;
+    }
+
+    private boolean isHighRam(int addr) {
+        return HIGH_RAM <= addr && addr < INTERRUPT;
+    }
+
+    private boolean isInterrupt(int addr) {
+        return addr == INTERRUPT;
     }
 
 }

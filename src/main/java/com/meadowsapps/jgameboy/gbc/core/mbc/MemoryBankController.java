@@ -7,6 +7,8 @@ import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
  */
 public interface MemoryBankController {
 
+    void initialize(byte[] contents);
+
     int read(int addr);
 
     void write(int value, int addr);

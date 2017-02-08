@@ -1,11 +1,9 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.Gpu;
-import com.meadowsapps.jgameboy.core.Sprite;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 import java.awt.image.BufferedImage;
 
@@ -18,23 +16,30 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
 
     private int[] vram;
 
-    private Color[] spriteMap;
+    public static final int CHARACTER_DATA = 0x8000;
 
-    private boolean[] showSprite;
+    public static final int TILE_MAP_0 = 0x9800;
+    public static final int TILE_MAP_1 = 0x9C00;
+    public static final int TILE_DATA_0 = 0x8800;
+    public static final int TILE_DATA_1 = 0x8000;
 
-    private Color[] background;
+    public static final int LCDC = 0xFF40;
+    public static final int STAT = 0xFF41;
+    public static final int SCROLL_Y = 0xFF42;
+    public static final int SCROLL_X = 0xFF43;
+    public static final int LY = 0xFF44;
+    public static final int LYC = 0xFF45;
+    public static final int BGP = 0xFF47;
+    public static final int OBJECT_PALETTE_0 = 0xFF48;
+    public static final int OBJECT_PALETTE_1 = 0xFFf9;
+    public static final int WX = 0xFF4B;
+    public static final int WY = 0xFF4A;
 
-    private boolean[] showBackground;
+    public static final int VRAM_SIZE = 0xA000 - 0x8000;
 
-    public static final Color WHITE = new Color(255, 255, 255, 255);
+    public static final int OAM = 0xFE00;
 
-    public static final Color LIGHT_GRAY = new Color(192, 192, 192, 255);
-
-    public static final Color DARK_GRAY = new Color(96, 96, 96, 255);
-
-    public static final Color BLACK = new Color(0, 0, 0, 255);
-
-    public static final Color TRANSPARENT = new Color(1, 1, 1, 0);
+    public static final int OAM_SIZE = 0xFEA0 - 0xFE00;
 
     public GbcGpu(GbcCore core) {
         super(core);
@@ -42,94 +47,83 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
 
     @Override
     public void initialize() {
-        oam = new int[0xA0];
-        vram = new int[0x4000];
-
-        spriteMap = new Color[0x25600];
-        showSprite = new boolean[0x25600];
-
-        background = new Color[0x25600];
-        showBackground = new boolean[0x25600];
-
-        for (int i = 0; i < 0x25600; i++) {
-            spriteMap[i] = WHITE;
-            background[i] = WHITE;
-        }
+        oam = new int[OAM_SIZE];
+        vram = new int[VRAM_SIZE];
     }
 
     @Override
     public void reset() {
-        for (int i = 0; i < 0x25600; i++) {
-            spriteMap[i] = WHITE;
-            background[i] = WHITE;
-        }
-
-        showSprite = new boolean[0x25600];
-        showBackground = new boolean[0x25600];
+        oam = new int[OAM_SIZE];
+        vram = new int[VRAM_SIZE];
     }
 
     @Override
     public void draw(GraphicsContext context) {
         BufferedImage frame = new BufferedImage(display().WIDTH, display().HEIGHT, BufferedImage.TYPE_INT_ARGB);
-
-        int lcdControl = mmu().readByte(0xFF40);
-        if ((lcdControl & 0x80) == 1) {
-            for (int x = 0; x < display().WIDTH; x++) {
-                for (int y = 0; y < display().HEIGHT; y++) {
-                    if (showSprite[y * 256 + x] && (lcdControl & 0x02) == 1) {
-                        frame.setRGB(x, y, toRGB(spriteMap[y * 256 + x]));
-                    }
-
-                    if (showBackground[y * 256 + x] && (lcdControl & 0x01) == 1) {
-                        frame.setRGB(x, y, toRGB(background[y * 256 + x]));
-                    }
-                }
-            }
-        }
-
-        showSprite = new boolean[0x25600];
-        showBackground = new boolean[0x25600];
-
         Image renderer = SwingFXUtils.toFXImage(frame, null);
         context.drawImage(renderer, 0, 0, display().WIDTH, display().HEIGHT);
     }
 
     @Override
     public int read(int addr) {
-        switch (addr) {
+        int rv = -1;
 
+        switch (addr & 0xF000) {
+            case 0x8000:
+            case 0x9000:
+                addr -= 0x8000;
+                rv = vram[addr];
+                break;
+            case 0xF000:
+                if ((addr & 0xFF00) == OAM && addr < 0xFEA0) {
+                    addr -= 0xFE00;
+                    rv = oam[addr];
+                }
         }
-        return 0;
+
+        return rv;
     }
 
     @Override
     public void write(int value, int addr) {
-
-    }
-
-    private void drawSprites(int lcdControl, int lineNumber, Sprite[] sprites) {
-        int drawCount = 0;
-        int spritePatternTable = 0x8000;
-
-        for (int index = sprites.length - 1; index >= 0; index--) {
-            if (drawCount >= 10) break;
-
-            Sprite sprite = sprites[index];
-            if (sprite.getY() + sprite.getHeight() > lineNumber && sprite.getY() <= lineNumber) {
-                int tileAddress = spritePatternTable + (sprite.getTileNumber() * 16);
-                int tileLine = lineNumber - sprite.getY();
-                if (sprite.isYFlip()) {
-                    tileLine = sprite.getHeight() - 1 - tileLine;
+        switch (addr & 0xF000) {
+            case 0x8000:
+            case 0x9000:
+                addr -= 0x8000;
+                vram[addr] = value;
+                break;
+            case 0xF000:
+                if ((addr & 0xFF00) == OAM && addr < 0xFEA0) {
+                    addr -= 0xFE00;
+                    oam[addr] = value;
+                }
+            default:
+                switch (addr) {
+                    case LCDC:
+                        break;
+                    case STAT:
+                        break;
+                    case SCROLL_Y:
+                        break;
+                    case SCROLL_X:
+                        break;
+                    case WX:
+                        break;
+                    case WY:
+                        break;
+                    case LY:
+                        break;
+                    case LYC:
+                        break;
+                    case BGP:
+                        break;
+                    case OBJECT_PALETTE_0:
+                        break;
+                    case OBJECT_PALETTE_1:
+                        break;
                 }
 
-            }
         }
     }
 
-    private int toRGB(Color color) {
-        int r = (int) color.getRed();
-        int g = (int) color.getGreen();
-        int b = (int) color.getBlue();
-        return (r << 16) + (g << 8) + b;
-    }
 }
