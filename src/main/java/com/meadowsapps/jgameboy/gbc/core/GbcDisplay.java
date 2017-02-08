@@ -2,8 +2,7 @@ package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.Display;
 import javafx.scene.canvas.GraphicsContext;
-
-import java.awt.image.BufferedImage;
+import javafx.scene.paint.Color;
 
 /**
  * Created by dmeadows on 2/8/2017.
@@ -16,20 +15,23 @@ public class GbcDisplay extends AbstractGbcCoreElement implements Display {
 
     public GbcDisplay(GbcCore core) {
         super(core);
-        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        image.set
+
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void reset() {
+
     }
 
     @Override
     public void display(GraphicsContext context) {
-        int lcdControl = mmu().readByte(0xFF40);
-        if ((lcdControl & 0x80) == 1) {
-            for (int x = 0; x < getWidth(); x++) {
-                for (int y = 0; y < getHeight(); y++) {
-
-                }
-            }
-        }
+        context.clearRect(0, 0, WIDTH, HEIGHT);
+        gpu().draw(context);
     }
 
     @Override
@@ -41,4 +43,5 @@ public class GbcDisplay extends AbstractGbcCoreElement implements Display {
     public int getHeight() {
         return HEIGHT;
     }
+
 }

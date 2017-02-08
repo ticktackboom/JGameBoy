@@ -9,5 +9,4 @@ public interface Cpu extends CoreElement {
 
     int execute(int opcode, int operand1, int operand2);
 
-    void reset();
 }

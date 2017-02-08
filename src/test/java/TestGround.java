@@ -1,11 +1,15 @@
 import com.meadowsapps.jgameboy.core.Register8Bit;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
+
 /**
  * Created by dmeadows on 1/17/2017.
  */
 public class TestGround {
-    public static void main(String[] args) {
-        bitTest2();
+    public static void main(String[] args) throws Exception {
+        imageTest();
     }
 
     static void bitFlip() {
@@ -94,5 +98,17 @@ public class TestGround {
         System.out.println(lo);
         value = (lo << 4) + hi;
         System.out.println(toBinary(value, 8, false));
+    }
+
+    static void imageTest() throws Exception {
+        BufferedImage image = new BufferedImage(160, 144, BufferedImage.TYPE_INT_ARGB);
+
+        Random r = new Random();
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                Color color = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat());
+                image.setRGB(x, y, color.getRGB());
+            }
+        }
     }
 }

@@ -27,6 +27,16 @@ public class GbcCore implements EmulatorCore {
         display = new GbcDisplay(this);
         cartridge = new GbcCartridge(this);
         joypad = new GbcJoypad(this);
+    }
+
+    @Override
+    public void initialize() {
+        cpu.initialize();
+        gpu.initialize();
+        mmu.initialize();
+        display.initialize();
+        cartridge.initialize();
+        joypad.initialize();
 
         GbcButton.A.map(KeyCode.Z);
         GbcButton.B.map(KeyCode.X);
@@ -36,6 +46,16 @@ public class GbcCore implements EmulatorCore {
         GbcButton.RIGHT.map(KeyCode.RIGHT);
         GbcButton.START.map(KeyCode.ENTER);
         GbcButton.SELECT.map(KeyCode.BACK_SPACE);
+    }
+
+    @Override
+    public void reset() {
+        cpu.reset();
+        gpu.reset();
+        mmu.reset();
+        display.reset();
+        cartridge.reset();
+        joypad.reset();
     }
 
     @Override

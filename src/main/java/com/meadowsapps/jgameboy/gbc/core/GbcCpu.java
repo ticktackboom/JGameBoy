@@ -83,6 +83,16 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         PC = new Register16Bit();
     }
 
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void reset() {
+
+    }
+
     /**
      * Executes the specified number of instructions. If <code>numInstructions</code>
      * equals -1, then the CPU will execute infinitely until <code>interrupted</code>
@@ -1956,11 +1966,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 throw new IllegalArgumentException(message.replace("%OPCODE%", hex));
         }
         return length;
-    }
-
-    @Override
-    public void reset() {
-
     }
 
     /**

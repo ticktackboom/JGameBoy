@@ -5,6 +5,10 @@ package com.meadowsapps.jgameboy.core;
  */
 public interface EmulatorCore {
 
+    void initialize();
+
+    void reset();
+
     Cpu cpu();
 
     Gpu gpu();
