@@ -9,28 +9,6 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
 
     private int[] wram;
 
-    public static final int CARTRIDGE = 0x0000;
-
-    public static final int VIDEO_RAM = 0x8000;
-
-    public static final int EXTERNAL_RAM = 0xA000;
-
-    public static final int WORKING_RAM = 0xC000;
-
-    public static final int WORKING_ECHO = 0xE000;
-
-    public static final int OAM = 0xFE00;
-
-    public static final int UNUSED = 0xFEA0;
-
-    public static final int HARDWARE_IO = 0xFF00;
-
-    public static final int HIGH_RAM = 0xFF80;
-
-    public static final int INTERRUPT = 0xFFFF;
-
-    public static final int JOYPAD = 0xFF00;
-
     GbcMmu(GbcCore core) {
         super(core);
     }

@@ -41,8 +41,7 @@ public class RomReader {
                 System.out.printf("OPERAND2: %d\n", operand2);
                 System.out.println();
 
-                int length = cpu.execute(opcode, operand1, operand2);
-                i += length;
+                cpu.execute(opcode);
             }
             System.out.println("completed");
         } catch (Exception e) {

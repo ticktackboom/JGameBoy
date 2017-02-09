@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
@@ -32,6 +34,10 @@ public class JGameBoy extends Application {
         JGameBoyView view = JGameBoyView.getView();
         CoreFactory factory = CoreFactory.getFactory();
         core = factory.getCore(CoreType.GAMEBOY);
+        URL resource = getClass().getClassLoader().getResource("gbc/Tetris (World).gb");
+        File rom = new File(resource.toURI());
+        core.cartridge().load(rom);
+        core.start();
 
         Scene scene = new Scene(view);
         scene.setOnKeyPressed(core.joypad());

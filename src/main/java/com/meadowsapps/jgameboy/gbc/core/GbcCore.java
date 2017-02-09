@@ -1,12 +1,12 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
-import com.meadowsapps.jgameboy.core.EmulatorCore;
+import com.meadowsapps.jgameboy.core.AbstractEmulatorCore;
 import javafx.scene.input.KeyCode;
 
 /**
  * Created by dmeadows on 1/17/2017.
  */
-public class GbcCore implements EmulatorCore {
+public class GbcCore extends AbstractEmulatorCore {
 
     private final GbcCpu cpu;
 
@@ -19,6 +19,8 @@ public class GbcCore implements EmulatorCore {
     private final GbcCartridge cartridge;
 
     private final GbcJoypad joypad;
+
+    public static final int FRAME_CYCLES = 0x11250;
 
     public GbcCore() {
         cpu = new GbcCpu(this);
@@ -59,6 +61,19 @@ public class GbcCore implements EmulatorCore {
     }
 
     @Override
+    public void run() {
+        int cpuClockAcc = 0;
+        while (isRunning()) {
+            while (cpuClockAcc < FRAME_CYCLES) {
+                cpu.step();
+                gpu.step();
+                cpuClockAcc += cpu.getClock().m();
+            }
+            cpuClockAcc = 0;
+        }
+    }
+
+    @Override
     public GbcCpu cpu() {
         return cpu;
     }
@@ -87,4 +102,5 @@ public class GbcCore implements EmulatorCore {
     public GbcJoypad joypad() {
         return joypad;
     }
+
 }

@@ -4,12 +4,32 @@ import com.meadowsapps.jgameboy.core.Cpu;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 /**
  * Emulated CPU found inside of the Nintendo GameBoy.
  * Custom 8-bit Sharp LR35902 based on the Intel 8080
  * and the Z80 microprocessors.
  */
 public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
+
+    private boolean halted;
+
+    private boolean interruptsEnabled;
+
+    private int[] opcodeTiming;
+
+    private int[] opcodeLength;
+
+    private String[] opcodeTable;
+
+    private int[] opcodeCBTiming;
+
+    private int[] opcodeCBLength;
+
+    private String[] opcodeCBTable;
 
     /**
      * Accumulator Register
@@ -37,14 +57,9 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     private final Register16Bit PC;
 
     /**
-     * Left direction for bit shifting
+     * Internal clock
      */
-    private static final int LEFT = 0;
-
-    /**
-     * Right direction for bit shifting
-     */
-    private static final int RIGHT = 1;
+    private final GbcCpuClock clock;
 
     /**
      * Bit index of the Zero Status Flag
@@ -81,33 +96,120 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         L = new Register8Bit();
         SP = new Register16Bit();
         PC = new Register16Bit();
+        clock = new GbcCpuClock();
     }
 
     @Override
     public void initialize() {
+        opcodeTiming = new int[0x100];
+        opcodeCBTiming = new int[0x100];
+        opcodeLength = new int[0x100];
+        opcodeCBLength = new int[0x100];
 
+        String[] resources = new String[]{
+                "gbc/cpu/opcode_timing.txt",
+                "gbc/cpu/opcodeCB_timing.txt",
+                "gbc/cpu/opcode_length.txt",
+                "gbc/cpu/opcodeCB_length.txt"
+        };
+
+        try {
+            for (int i = 0; i < resources.length; i++) {
+                InputStream resource = getClass().getClassLoader().getResourceAsStream(resources[i]);
+                InputStreamReader streamReader = new InputStreamReader(resource);
+                BufferedReader reader = new BufferedReader(streamReader);
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] kv = line.split("=");
+                    String sKey = kv[0];
+                    sKey = sKey.substring(sKey.indexOf("x") + 1);
+                    int key = Integer.parseInt(sKey, 16);
+                    int value = Integer.parseInt(kv[1]);
+                    switch (i) {
+                        case 0:
+                            opcodeTiming[key] = value;
+                            break;
+                        case 1:
+                            opcodeCBTiming[key] = value;
+                            break;
+                        case 2:
+                            opcodeLength[key] = value;
+                            break;
+                        case 3:
+                            opcodeCBLength[key] = value;
+                            break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
     }
 
     @Override
     public void reset() {
+        halted = false;
+        interruptsEnabled = true;
 
+        A.write(0);
+        F.write(0);
+        B.write(0);
+        C.write(0);
+        D.write(0);
+        E.write(0);
+        H.write(0);
+        L.write(0);
+        SP.write(0);
+        PC.write(0);
+
+        clock.m(0);
+        clock.t(0);
     }
 
-    /**
-     * Executes the specified number of instructions. If <code>numInstructions</code>
-     * equals -1, then the CPU will execute infinitely until <code>interrupted</code>
-     * is set to <code>true</code>.
-     *
-     * @param numInstructions the number of instructions to execute
-     */
     @Override
-    public void execute(int numInstructions) {
-        for (int r = 0; r != numInstructions; r++) {
+    public void step() {
+        // clock.reset()
+        if (!halted) {
+            // check for interrupt
+            if (interruptsEnabled) {
+                int ieFlag = mmu().readByte(INTERRUPT_ENABLED_FLAG);
+                int iFlag = mmu().readByte(INTERRUPT_FLAG);
+                int interrupt = iFlag & ieFlag;
+                if (interrupt != 0x00) {
+                    switch (interrupt) {
+                        case V_BLANK_IRQ:
+                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFE);
+                            pushImpl(PC.read());
+                            PC.write(V_BLANK_IR);
+                            break;
+                        case LCD_IRQ:
+                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFD);
+                            pushImpl(PC.read());
+                            PC.write(LCD_IR);
+                            break;
+                        case TIMER_OVERFLOW_IRQ:
+                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFB);
+                            pushImpl(PC.read());
+                            PC.write(TIMER_OVERFLOW_IR);
+                            break;
+                        case JOYPAD_HILO_IRQ:
+                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xEF);
+                            pushImpl(PC.read());
+                            PC.write(JOYPAD_HILO_IR);
+                            break;
+                    }
+                    interruptsEnabled = false;
+                }
+            }
+
+            // fetch
             int opcode = mmu().readByte(PC.read());
-            int operand1 = mmu().readByte(PC.read() + 1);
-            int operand2 = mmu().readByte(PC.read() + 2);
-            int length = execute(opcode, operand1, operand2);
-            PC.add(length);
+            // decode and execute
+            execute(opcode);
+        } else {
+            clock.m(1);
         }
     }
 
@@ -115,14 +217,16 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
      * Executes the given opcode with the available operands and returns
      * the length of the instruction to add to the <code>PC</code> register.
      *
-     * @param opcode   opcode to execute
-     * @param operand1 operand1 potentially used for the opcode
-     * @param operand2 operand2 potentially used for the opcode
+     * @param opcode opcode to execute
      * @return the length of the instruction
      */
     @Override
-    public int execute(int opcode, int operand1, int operand2) {
-        int length = 1;
+    public void execute(int opcode) {
+        int length = opcodeLength[opcode];
+        int timing = opcodeTiming[opcode];
+
+        int operand1 = mmu().readByte(PC.read() + 1);
+        int operand2 = mmu().readByte(PC.read() + 2);
 
         int d8 = operand1;
         int d16 = (operand2 << 8) + operand1;
@@ -139,7 +243,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD BC,d16
             case 0x01: {
                 ld(B, C, d16);
-                length = 3;
                 break;
             }
 
@@ -171,7 +274,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD B,d8
             case 0x06: {
                 ld(B, d8);
-                length = 2;
                 break;
             }
 
@@ -191,7 +293,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD (a16),SP
             case 0x08: {
                 ld(a16, SP.read());
-                length = 3;
                 break;
             }
 
@@ -230,7 +331,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD C,d8
             case 0x0E: {
                 ld(C, d8);
-                length = 2;
                 break;
             }
 
@@ -250,14 +350,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // STOP 0
             case 0x10: {
                 // TODO: there something that is done here
-                length = 2;
                 break;
             }
 
             // LD DE,d16
             case 0x11: {
                 ld(D, E, d16);
-                length = 3;
                 break;
             }
 
@@ -289,7 +387,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD D,d8
             case 0x16: {
                 ld(D, d8);
-                length = 2;
                 break;
             }
 
@@ -310,7 +407,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // JR r8
             case 0x18: {
                 PC.add(r8);
-                length = 2;
                 break;
             }
 
@@ -349,7 +445,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD E,d8
             case 0x1E: {
                 ld(E, d8);
-                length = 2;
                 break;
             }
 
@@ -372,14 +467,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (!F.isSet(Z_BIT)) {
                     PC.add(r8);
                 }
-                length = 2;
                 break;
             }
 
             // LD HL,d16
             case 0x21: {
                 ld(H, L, d16);
-                length = 3;
                 break;
             }
 
@@ -412,7 +505,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD H,d8
             case 0x26: {
                 ld(H, d8);
-                length = 2;
                 break;
             }
 
@@ -446,7 +538,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (F.isSet(Z_BIT)) {
                     PC.add(r8);
                 }
-                length = 2;
                 break;
             }
 
@@ -486,7 +577,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD L,d8
             case 0x2E: {
                 ld(L, d8);
-                length = 2;
                 break;
             }
 
@@ -503,14 +593,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (!F.isSet(C_BIT)) {
                     PC.add(r8);
                 }
-                length = 2;
                 break;
             }
 
             // LD SP,d16
             case 0x31: {
                 ld(SP, d16);
-                length = 3;
                 break;
             }
 
@@ -546,7 +634,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             case 0x36: {
                 int addr = getAddress(H, L);
                 ld(addr, d8);
-                length = 2;
                 break;
             }
 
@@ -563,7 +650,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (F.isSet(C_BIT)) {
                     PC.add(r8);
                 }
-                length = 2;
                 break;
             }
 
@@ -602,7 +688,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,d8
             case 0x3E: {
                 ld(A, d8);
-                length = 2;
                 break;
             }
 
@@ -979,6 +1064,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
 
             // HALT
             case 0x76: {
+                halted = true;
                 break;
             }
 
@@ -1500,14 +1586,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (!F.isSet(Z_BIT)) {
                     PC.write(a16);
                 }
-                length = 3;
                 break;
             }
 
             // JP a16
             case 0xC3: {
                 PC.write(a16);
-                length = 3;
                 break;
             }
 
@@ -1518,7 +1602,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                     pushImpl(value);
                     PC.write(a16);
                 }
-                length = 3;
+
                 break;
             }
 
@@ -1532,7 +1616,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // ADD A,d8
             case 0xC6: {
                 add(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1565,14 +1648,14 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (F.isSet(Z_BIT)) {
                     PC.write(a16);
                 }
-                length = 3;
                 break;
             }
 
             // PREFIX CB
             case 0xCB: {
-                // TODO: there is something that is done here
-                length = executeCB(operand1);
+                length = opcodeCBLength[operand1];
+                timing = opcodeCBTiming[operand1];
+                executeCB(operand1);
                 break;
             }
 
@@ -1583,7 +1666,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                     pushImpl(value);
                     PC.write(a16);
                 }
-                length = 3;
+
                 break;
             }
 
@@ -1592,14 +1675,13 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 int value = PC.read() + 3;
                 pushImpl(value);
                 PC.write(a16);
-                length = 3;
+
                 break;
             }
 
             // ADC A,d8
             case 0xCE: {
                 adc(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1631,13 +1713,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (!F.isSet(C_BIT)) {
                     PC.write(a16);
                 }
-                length = 3;
                 break;
             }
 
             // BLANK
             case 0xD3: {
-                length = 0;
                 break;
             }
 
@@ -1648,7 +1728,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                     pushImpl(value);
                     PC.write(a16);
                 }
-                length = 3;
                 break;
             }
 
@@ -1662,7 +1741,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // SUB d8
             case 0xD6: {
                 sub(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1696,13 +1774,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 if (F.isSet(C_BIT)) {
                     PC.write(a16);
                 }
-                length = 3;
                 break;
             }
 
             // BLANK
             case 0xDB: {
-                length = 0;
                 break;
             }
 
@@ -1713,20 +1789,17 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                     pushImpl(value);
                     PC.write(a16);
                 }
-                length = 3;
                 break;
             }
 
             // BLANK
             case 0xDD: {
-                length = 0;
                 break;
             }
 
             // SBC A,d8
             case 0xDE: {
                 sbc(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1742,7 +1815,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             case 0xE0: {
                 int addr = 0xFF00 + a8;
                 ld(addr, A.read());
-                length = 2;
                 break;
             }
 
@@ -1756,19 +1828,16 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             case 0xE2: {
                 int addr = 0xFF00 + C.read();
                 mmu().writeByte(A.read(), addr);
-                length = 2;
                 break;
             }
 
             // BLANK
             case 0xE3: {
-                length = 0;
                 break;
             }
 
             // BLANK
             case 0xE4: {
-                length = 0;
                 break;
             }
 
@@ -1782,7 +1851,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // AND d8
             case 0xE6: {
                 and(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1798,7 +1866,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             case 0xE8: {
                 add(SP, r8);
                 F.set(Z_BIT, 0);
-                length = 2;
                 break;
             }
 
@@ -1812,32 +1879,27 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD (a16),A
             case 0xEA: {
                 ld(a16, A.read());
-                length = 3;
                 break;
             }
 
             // BLANK
             case 0xEB: {
-                length = 0;
                 break;
             }
 
             // BLANK
             case 0xEC: {
-                length = 0;
                 break;
             }
 
             // BLANK
             case 0xED: {
-                length = 0;
                 break;
             }
 
             // XOR d8
             case 0xEE: {
                 xor(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1853,7 +1915,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             case 0xF0: {
                 int addr = 0xFF00 + a8;
                 ld(A, mmu().readByte(addr));
-                length = 2;
                 break;
             }
 
@@ -1867,19 +1928,17 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             case 0xF2: {
                 int addr = 0xFF00 + C.read();
                 ld(A, mmu().readByte(addr));
-                length = 2;
                 break;
             }
 
             // DI
             case 0xF3: {
-
+                interruptsEnabled = false;
                 break;
             }
 
             // BLANK
             case 0xF4: {
-                length = 0;
                 break;
             }
 
@@ -1893,7 +1952,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // OR d8
             case 0xF6: {
                 or(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1907,7 +1965,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
 
             // LD HL,SP+r8
             case 0xF8: {
-
                 break;
             }
 
@@ -1921,32 +1978,28 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,(a16)
             case 0xFA: {
                 ld(A, mmu().readByte(a16));
-                length = 3;
                 break;
             }
 
             // EI
             case 0xFB: {
-                // TODO: do something here
+                interruptsEnabled = true;
                 break;
             }
 
             // BLANK
             case 0xFC: {
-                length = 0;
                 break;
             }
 
             // BLANK
             case 0xFD: {
-                length = 0;
                 break;
             }
 
             // CP d8
             case 0xFE: {
                 cp(A, d8);
-                length = 2;
                 break;
             }
 
@@ -1965,7 +2018,9 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 hex = "0x" + hex;
                 throw new IllegalArgumentException(message.replace("%OPCODE%", hex));
         }
-        return length;
+
+        PC.add(length);
+        clock.m(timing);
     }
 
     /**
@@ -1974,7 +2029,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
      *
      * @return the length of the instruction
      */
-    private int executeCB(int operation) {
+    private void executeCB(int operation) {
         switch (operation) {
             // RLC B
             case 0x00: {
@@ -3544,7 +3599,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 break;
             }
         }
-        return 2;
     }
 
     /**
@@ -4120,4 +4174,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         return (r1.read() << 8) + r2.read();
     }
 
+    public GbcCpuClock getClock() {
+        return clock;
+    }
 }

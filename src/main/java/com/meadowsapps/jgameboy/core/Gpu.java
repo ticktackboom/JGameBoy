@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 /**
  * Created by dmeadows on 2/7/2017.
  */
-public interface Gpu extends CoreElement {
+public interface Gpu extends CoreElement, Steppable {
 
     void draw(GraphicsContext context);
 
