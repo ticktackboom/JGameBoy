@@ -1,5 +1,4 @@
 import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
-import com.meadowsapps.jgameboy.gbc.core.GbcCartridgeHeader;
 import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 import java.io.File;

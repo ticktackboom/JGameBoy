@@ -2,22 +2,44 @@ package com.meadowsapps.jgameboy.gbc.core.mbc;
 
 import com.meadowsapps.jgameboy.gbc.core.GbcCartridge;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 /**
  * Created by Dylan on 2/6/17.
  */
 public class GbcMbcRom extends AbstractGbcMbc {
+
+    private int[] rom;
+
+    private int romSize;
+
+    private int[] ram;
+
+    private int ramSize;
 
     public GbcMbcRom(GbcCartridge cartridge) {
         super(cartridge);
     }
 
     @Override
+    public void initialize(byte[] contents) {
+        romSize = cartridge().getHeader().getRomSize();
+        rom = new int[romSize];
+        ramSize = cartridge().getHeader().getRamSize();
+        ram = new int[ramSize];
+
+        IntBuffer intBuf = ByteBuffer.wrap(contents).asIntBuffer();
+        int[] buffer = new int[intBuf.remaining()];
+        intBuf.get(buffer);
+        rom = buffer;
+    }
+
+    @Override
     public int read(int addr) {
         int rv = -1;
 
-        int[] rom = cartridge().getRom()[0];
-        int[] ram = cartridge().getRam()[0];
-
+        addr &= 0xFFFF;
         switch (addr & 0xF000) {
             case 0x1000:
             case 0x2000:
@@ -35,6 +57,7 @@ public class GbcMbcRom extends AbstractGbcMbc {
                 break;
         }
 
+        rv &= 0xFF;
         return rv;
     }
 

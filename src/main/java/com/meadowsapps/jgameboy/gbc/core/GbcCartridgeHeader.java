@@ -1,10 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.Constants;
-import com.meadowsapps.jgameboy.gbc.core.mbc.GbcMbcFactory;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 /**
@@ -50,14 +47,7 @@ public class GbcCartridgeHeader implements Constants {
     public GbcCartridgeHeader() {
     }
 
-    public void load(RandomAccessFile file) throws IOException {
-        file.seek(0x0000);
-        byte[] contents = new byte[HEADER_STOP + 1];
-        file.read(contents);
-        load(contents);
-    }
-
-    public void load(byte[] contents) {
+    public void initialize(byte[] contents) {
         this.logo = Arrays.copyOfRange(contents, NINTENDO_LOGO, TITLE);
         byte[] titleCopy = Arrays.copyOfRange(contents, TITLE, MANUFACTURER_CODE);
         this.title = new String(titleCopy);

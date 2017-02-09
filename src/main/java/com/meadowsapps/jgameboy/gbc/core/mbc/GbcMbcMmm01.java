@@ -12,6 +12,11 @@ public class GbcMbcMmm01 extends AbstractGbcMbc {
     }
 
     @Override
+    public void initialize(byte[] contents) {
+
+    }
+
+    @Override
     public int read(int addr) {
         return 0;
     }

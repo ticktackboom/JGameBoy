@@ -13,11 +13,9 @@ import java.io.RandomAccessFile;
  */
 public class GbcCartridge extends AbstractGbcCoreElement implements Cartridge {
 
-    private byte[] contents;
+    private MemoryBankController mbc;
 
     private GbcCartridgeHeader header;
-
-    private MemoryBankController mbc;
 
     public GbcCartridge(GbcCore core) {
         super(core);
@@ -37,47 +35,18 @@ public class GbcCartridge extends AbstractGbcCoreElement implements Cartridge {
     public void load(File file) throws IOException {
         // read in the rom to the contents
         RandomAccessFile raf = new RandomAccessFile(file, "r");
-        this.contents = new byte[(int) raf.length()];
-        raf.readFully(this.contents);
+        byte[] contents = new byte[(int) raf.length()];
+        raf.readFully(contents);
 
         // initialize the header with the contents
         this.header = new GbcCartridgeHeader();
-        this.header.load(this.contents);
+        this.header.initialize(contents);
 
         // get the memory bank controller and initialize with the contents
         GbcMbcFactory factory = GbcMbcFactory.getFactory();
         int type = header.getCartridgeType();
         this.mbc = factory.getMbc(type, this);
-        this.mbc.initialize(this.contents);
-
-//        // initialize rom banks
-//        int romBankCount = header.getRomBankCount();
-//        romBankCount = (romBankCount == 0) ? 1 : romBankCount;
-//        int romBankSize = (romBankCount == 1) ? 0x8000 : 0x4000;
-//        rom = new int[romBankCount][romBankSize];
-//
-//        // initialize ram banks
-//        int ramBankCount = header.getRamBankCount();
-//        ramBankCount = (ramBankCount == 0) ? 1 : ramBankCount;
-//        int ramBankSize = header.getRamSize();
-//        ramBankSize = (ramBankCount == 1) ? ramBankSize : 0x2000;
-//        ram = new int[ramBankCount][ramBankSize];
-//
-//        // read in the rom contents
-//        int bank = 0;
-//        raf.seek(0x0000);
-//        for (int pos = 0; pos < file.length(); pos += romBankSize) {
-//            // go to pos and read into buffer
-//            raf.seek(pos);
-//            byte[] buffer = new byte[romBankSize];
-//            raf.read(buffer);
-//
-//            // store buffer as int[] to proper rom bank
-//            IntBuffer intBuf = ByteBuffer.wrap(buffer).asIntBuffer();
-//            rom[bank] = new int[intBuf.remaining()];
-//            intBuf.get(rom[bank]);
-//            bank++;
-//        }
+        this.mbc.initialize(contents);
     }
 
     @Override
@@ -94,7 +63,4 @@ public class GbcCartridge extends AbstractGbcCoreElement implements Cartridge {
         return header;
     }
 
-    public byte[] getContents() {
-        return contents;
-    }
 }

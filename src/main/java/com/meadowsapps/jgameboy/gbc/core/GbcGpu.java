@@ -68,6 +68,7 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
     public int read(int addr) {
         int rv = -1;
 
+        addr &= 0xFFFF;
         switch (addr & 0xF000) {
             case 0x8000:
             case 0x9000:
@@ -81,6 +82,7 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
                 }
         }
 
+        rv &= 0xFF;
         return rv;
     }
 

@@ -483,7 +483,7 @@ class GameBoyScreen extends Frame implements ActionListener,
                 applet.queueDebuggerCommand("g");
                 applet.dmgcpu.terminate = true;
             } else {
-                new ModalDialog(this, "Error", "You need to load a ROM before", "you select 'Emulate'.");
+                new ModalDialog(this, "Error", "You need to initialize a ROM before", "you select 'Emulate'.");
             }
         } else if (command.equals("Reset")) {
             applet.queueDebuggerCommand("s;g");

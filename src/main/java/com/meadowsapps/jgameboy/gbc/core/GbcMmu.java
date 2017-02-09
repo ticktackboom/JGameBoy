@@ -54,39 +54,39 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
         // Cartridge
         // 0x0000 - 0x7FFF
         if (isCartridge(addr)) {
-            return cartridge().read(addr);
+            rv = cartridge().read(addr);
         }
 
         // Video RAM
         // 0x8000 - 0x9FFF
         if (isVram(addr)) {
-            return gpu().read(addr);
+            rv = gpu().read(addr);
         }
 
         // External RAM
         // 0xA000 - 0xB000
         if (isExternalRam(addr)) {
-            return cartridge().read(addr);
+            rv = cartridge().read(addr);
         }
 
         // Working RAM
         // 0xC000 - 0xDFFF
         if (isWorkingRam(addr)) {
             addr -= 0xC000;
-            return wram[addr];
+            rv = wram[addr];
         }
 
         // Working RAM Echo
         // 0xE000 - 0xFDFF
         if (isWorkingEcho(addr)) {
             addr -= 0xE000;
-            return wram[addr];
+            rv = wram[addr];
         }
 
         // OAM
         // 0xFE00 - 0xFE9F
         if (isOam(addr)) {
-            return gpu().read(addr);
+            rv = gpu().read(addr);
         }
 
         // Unused
@@ -100,7 +100,7 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
             // Joypad
             // 0xFF00
             if (addr == JOYPAD) {
-                return joypad().read();
+                rv = joypad().read();
             }
         }
 
@@ -114,6 +114,7 @@ public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
         if (isInterrupt(addr)) {
         }
 
+        rv &= 0xFF;
         return rv;
     }
 

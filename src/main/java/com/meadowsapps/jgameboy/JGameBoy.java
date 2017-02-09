@@ -18,13 +18,10 @@ public class JGameBoy extends Application {
 
     private ResourceBundle bundle;
 
-    private JGameBoyKeyListener keyListener;
-
     private static JGameBoy instance;
 
     public JGameBoy() {
         bundle = ResourceBundle.getBundle("JGameBoyResource");
-        keyListener = new JGameBoyKeyListener();
         instance = this;
     }
 
@@ -35,11 +32,10 @@ public class JGameBoy extends Application {
         JGameBoyView view = JGameBoyView.getView();
         CoreFactory factory = CoreFactory.getFactory();
         core = factory.getCore(CoreType.GAMEBOY);
-        keyListener.setCore(core);
 
         Scene scene = new Scene(view);
-        scene.setOnKeyPressed(keyListener);
-        scene.setOnKeyReleased(keyListener);
+        scene.setOnKeyPressed(core.joypad());
+        scene.setOnKeyReleased(core.joypad());
         stage.setScene(scene);
 
         stage.show();
@@ -47,10 +43,6 @@ public class JGameBoy extends Application {
 
     public EmulatorCore getCore() {
         return core;
-    }
-
-    public JGameBoyKeyListener getKeyListener() {
-        return keyListener;
     }
 
     public static JGameBoy getInstance() {

@@ -26,6 +26,7 @@ public class CoreFactory {
             case GAMEBOY_ADVANCE:
                 break;
         }
+        rv.initialize();
         return rv;
     }
 

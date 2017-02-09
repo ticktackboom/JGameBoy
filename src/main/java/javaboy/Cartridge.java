@@ -31,7 +31,7 @@ import java.net.URLEncoder;
 import java.util.Calendar;
 
 /**
- * This class represents the game cartridge and contains methods to load the ROM and battery RAM
+ * This class represents the game cartridge and contains methods to initialize the ROM and battery RAM
  * (if necessary) from disk or over the web, and handles emulation of ROM mappers and RAM banking.
  * It is missing emulation of MBC3 (this is very rare).
  */
@@ -911,7 +911,7 @@ class WebSaveRAM implements Runnable, DialogListener {
             if (save) {
                 ModalDialog d = new ModalDialog(null, "Confirm", "Are you sure you want to save?", this);
             } else {
-                ModalDialog d = new ModalDialog(null, "Confirm", "Are you sure you want to load?", this);
+                ModalDialog d = new ModalDialog(null, "Confirm", "Are you sure you want to initialize?", this);
             }
         }
     }
