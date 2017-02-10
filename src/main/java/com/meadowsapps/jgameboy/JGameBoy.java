@@ -34,7 +34,8 @@ public class JGameBoy extends Application {
         JGameBoyView view = JGameBoyView.getView();
         CoreFactory factory = CoreFactory.getFactory();
         core = factory.getCore(CoreType.GAMEBOY);
-        URL resource = getClass().getClassLoader().getResource("gbc/Tetris (World).gb");
+        core.mmu().writeByte(0x00, 0xFF50);
+        URL resource = getClass().getClassLoader().getResource("gbc/Pokemon Blue.gb");
         File rom = new File(resource.toURI());
         core.cartridge().load(rom);
         core.start();

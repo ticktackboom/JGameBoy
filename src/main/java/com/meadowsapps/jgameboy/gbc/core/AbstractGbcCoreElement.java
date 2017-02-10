@@ -1,7 +1,6 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractCoreElement;
-import com.meadowsapps.jgameboy.core.Display;
 
 /**
  * Created by Dylan on 2/7/17.
@@ -10,6 +9,11 @@ public abstract class AbstractGbcCoreElement extends AbstractCoreElement impleme
 
     public AbstractGbcCoreElement(GbcCore core) {
         super(core);
+    }
+
+    @Override
+    public GbcCore core() {
+        return (GbcCore) super.core();
     }
 
     @Override

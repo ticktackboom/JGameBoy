@@ -4,10 +4,6 @@ import com.meadowsapps.jgameboy.core.Cpu;
 import com.meadowsapps.jgameboy.core.Register16Bit;
 import com.meadowsapps.jgameboy.core.Register8Bit;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * Emulated CPU found inside of the Nintendo GameBoy.
  * Custom 8-bit Sharp LR35902 based on the Intel 8080
@@ -19,47 +15,40 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
 
     private boolean interruptsEnabled;
 
-    private int[] opcodeTiming;
-
-    private int[] opcodeLength;
-
-    private String[] opcodeTable;
-
-    private int[] opcodeCBTiming;
-
-    private int[] opcodeCBLength;
-
-    private String[] opcodeCBTable;
-
     /**
      * Accumulator Register
      */
-    private final Register8Bit A;
+    private Register8Bit A;
 
     /**
      * Status Register
      */
-    private final Register8Bit F;
+    private Register8Bit F;
 
     /**
      * General purpose Register
      */
-    private final Register8Bit B, C, D, E, H, L;
+    private Register8Bit B, C, D, E, H, L;
 
     /**
      * Stack Pointer Register
      */
-    private final Register16Bit SP;
+    private Register16Bit SP;
 
     /**
      * Program Counter Register
      */
-    private final Register16Bit PC;
+    private Register16Bit PC;
 
     /**
      * Internal clock
      */
-    private final GbcCpuClock clock;
+    private GbcCpuClock clock;
+
+    /**
+     * Opcode Table containing information about each opcode
+     */
+    private GbcOpcodeTable table;
 
     /**
      * Bit index of the Zero Status Flag
@@ -86,6 +75,10 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
      */
     GbcCpu(GbcCore core) {
         super(core);
+    }
+
+    @Override
+    public void initialize() {
         A = new Register8Bit();
         F = new Register8Bit();
         B = new Register8Bit();
@@ -97,55 +90,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         SP = new Register16Bit();
         PC = new Register16Bit();
         clock = new GbcCpuClock();
-    }
-
-    @Override
-    public void initialize() {
-        opcodeTiming = new int[0x100];
-        opcodeCBTiming = new int[0x100];
-        opcodeLength = new int[0x100];
-        opcodeCBLength = new int[0x100];
-
-        String[] resources = new String[]{
-                "gbc/cpu/opcode_timing.txt",
-                "gbc/cpu/opcodeCB_timing.txt",
-                "gbc/cpu/opcode_length.txt",
-                "gbc/cpu/opcodeCB_length.txt"
-        };
-
-        try {
-            for (int i = 0; i < resources.length; i++) {
-                InputStream resource = getClass().getClassLoader().getResourceAsStream(resources[i]);
-                InputStreamReader streamReader = new InputStreamReader(resource);
-                BufferedReader reader = new BufferedReader(streamReader);
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] kv = line.split("=");
-                    String sKey = kv[0];
-                    sKey = sKey.substring(sKey.indexOf("x") + 1);
-                    int key = Integer.parseInt(sKey, 16);
-                    int value = Integer.parseInt(kv[1]);
-                    switch (i) {
-                        case 0:
-                            opcodeTiming[key] = value;
-                            break;
-                        case 1:
-                            opcodeCBTiming[key] = value;
-                            break;
-                        case 2:
-                            opcodeLength[key] = value;
-                            break;
-                        case 3:
-                            opcodeCBLength[key] = value;
-                            break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        table = new GbcOpcodeTable();
     }
 
     @Override
@@ -228,9 +173,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
      */
     @Override
     public void execute(int opcode) {
-        int length = opcodeLength[opcode];
-        int timing = opcodeTiming[opcode];
-
+        Opcode op = table.lookup(opcode);
         int operand1 = mmu().readByte(PC.read() + 1);
         int operand2 = mmu().readByte(PC.read() + 2);
 
@@ -1659,8 +1602,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
 
             // PREFIX CB
             case 0xCB: {
-                length = opcodeCBLength[operand1];
-                timing = opcodeCBTiming[operand1];
+                op = table.lookupCB(operand1);
                 executeCB(operand1);
                 break;
             }
@@ -2025,8 +1967,9 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 throw new IllegalArgumentException(message.replace("%OPCODE%", hex));
         }
 
-        PC.add(length);
-        clock.m(timing);
+        System.out.println(op);
+        PC.add(op.getLength());
+        clock.m(op.getTiming());
     }
 
     /**

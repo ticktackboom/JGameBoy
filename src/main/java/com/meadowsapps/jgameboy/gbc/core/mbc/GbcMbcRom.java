@@ -41,6 +41,7 @@ public class GbcMbcRom extends AbstractGbcMbc {
 
         addr &= 0xFFFF;
         switch (addr & 0xF000) {
+            case 0x0000:
             case 0x1000:
             case 0x2000:
             case 0x3000:

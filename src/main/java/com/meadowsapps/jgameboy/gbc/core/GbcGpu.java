@@ -75,13 +75,12 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
 
     private BufferedImage frame;
 
-    private static final Color WHITE = new Color(235, 235, 235);
-
-    private static final Color LIGHT_GRAY = new Color(196, 196, 196);
-
-    private static final Color DARK_GRAY = new Color(96, 96, 96);
-
-    private static final Color BLACK = new Color(0, 0, 0);
+    private final Color[] gbColors = new Color[]{
+            new Color(235, 235, 235),
+            new Color(196, 196, 196),
+            new Color(96, 96, 96),
+            new Color(0, 0, 0)
+    };
 
     public static final int OAM_SIZE = 0xA0;
     public static final int VRAM_SIZE = 0x2000;
@@ -211,7 +210,6 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
         }
         Image renderer = SwingFXUtils.toFXImage(frame, null);
         context.drawImage(renderer, 0, 0, display().WIDTH, display().HEIGHT);
-
     }
 
     @Override
@@ -378,24 +376,26 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
     }
 
     private void drawNonColorScanline(int tileMapOffset, int lineOffset, int screenX, int tileX, int tileY) {
-        int tileId = calculateTileNumber(tileMapOffset, lineOffset);
-        while (screenX < WIDTH) {
-            int color = tileData[0][tileId].data[tileY][tileX];
-            frame.setRGB(screenX, ly, color);
+        try {
+            int tileId = calculateTileNumber(tileMapOffset, lineOffset);
+            for (; screenX < WIDTH; screenX++) {
+                int color = tileData[0][tileId].data[tileY][tileX];
+                frame.setRGB(screenX, ly, color);
 
-            tileX++;
-            if (tileX == 8) {
-                tileX = 0;
-                lineOffset = (lineOffset + 1) % 32;
-                tileId = calculateTileNumber(tileMapOffset, lineOffset);
+                tileX++;
+                if (tileX == 8) {
+                    tileX = 0;
+                    lineOffset = (lineOffset + 1) % 32;
+                    tileId = calculateTileNumber(tileMapOffset, lineOffset);
+                }
             }
-
-            screenX++;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private int calculateTileNumber(int tileMapOffset, int lineOffset) {
-        int tileId = read(tileMapOffset + lineOffset);
+        int tileId = vram[tileMapOffset + lineOffset];
         if (tileDataSelect == TILE_DATA_0) {
             if (tileId < 0x80) {
                 tileId += 0x100;
@@ -419,7 +419,7 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
         if ((0 <= wX && wX < 167) && (0 <= wY && wY < HEIGHT) && screenYAdjusted >= 0) {
             int initialTileMapOffset = windowTileMap + ((screenYAdjusted / 8) * 32);
             int initialLineOffset = 0;
-            int screenXAdjusted = (wX - 7) % 0xFF;
+            int screenXAdjusted = ((wX - 7) % 0xFF) & 0xFF;
 
             int initialTileX = screenXAdjusted % 8;
             int initialTileY = screenYAdjusted % 8;
@@ -454,10 +454,10 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
         }
 
         public Palette(int value) {
-            colors[0] = new Color(value & 0x03);
-            colors[1] = new Color((value >> 2) & 0x03);
-            colors[2] = new Color((value >> 4) & 0x03);
-            colors[3] = new Color((value >> 6) & 0x03);
+            colors[0] = gbColors[value & 0x03];
+            colors[1] = gbColors[(value >> 2) & 0x03];
+            colors[2] = gbColors[(value >> 4) & 0x03];
+            colors[3] = gbColors[(value >> 6) & 0x03];
         }
 
         public void updateHi(int index, int hi) {

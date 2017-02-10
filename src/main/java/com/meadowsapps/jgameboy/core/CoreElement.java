@@ -9,6 +9,8 @@ public interface CoreElement extends Constants {
 
     void reset();
 
+    EmulatorCore core();
+
     Cpu cpu();
 
     Gpu gpu();

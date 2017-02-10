@@ -1,0 +1,1538 @@
+[
+  {
+    "id": "0x00",
+    "label": "RLC B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x01",
+    "label": "RLC C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x02",
+    "label": "RLC D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x03",
+    "label": "RLC E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x04",
+    "label": "RLC H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x05",
+    "label": "RLC L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x06",
+    "label": "RLC (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x07",
+    "label": "RLC A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x08",
+    "label": "RRC B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x09",
+    "label": "RRC C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x0A",
+    "label": "RRC D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x0B",
+    "label": "RRC E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x0C",
+    "label": "RRC H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x0D",
+    "label": "RRC L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x0E",
+    "label": "RRC (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x0F",
+    "label": "RRC A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x10",
+    "label": "RL B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x11",
+    "label": "RL C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x12",
+    "label": "RL D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x13",
+    "label": "RL E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x14",
+    "label": "RL H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x15",
+    "label": "RL L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x16",
+    "label": "RL (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x17",
+    "label": "RL A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x18",
+    "label": "RR B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x19",
+    "label": "RR C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x1A",
+    "label": "RR D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x1B",
+    "label": "RR E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x1C",
+    "label": "RR H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x1D",
+    "label": "RR L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x1E",
+    "label": "RR (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x1F",
+    "label": "RR A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x20",
+    "label": "SLA B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x21",
+    "label": "SLA C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x22",
+    "label": "SLA D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x23",
+    "label": "SLA E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x24",
+    "label": "SLA H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x25",
+    "label": "SLA L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x26",
+    "label": "SLA (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x27",
+    "label": "SLA A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x28",
+    "label": "SRA B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x29",
+    "label": "SRA C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x2A",
+    "label": "SRA D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x2B",
+    "label": "SRA E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x2C",
+    "label": "SRA H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x2D",
+    "label": "SRA L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x2E",
+    "label": "SRA (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x2F",
+    "label": "SRA A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x30",
+    "label": "SWAP B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x31",
+    "label": "SWAP C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x32",
+    "label": "SWAP D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x33",
+    "label": "SWAP E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x34",
+    "label": "SWAP H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x35",
+    "label": "SWAP L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x36",
+    "label": "SWAP (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x37",
+    "label": "SWAP A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x38",
+    "label": "SRL B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x39",
+    "label": "SRL C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x3A",
+    "label": "SRL D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x3B",
+    "label": "SRL E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x3C",
+    "label": "SRL H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x3D",
+    "label": "SRL L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x3E",
+    "label": "SRL (HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x3F",
+    "label": "SRL A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x40",
+    "label": "BIT 0,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x41",
+    "label": "BIT 0,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x42",
+    "label": "BIT 0,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x43",
+    "label": "BIT 0,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x44",
+    "label": "BIT 0,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x45",
+    "label": "BIT 0,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x46",
+    "label": "BIT 0,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x47",
+    "label": "BIT 0,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x48",
+    "label": "BIT 1,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x49",
+    "label": "BIT 1,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x4A",
+    "label": "BIT 1,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x4B",
+    "label": "BIT 1,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x4C",
+    "label": "BIT 1,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x4D",
+    "label": "BIT 1,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x4E",
+    "label": "BIT 1,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x4F",
+    "label": "BIT 1,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x50",
+    "label": "BIT 2,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x51",
+    "label": "BIT 2,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x52",
+    "label": "BIT 2,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x53",
+    "label": "BIT 2,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x54",
+    "label": "BIT 2,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x55",
+    "label": "BIT 2,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x56",
+    "label": "BIT 2,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x57",
+    "label": "BIT 2,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x58",
+    "label": "BIT 3,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x59",
+    "label": "BIT 3,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x5A",
+    "label": "BIT 3,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x5B",
+    "label": "BIT 3,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x5C",
+    "label": "BIT 3,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x5D",
+    "label": "BIT 3,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x5E",
+    "label": "BIT 3,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x5F",
+    "label": "BIT 3,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x60",
+    "label": "BIT 4,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x61",
+    "label": "BIT 4,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x62",
+    "label": "BIT 4,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x63",
+    "label": "BIT 4,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x64",
+    "label": "BIT 4,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x65",
+    "label": "BIT 4,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x66",
+    "label": "BIT 4,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x67",
+    "label": "BIT 4,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x68",
+    "label": "BIT 5,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x69",
+    "label": "BIT 5,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x6A",
+    "label": "BIT 5,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x6B",
+    "label": "BIT 5,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x6C",
+    "label": "BIT 5,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x6D",
+    "label": "BIT 5,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x6E",
+    "label": "BIT 5,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x6F",
+    "label": "BIT 5,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x70",
+    "label": "BIT 6,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x71",
+    "label": "BIT 6,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x72",
+    "label": "BIT 6,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x73",
+    "label": "BIT 6,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x74",
+    "label": "BIT 6,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x75",
+    "label": "BIT 6,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x76",
+    "label": "BIT 6,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x77",
+    "label": "BIT 6,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x78",
+    "label": "BIT 7,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x79",
+    "label": "BIT 7,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x7A",
+    "label": "BIT 7,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x7B",
+    "label": "BIT 7,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x7C",
+    "label": "BIT 7,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x7D",
+    "label": "BIT 7,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x7E",
+    "label": "BIT 7,(HL)",
+    "length": 2,
+    "timing": 3
+  },
+  {
+    "id": "0x7F",
+    "label": "BIT 7,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x80",
+    "label": "RES 0,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x81",
+    "label": "RES 0,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x82",
+    "label": "RES 0,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x83",
+    "label": "RES 0,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x84",
+    "label": "RES 0,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x85",
+    "label": "RES 0,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x86",
+    "label": "RES 0,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x87",
+    "label": "RES 0,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x88",
+    "label": "RES 1,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x89",
+    "label": "RES 1,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x8A",
+    "label": "RES 1,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x8B",
+    "label": "RES 1,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x8C",
+    "label": "RES 1,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x8D",
+    "label": "RES 1,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x8E",
+    "label": "RES 1,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x8F",
+    "label": "RES 1,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x90",
+    "label": "RES 2,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x91",
+    "label": "RES 2,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x92",
+    "label": "RES 2,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x93",
+    "label": "RES 2,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x94",
+    "label": "RES 2,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x95",
+    "label": "RES 2,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x96",
+    "label": "RES 2,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x97",
+    "label": "RES 2,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x98",
+    "label": "RES 3,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x99",
+    "label": "RES 3,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x9A",
+    "label": "RES 3,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x9B",
+    "label": "RES 3,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x9C",
+    "label": "RES 3,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x9D",
+    "label": "RES 3,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0x9E",
+    "label": "RES 3,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0x9F",
+    "label": "RES 3,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA0",
+    "label": "RES 4,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA1",
+    "label": "RES 4,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA2",
+    "label": "RES 4,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA3",
+    "label": "RES 4,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA4",
+    "label": "RES 4,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA5",
+    "label": "RES 4,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA6",
+    "label": "RES 4,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xA7",
+    "label": "RES 4,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA8",
+    "label": "RES 5,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xA9",
+    "label": "RES 5,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xAA",
+    "label": "RES 5,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xAB",
+    "label": "RES 5,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xAC",
+    "label": "RES 5,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xAD",
+    "label": "RES 5,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xAE",
+    "label": "RES 5,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xAF",
+    "label": "RES 5,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB0",
+    "label": "RES 6,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB1",
+    "label": "RES 6,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB2",
+    "label": "RES 6,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB3",
+    "label": "RES 6,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB4",
+    "label": "RES 6,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB5",
+    "label": "RES 6,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB6",
+    "label": "RES 6,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xB7",
+    "label": "RES 6,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB8",
+    "label": "RES 7,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xB9",
+    "label": "RES 7,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xBA",
+    "label": "RES 7,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xBB",
+    "label": "RES 7,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xBC",
+    "label": "RES 7,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xBD",
+    "label": "RES 7,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xBE",
+    "label": "RES 7,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xBF",
+    "label": "RES 7,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC0",
+    "label": "SET 0,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC1",
+    "label": "SET 0,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC2",
+    "label": "SET 0,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC3",
+    "label": "SET 0,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC4",
+    "label": "SET 0,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC5",
+    "label": "SET 0,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC6",
+    "label": "SET 0,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xC7",
+    "label": "SET 0,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC8",
+    "label": "SET 1,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xC9",
+    "label": "SET 1,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xCA",
+    "label": "SET 1,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xCB",
+    "label": "SET 1,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xCC",
+    "label": "SET 1,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xCD",
+    "label": "SET 1,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xCE",
+    "label": "SET 1,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xCF",
+    "label": "SET 1,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD0",
+    "label": "SET 2,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD1",
+    "label": "SET 2,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD2",
+    "label": "SET 2,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD3",
+    "label": "SET 2,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD4",
+    "label": "SET 2,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD5",
+    "label": "SET 2,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD6",
+    "label": "SET 2,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xD7",
+    "label": "SET 2,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD8",
+    "label": "SET 3,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xD9",
+    "label": "SET 3,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xDA",
+    "label": "SET 3,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xDB",
+    "label": "SET 3,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xDC",
+    "label": "SET 3,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xDD",
+    "label": "SET 3,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xDE",
+    "label": "SET 3,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xDF",
+    "label": "SET 3,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE0",
+    "label": "SET 4,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE1",
+    "label": "SET 4,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE2",
+    "label": "SET 4,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE3",
+    "label": "SET 4,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE4",
+    "label": "SET 4,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE5",
+    "label": "SET 4,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE6",
+    "label": "SET 4,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xE7",
+    "label": "SET 4,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE8",
+    "label": "SET 5,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xE9",
+    "label": "SET 5,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xEA",
+    "label": "SET 5,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xEB",
+    "label": "SET 5,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xEC",
+    "label": "SET 5,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xED",
+    "label": "SET 5,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xEE",
+    "label": "SET 5,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xEF",
+    "label": "SET 5,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF0",
+    "label": "SET 6,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF1",
+    "label": "SET 6,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF2",
+    "label": "SET 6,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF3",
+    "label": "SET 6,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF4",
+    "label": "SET 6,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF5",
+    "label": "SET 6,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF6",
+    "label": "SET 6,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xF7",
+    "label": "SET 6,A",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF8",
+    "label": "SET 7,B",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xF9",
+    "label": "SET 7,C",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xFA",
+    "label": "SET 7,D",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xFB",
+    "label": "SET 7,E",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xFC",
+    "label": "SET 7,H",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xFD",
+    "label": "SET 7,L",
+    "length": 2,
+    "timing": 2
+  },
+  {
+    "id": "0xFE",
+    "label": "SET 7,(HL)",
+    "length": 2,
+    "timing": 4
+  },
+  {
+    "id": "0xFF",
+    "label": "SET 7,A",
+    "length": 2,
+    "timing": 2
+  }
+]

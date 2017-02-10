@@ -7,6 +7,8 @@ import com.meadowsapps.jgameboy.core.CoreElement;
  */
 public interface GbcCoreElement extends CoreElement, GbcConstants {
 
+    GbcCore core();
+
     GbcCpu cpu();
 
     GbcGpu gpu();

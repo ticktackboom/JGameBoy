@@ -10,6 +10,8 @@ import javafx.scene.input.KeyCode;
  */
 public class GbcCore extends AbstractEmulatorCore {
 
+    private boolean booting;
+
     private final GbcCpu cpu;
 
     private final GbcGpu gpu;
@@ -41,6 +43,7 @@ public class GbcCore extends AbstractEmulatorCore {
         display.initialize();
         cartridge.initialize();
         joypad.initialize();
+        booting = true;
 
         GbcButton.A.map(KeyCode.Z);
         GbcButton.B.map(KeyCode.X);
@@ -107,4 +110,7 @@ public class GbcCore extends AbstractEmulatorCore {
         return joypad;
     }
 
+    public boolean isBooting() {
+        return booting;
+    }
 }

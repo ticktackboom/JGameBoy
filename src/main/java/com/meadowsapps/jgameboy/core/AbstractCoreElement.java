@@ -12,6 +12,11 @@ public abstract class AbstractCoreElement implements CoreElement {
     }
 
     @Override
+    public EmulatorCore core() {
+        return core;
+    }
+
+    @Override
     public Cpu cpu() {
         return core.cpu();
     }
