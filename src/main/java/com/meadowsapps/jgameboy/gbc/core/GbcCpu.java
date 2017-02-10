@@ -151,18 +151,24 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     @Override
     public void reset() {
         halted = false;
-        interruptsEnabled = true;
+        interruptsEnabled = false;
 
         A.write(0);
-        F.write(0);
-        B.write(0);
-        C.write(0);
-        D.write(0);
-        E.write(0);
-        H.write(0);
-        L.write(0);
-        SP.write(0);
-        PC.write(0);
+        F.write(0xB0);
+        int b = 0x0013 >> 8;
+        B.write(b);
+        int c = 0x0013 & 0xFF;
+        C.write(c);
+        int d = 0x00D8 >> 8;
+        D.write(d);
+        int e = 0x00D8 & 0xFF;
+        E.write(e);
+        int h = 0x014D >> 8;
+        H.write(h);
+        int l = 0x014D & 0xFF;
+        L.write(l);
+        SP.write(0xFFFE);
+        PC.write(0x100);
 
         clock.m(0);
         clock.t(0);

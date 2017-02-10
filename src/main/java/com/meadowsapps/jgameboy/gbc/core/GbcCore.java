@@ -1,6 +1,8 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
+import com.meadowsapps.jgameboy.JGameBoyView;
 import com.meadowsapps.jgameboy.core.AbstractEmulatorCore;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 
 /**
@@ -67,6 +69,8 @@ public class GbcCore extends AbstractEmulatorCore {
             while (cpuClockAcc < FRAME_CYCLES) {
                 cpu.step();
                 gpu.step();
+                GraphicsContext context = JGameBoyView.getView().getContext();
+                gpu.draw(context);
                 cpuClockAcc += cpu.getClock().m();
             }
             cpuClockAcc = 0;

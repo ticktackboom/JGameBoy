@@ -17,6 +17,9 @@ public interface GbcConstants extends Constants {
     int TIMER_OVERFLOW_IR = 0x50;
     int JOYPAD_HILO_IR = 0x60;
 
+    int WIDTH = 160;
+    int HEIGHT = 144;
+
 
 
     /* MEMORY MAP */
@@ -59,6 +62,11 @@ public interface GbcConstants extends Constants {
     int OBJECT_PALETTE_1 = 0xFFf9;
     int WX = 0xFF4B;
     int WY = 0xFF4A;
+    int CGB_VRAM_BANK_SELECT = 0xFF4F;
+    int CGB_BGP_WRITESPEC_REGISTER = 0xFF68;
+    int CGB_BGP_WRITEDATA_REGISTER = 0xFF69;
+    int CGB_OBJP_WRITESPEC_REGISTER = 0xFF6A;
+    int CGB_OBJP_WRITEDATA_REGISTER = 0xFF6B;
 
     int H_BLANK = 0x00;
     int V_BLANK = 0x01;
