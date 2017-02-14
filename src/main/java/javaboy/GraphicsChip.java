@@ -21,6 +21,9 @@ Place - Suite 330, Boston, MA 02111-1307, USA.
 
 */
 
+import com.meadowsapps.jgameboy.core.Mapped;
+import com.meadowsapps.jgameboy.gbc.core.gpu.GbcGpu;
+
 import java.awt.*;
 
 /**
@@ -63,19 +66,19 @@ abstract class GraphicsChip {
     /**
      * The background palette
      */
-    GameboyPalette backgroundPalette;
+    GbcPalette backgroundPalette;
 
     /**
      * The first sprite palette
      */
-    GameboyPalette obj1Palette;
+    GbcPalette obj1Palette;
 
     /**
      * The second sprite palette
      */
-    GameboyPalette obj2Palette;
-    GameboyPalette[] gbcBackground = new GameboyPalette[8];
-    GameboyPalette[] gbcSprite = new GameboyPalette[8];
+    GbcPalette obj2Palette;
+    GbcPalette[] gbcBackground = new GbcPalette[8];
+    GbcPalette[] gbcSprite = new GbcPalette[8];
 
     boolean spritesEnabled = true;
 
@@ -142,13 +145,13 @@ abstract class GraphicsChip {
     public GraphicsChip(Component a, Dmgcpu d) {
         dmgcpu = d;
 
-        backgroundPalette = new GameboyPalette(0, 1, 2, 3);
-        obj1Palette = new GameboyPalette(0, 1, 2, 3);
-        obj2Palette = new GameboyPalette(0, 1, 2, 3);
+        backgroundPalette = new GbcPalette(0, 1, 2, 3);
+        obj1Palette = new GbcPalette(0, 1, 2, 3);
+        obj2Palette = new GbcPalette(0, 1, 2, 3);
 
         for (int r = 0; r < 8; r++) {
-            gbcBackground[r] = new GameboyPalette(0, 1, 2, 3);
-            gbcSprite[r] = new GameboyPalette(0, 1, 2, 3);
+            gbcBackground[r] = new GbcPalette(0, 1, 2, 3);
+            gbcSprite[r] = new GbcPalette(0, 1, 2, 3);
         }
 
         backBuffer = a.createImage(160 * mag, 144 * mag);
@@ -174,36 +177,6 @@ abstract class GraphicsChip {
         backBuffer.flush();
     }
 
-    /**
-     * Calculate the number of frames per second for the current sampling period
-     */
-    public void calculateFPS() {
-        if (startTime == 0) {
-            startTime = System.currentTimeMillis();
-        }
-        if (framesDrawn > 30) {
-            long delay = System.currentTimeMillis() - startTime;
-            averageFPS = (int) ((framesDrawn) / (delay / 1000f));
-            startTime = System.currentTimeMillis();
-            int timePerFrame;
-
-            if (averageFPS != 0) {
-                timePerFrame = 1000 / averageFPS;
-            } else {
-                timePerFrame = 100;
-            }
-            frameWaitTime = 17 - timePerFrame + frameWaitTime;
-            framesDrawn = 0;
-        }
-    }
-
-    /**
-     * Return the number of frames per second achieved in the previous sampling period.
-     */
-    public int getFPS() {
-        return averageFPS;
-    }
-
     public int getWidth() {
         return width;
     }
@@ -212,17 +185,22 @@ abstract class GraphicsChip {
         return height;
     }
 
+    @Mapped(clazz = GbcGpu.class, mapping = "read(int addr)")
     abstract public short addressRead(int addr);
 
+    @Mapped(clazz = GbcGpu.class, mapping = "write(int value, int addr)")
     abstract public void addressWrite(int addr, byte data);
 
+    @Mapped(clazz = GbcGpu.class, mapping = "invalidateAll()")
+    abstract public void invalidateAll();
+
+    @Mapped(clazz = GbcGpu.class, mapping = "invalidateAll(int attribs)")
     abstract public void invalidateAll(int attribs);
 
+    @Mapped(clazz = GbcGpu.class, mapping = "draw(Graphics g)")
     abstract public boolean draw(Graphics g, int startX, int startY, Component a);
 
     abstract public void notifyScanline(int line);
-
-    abstract public void invalidateAll();
 
     abstract public boolean isFrameReady();
 }

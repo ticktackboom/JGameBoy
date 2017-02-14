@@ -1,6 +1,6 @@
 import com.meadowsapps.jgameboy.core.CoreFactory;
 import com.meadowsapps.jgameboy.core.CoreType;
-import com.meadowsapps.jgameboy.core.Cpu;
+import com.meadowsapps.jgameboy.core.cpu.Cpu;
 import com.meadowsapps.jgameboy.core.EmulatorCore;
 
 import java.io.File;

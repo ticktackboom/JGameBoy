@@ -10,6 +10,7 @@ public interface GbcConstants extends Constants {
     int V_BLANK_IRQ = 0x01;
     int LCD_IRQ = 0x02;
     int TIMER_OVERFLOW_IRQ = 0x04;
+    int SERIAL_IRQ = 0x08;
     int JOYPAD_HILO_IRQ = 0x10;
 
     int V_BLANK_IR = 0x40;
@@ -39,8 +40,8 @@ public interface GbcConstants extends Constants {
 
 
     int JOYPAD = 0xFF00;
-    int INTERRUPT_ENABLED_FLAG = 0xFFFF;
     int INTERRUPT_FLAG = 0xFF0F;
+    int INTERRUPT_ENABLED_FLAG = 0xFFFF;
 
 
 
@@ -57,23 +58,42 @@ public interface GbcConstants extends Constants {
     int SCROLL_X = 0xFF43;
     int LY = 0xFF44;
     int LYC = 0xFF45;
+    int DMA = 0xFF46;
     int BGP = 0xFF47;
-    int OBJECT_PALETTE_0 = 0xFF48;
-    int OBJECT_PALETTE_1 = 0xFFf9;
-    int WX = 0xFF4B;
+    int OBP0 = 0xFF48;
+    int OBP1 = 0xFF49;
     int WY = 0xFF4A;
-    int CGB_VRAM_BANK_SELECT = 0xFF4F;
-    int CGB_BGP_WRITESPEC_REGISTER = 0xFF68;
-    int CGB_BGP_WRITEDATA_REGISTER = 0xFF69;
-    int CGB_OBJP_WRITESPEC_REGISTER = 0xFF6A;
-    int CGB_OBJP_WRITEDATA_REGISTER = 0xFF6B;
+    int WX = 0xFF4B;
+    int VRAM_SELECT = 0xFF4F;
+    int BOOT = 0xFF50;
+    int HDMA1 = 0xFF51;
+    int HDMA2 = 0xFF52;
+    int HDMA3 = 0xFF53;
+    int HDMA4 = 0xFF54;
+    int HDMA5 = 0xFF55;
+    int BGPI = 0xFF68;
+    int BGPD = 0xFF69;
+    int OBPI = 0xFF6A;
+    int OBPD = 0xFF6B;
 
-    int H_BLANK = 0x00;
-    int V_BLANK = 0x01;
+    int HBLANK = 0x00;
+    int VBLANK = 0x01;
+
+    int WINDOW_ON = 0x20;
+    int DISPLAY_ON = 0x80;
+    int BACKGROUND_ON = 0x01;
+    int SPRITES_ON = 0x02;
+
+    int TILE_BKG = 0x00;
+    int TILE_OBJ1 = 0x04;
+    int TILE_OBJ2 = 0x08;
+    int TILE_FLIPX = 0x01;
+    int TILE_FLIPY = 0x02;
+
     int OAM_READ = 0x02;
     int VRAM_READ = 0x03;
-    int SPRITE_8x8_MODE = 1;
-    int SPRITE_8x16_MODE = 0;
+    int SPRITE_8x8_MODE = 0x01;
+    int SPRITE_8x16_MODE = 0x00;
 
     /* END GPU */
 }

@@ -1,14 +1,21 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
-import com.meadowsapps.jgameboy.JGameBoyView;
+import com.meadowsapps.jgameboy.JGameBoy;
+import com.meadowsapps.jgameboy.JGameBoyFrame;
 import com.meadowsapps.jgameboy.core.AbstractEmulatorCore;
-import javafx.scene.canvas.GraphicsContext;
+import com.meadowsapps.jgameboy.gbc.core.cartridge.GbcCartridge;
+import com.meadowsapps.jgameboy.gbc.core.cpu.GbcCpu;
+import com.meadowsapps.jgameboy.gbc.core.gpu.GbcGpu;
+import com.meadowsapps.jgameboy.gbc.core.io.GbcButton;
+import com.meadowsapps.jgameboy.gbc.core.io.GbcJoypad;
+import com.meadowsapps.jgameboy.gbc.core.mmu.GbcMmu;
+import com.meadowsapps.jgameboy.gbc.core.ram.GbcRam;
 import javafx.scene.input.KeyCode;
 
 /**
  * Created by dmeadows on 1/17/2017.
  */
-public class GbcCore extends AbstractEmulatorCore {
+public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
 
     private boolean booting;
 
@@ -16,9 +23,9 @@ public class GbcCore extends AbstractEmulatorCore {
 
     private final GbcGpu gpu;
 
-    private final GbcMmu mmu;
+    private final GbcRam ram;
 
-    private final GbcDisplay display;
+    private final GbcMmu mmu;
 
     private final GbcCartridge cartridge;
 
@@ -29,8 +36,8 @@ public class GbcCore extends AbstractEmulatorCore {
     public GbcCore() {
         cpu = new GbcCpu(this);
         gpu = new GbcGpu(this);
+        ram = new GbcRam(this);
         mmu = new GbcMmu(this);
-        display = new GbcDisplay(this);
         cartridge = new GbcCartridge(this);
         joypad = new GbcJoypad(this);
     }
@@ -39,8 +46,8 @@ public class GbcCore extends AbstractEmulatorCore {
     public void initialize() {
         cpu.initialize();
         gpu.initialize();
+        ram.initialize();
         mmu.initialize();
-        display.initialize();
         cartridge.initialize();
         joypad.initialize();
         booting = true;
@@ -59,21 +66,24 @@ public class GbcCore extends AbstractEmulatorCore {
     public void reset() {
         cpu.reset();
         gpu.reset();
+        ram.reset();
         mmu.reset();
-        display.reset();
         cartridge.reset();
         joypad.reset();
     }
 
     @Override
     public void run() {
+        if (isBooting()) {
+            mmu().writeByte(0x00, BOOT);
+        }
+
         int cpuClockAcc = 0;
         while (isRunning()) {
             while (cpuClockAcc < FRAME_CYCLES) {
                 cpu.step();
-                gpu.step();
-                GraphicsContext context = JGameBoyView.getView().getContext();
-                gpu.draw(context);
+                JGameBoyFrame frame = JGameBoy.getInstance().getFrame();
+                frame.repaint();
                 cpuClockAcc += cpu.getClock().m();
             }
             cpuClockAcc = 0;
@@ -91,13 +101,13 @@ public class GbcCore extends AbstractEmulatorCore {
     }
 
     @Override
-    public GbcMmu mmu() {
-        return mmu;
+    public GbcRam ram() {
+        return ram;
     }
 
     @Override
-    public GbcDisplay display() {
-        return display;
+    public GbcMmu mmu() {
+        return mmu;
     }
 
     @Override
@@ -113,4 +123,5 @@ public class GbcCore extends AbstractEmulatorCore {
     public boolean isBooting() {
         return booting;
     }
+
 }

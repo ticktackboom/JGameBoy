@@ -1,6 +1,12 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractCoreElement;
+import com.meadowsapps.jgameboy.gbc.core.cartridge.GbcCartridge;
+import com.meadowsapps.jgameboy.gbc.core.cpu.GbcCpu;
+import com.meadowsapps.jgameboy.gbc.core.gpu.GbcGpu;
+import com.meadowsapps.jgameboy.gbc.core.io.GbcJoypad;
+import com.meadowsapps.jgameboy.gbc.core.mmu.GbcMmu;
+import com.meadowsapps.jgameboy.gbc.core.ram.GbcRam;
 
 /**
  * Created by Dylan on 2/7/17.
@@ -27,13 +33,13 @@ public abstract class AbstractGbcCoreElement extends AbstractCoreElement impleme
     }
 
     @Override
-    public GbcMmu mmu() {
-        return (GbcMmu) super.mmu();
+    public GbcRam ram() {
+        return (GbcRam) super.ram();
     }
 
     @Override
-    public GbcDisplay display() {
-        return (GbcDisplay) super.display();
+    public GbcMmu mmu() {
+        return (GbcMmu) super.mmu();
     }
 
     @Override

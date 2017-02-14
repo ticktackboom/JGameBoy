@@ -1,5 +1,12 @@
 package com.meadowsapps.jgameboy.core;
 
+import com.meadowsapps.jgameboy.core.cartridge.Cartridge;
+import com.meadowsapps.jgameboy.core.cpu.Cpu;
+import com.meadowsapps.jgameboy.core.gpu.Gpu;
+import com.meadowsapps.jgameboy.core.io.Joypad;
+import com.meadowsapps.jgameboy.core.mmu.Mmu;
+import com.meadowsapps.jgameboy.core.ram.Ram;
+
 /**
  * Created by Dylan on 2/7/17.
  */
@@ -27,13 +34,13 @@ public abstract class AbstractCoreElement implements CoreElement {
     }
 
     @Override
-    public Mmu mmu() {
-        return core.mmu();
+    public Ram ram() {
+        return core.ram();
     }
 
     @Override
-    public Display display() {
-        return core.display();
+    public Mmu mmu() {
+        return core.mmu();
     }
 
     @Override

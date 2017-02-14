@@ -331,92 +331,8 @@ class TileBasedGraphicsChip extends GraphicsChip {
      */
     public boolean draw(Graphics g, int startX, int startY, Component a) {
         int tileNum;
-
-
-        calculateFPS();
-        if ((framesDrawn % frameSkip) != 0) {
-            frameDone = true;
-            framesDrawn++;
-            return false;
-        } else {
-            framesDrawn++;
-        }
         Graphics back = backBuffer.getGraphics();
 
-/*  g.setColor(new Color(255,0,0));
-  g.drawRect(5,5, 10, 10);*/
-//  System.out.println("- Drawing");
-//  for (int r = 0; r < 384; r++) {
-//   if (!spriteTiles[r].valid) System.out.println("Generating image for tile " + r);
-//   tiles[r].validate(videoRam, r << 4, backgroundPalette, TILE_BKG);
-//  }
-
-/*  for (int r = 0; r < 20; r++) {
-   bgTiles[r].draw(g, 8 * r, 0);
-  }*/
-
-
-//  drawSprites(back, 1);
-
-
-        // Draw bg layer
-/*
-  int xTileOfs = javaboy.JavaBoy.unsign(dmgcpu.ioHandler.registers[0x43]) / 8;
-  int yTileOfs = javaboy.JavaBoy.unsign(dmgcpu.ioHandler.registers[0x42]) / 8;
-  int xPixelOfs = javaboy.JavaBoy.unsign(dmgcpu.ioHandler.registers[0x43]) % 8;
-  int yPixelOfs = javaboy.JavaBoy.unsign(dmgcpu.ioHandler.registers[0x42]) % 8;
-
-  int bgStartAddress;
-  if (hiBgTileMapAddress) {
-   bgStartAddress = 0x1C00;  /* 1C00 
-  } else {
-   bgStartAddress = 0x1800;
-  }
-
-  int tileAddress = 0;
-  int attribs = 0;
-
-  
-  for (int y = 0; y < 19; y++) {
-   for (int x = 0; x < 21; x++) {
-    int attributeData = 0;
-
-
-    tileAddress = bgStartAddress +
-       (((y + yTileOfs) % 32) * 32) + ((x + xTileOfs) % 32);
-    attributeData = javaboy.JavaBoy.unsign(videoRam[tileAddress + 0x2000]);
-
-    if (bgWindowDataSelect) {
-     tileNum = javaboy.JavaBoy.unsign(videoRam[tileAddress]);
-    } else {
-     tileNum = 256 + videoRam[tileAddress];
-    }
-
-    if (dmgcpu.gbcFeatures) {
-     attribs = (attributeData & 0x07) << 2;
-
-     if ((attributeData & 0x20) != 0) {
-      attribs |= TILE_FLIPX;
-     }
-     if ((attributeData & 0x40) != 0) {
-      attribs |= TILE_FLIPY;
-     }
-
-    } else {
-     attribs = TILE_BKG;
-    }
-
-    if (tiles[tileNum + tileStart].invalid(attribs)) {
-     tiles[tileNum + tileStart].validate(videoRam, tileNum << 4 + vidMemStart, attribs);
-    }
-    tiles[tileNum + tileStart].
-       draw(back, (8 * x) - xPixelOfs, (8 * y) - yPixelOfs, attribs);
-   }
-  }
-*/
-
-
-  /* Draw window */
         if (winEnabled) {
             int wx, wy;
             int windowStartAddress;
@@ -439,7 +355,6 @@ class TileBasedGraphicsChip extends GraphicsChip {
                 for (int x = 0; x < 21 - (wx / 8); x++) {
                     tileAddress = windowStartAddress + (y * 32) + x;
 
-//     if (!bgWindowDataSelect) {
                     if (!savedWindowDataSelect) {
                         tileNum = 256 + videoRam[tileAddress];
                     } else {
@@ -478,42 +393,17 @@ class TileBasedGraphicsChip extends GraphicsChip {
             }
         }
 
-        // Draw sprites if the flag was on at any time during this frame
- /* if (spritesEnabledThisFrame) */
         drawSprites(back, 0);
 
         if ((spritesEnabled) && (dmgcpu.gbcFeatures)) {
             drawSprites(back, 1);
         }
 
-/*  back.setColor(new Color(255, 255, 255));
-  back.fillRect(0, 0, 160, 144);
-  for (int r = 0; r < 384; r++) {
-   tiles[r].validate(videoRam, r << 4, TILE_BKG);
-   tiles[r].draw(back, 8 * (r % 20), 8 * (r / 20), TILE_BKG);
-  }*/
-
-
         g.drawImage(backBuffer, startX, startY, null);
-
-/*  if (mag == 1) {
-   g.drawImage(backBuffer, startX, startY, null);
-  } else {
-   g.drawImage(backBuffer, startX, startY, width, height, null);
-  }*/
-
         frameDone = true;
         return true;
     }
 
-
-    /**
-     * This class represents a tile in the tile data area.  It
-     * contains images for a tile in each of it's three palettes
-     * and images that are flipped horizontally and vertically.
-     * The images are only created when needed, by calling
-     * updateImage().  They can then be drawn by calling draw().
-     */
     class GameboyTile {
 
         Image[] image = new Image[64];
@@ -584,7 +474,7 @@ class TileBasedGraphicsChip extends GraphicsChip {
                 allocateImage(attribs, a);
             }
 
-            GameboyPalette pal;
+            GbcPalette pal;
 
             if (offset == 0x31E0) {
 //	 System.out.println("window updated with " + javaboy.JavaBoy.hexByte(attribs) + " xflip = " + (attribs & TILE_FLIPX) + "  yflip = " + (attribs & TILE_FLIPY));

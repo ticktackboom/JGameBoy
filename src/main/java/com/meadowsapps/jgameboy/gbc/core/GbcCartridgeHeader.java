@@ -93,7 +93,7 @@ public class GbcCartridgeHeader implements Constants {
     }
 
     public int getCartridgeType() {
-        return cartridgeType;
+        return cartridgeType & 0xFF;
     }
 
     public int getRomSizeType() {

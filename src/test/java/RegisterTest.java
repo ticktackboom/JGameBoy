@@ -1,7 +1,7 @@
 import com.meadowsapps.jgameboy.core.Constants;
-import com.meadowsapps.jgameboy.core.Register;
-import com.meadowsapps.jgameboy.core.Register16Bit;
-import com.meadowsapps.jgameboy.core.Register8Bit;
+import com.meadowsapps.jgameboy.core.cpu.Register;
+import com.meadowsapps.jgameboy.core.cpu.Register16Bit;
+import com.meadowsapps.jgameboy.core.cpu.Register8Bit;
 
 /**
  * Created by dmeadows on 1/13/2017.
