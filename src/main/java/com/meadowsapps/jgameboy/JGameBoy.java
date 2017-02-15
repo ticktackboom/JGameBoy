@@ -2,6 +2,8 @@ package com.meadowsapps.jgameboy;
 
 import com.meadowsapps.jgameboy.core.EmulatorCore;
 
+import javax.swing.*;
+
 /**
  * Created by Dylan on 1/6/17.
  */
@@ -36,6 +38,9 @@ public class JGameBoy {
 
     public static void main(String[] args) throws Exception {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
+        String laf = UIManager.getSystemLookAndFeelClassName();
+        UIManager.setLookAndFeel(laf);
+
         JGameBoy emulator = new JGameBoy();
         emulator.frame.setVisible(true);
     }

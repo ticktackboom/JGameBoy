@@ -7,16 +7,17 @@ import com.meadowsapps.jgameboy.core.Constants;
  */
 public interface GbcConstants extends Constants {
 
-    int V_BLANK_IRQ = 0x01;
+    int VBLANK_IRQ = 0x01;
     int LCD_IRQ = 0x02;
     int TIMER_OVERFLOW_IRQ = 0x04;
     int SERIAL_IRQ = 0x08;
-    int JOYPAD_HILO_IRQ = 0x10;
+    int P10_IRQ = 0x10;
 
-    int V_BLANK_IR = 0x40;
+    int VBLANK_IR = 0x40;
     int LCD_IR = 0x48;
     int TIMER_OVERFLOW_IR = 0x50;
-    int JOYPAD_HILO_IR = 0x60;
+    int SERIAL_IR = 0x58;
+    int P10_IR = 0x60;
 
     int WIDTH = 160;
     int HEIGHT = 144;
@@ -35,22 +36,6 @@ public interface GbcConstants extends Constants {
     int HARDWARE_IO = 0xFF00;
     int HIGH_RAM = 0xFF80;
     int INTERRUPT = 0xFFFF;
-
-    /* END MEMORY MAP */
-
-
-    int JOYPAD = 0xFF00;
-    int INTERRUPT_FLAG = 0xFF0F;
-    int INTERRUPT_ENABLED_FLAG = 0xFFFF;
-
-
-
-    /* GPU */
-
-    int TILE_MAP_0 = 0x9800;
-    int TILE_MAP_1 = 0x9C00;
-    int TILE_DATA_0 = 0x8800;
-    int TILE_DATA_1 = 0x8000;
 
     int LCDC = 0xFF40;
     int STAT = 0xFF41;
@@ -76,8 +61,17 @@ public interface GbcConstants extends Constants {
     int OBPI = 0xFF6A;
     int OBPD = 0xFF6B;
 
-    int HBLANK = 0x00;
-    int VBLANK = 0x01;
+    /* END MEMORY MAP */
+
+
+    int JOYPAD = 0xFF00;
+    int INTERRUPT_FLAG = 0xFF0F;
+    int INTERRUPT_ENABLED_FLAG = 0xFFFF;
+
+    int TILE_MAP_0 = 0x9800;
+    int TILE_MAP_1 = 0x9C00;
+    int TILE_DATA_0 = 0x8800;
+    int TILE_DATA_1 = 0x8000;
 
     int WINDOW_ON = 0x20;
     int DISPLAY_ON = 0x80;
@@ -90,6 +84,8 @@ public interface GbcConstants extends Constants {
     int TILE_FLIPX = 0x01;
     int TILE_FLIPY = 0x02;
 
+    int HBLANK = 0x00;
+    int VBLANK = 0x01;
     int OAM_READ = 0x02;
     int VRAM_READ = 0x03;
     int SPRITE_8x8_MODE = 0x01;

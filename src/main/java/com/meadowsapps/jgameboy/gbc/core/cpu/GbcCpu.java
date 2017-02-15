@@ -141,10 +141,10 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 int interrupt = iFlag & ieFlag;
                 if (interrupt != 0x00) {
                     switch (interrupt) {
-                        case V_BLANK_IRQ:
+                        case VBLANK_IRQ:
                             mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFE);
                             pushImpl(PC.read());
-                            PC.write(V_BLANK_IR);
+                            PC.write(VBLANK_IR);
                             break;
                         case LCD_IRQ:
                             mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFD);
@@ -156,10 +156,10 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                             pushImpl(PC.read());
                             PC.write(TIMER_OVERFLOW_IR);
                             break;
-                        case JOYPAD_HILO_IRQ:
+                        case P10_IRQ:
                             mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xEF);
                             pushImpl(PC.read());
-                            PC.write(JOYPAD_HILO_IR);
+                            PC.write(P10_IR);
                             break;
                     }
                     interruptsEnabled = false;
@@ -3594,18 +3594,29 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             interruptsEnabled = false;
             pushImpl(PC.read());
 
-            if ((interruptsFlags & interruptEnabledRegister & V_BLANK_IRQ) != 0) {
-                interruptsFlags -= V_BLANK_IRQ;
-                PC.write(V_BLANK_IR);
+            if ((interruptsFlags & interruptEnabledRegister & VBLANK_IRQ) != 0) {
+                interruptsFlags -= VBLANK_IRQ;
+                PC.write(VBLANK_IR);
             } else if ((interruptsFlags & interruptEnabledRegister & LCD_IRQ) != 0) {
                 interruptsFlags -= LCD_IRQ;
                 PC.write(LCD_IR);
-            } else if ((interruptsFlags & interruptEnabledRegister &))
+            } else if ((interruptsFlags & interruptEnabledRegister & TIMER_OVERFLOW_IRQ) != 0) {
+                interruptsFlags -= TIMER_OVERFLOW_IRQ;
+                PC.write(TIMER_OVERFLOW_IR);
+            } else if ((interruptsFlags & interruptEnabledRegister & SERIAL_IRQ) != 0) {
+                interruptsFlags -= SERIAL_IRQ;
+                PC.write(SERIAL_IR);
+            } else if ((interruptsFlags & interruptEnabledRegister & P10_IRQ) != 0) {
+                interruptsFlags -= P10_IRQ;
+                PC.write(P10_IR);
+            }
+
+            mmu().writeByte(interruptsFlags, 0xFF0F);
         }
     }
 
     private void initiateInterrupts() {
-
+        boolean timaEnabled = (mmu().readByte(0xFF07) & 0x04) == 0;
     }
 
     /**

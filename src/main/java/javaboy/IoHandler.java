@@ -220,7 +220,6 @@ class IoHandler {
         boolean soundOn = (dmgcpu.soundChip != null);
 
         if (num <= 0x4B) {
-//  System.out.println("Write of register " + javaboy.JavaBoy.hexByte(num) + " to " + javaboy.JavaBoy.hexWord(data) + " at " + javaboy.JavaBoy.hexWord(dmgcpu.pc));
         }
 
         switch (num) {
@@ -256,14 +255,11 @@ class IoHandler {
                 }
                 output |= (data & 0xF0);
                 registers[0x00] = (byte) (output);
-//    System.out.println("Joypad port = " + javaboy.JavaBoy.hexByte(data) + " output = " + javaboy.JavaBoy.hexByte(output) + "(PC=" + javaboy.JavaBoy.hexWord(dmgcpu.pc) + ")");
                 break;
 
-            case 0x02:           // Serial
-
+            case 0x02:
                 registers[0x02] = (byte) data;
-
-                if (dmgcpu.gameLink != null) {                    // Game Link is connected to serial port
+                if (dmgcpu.gameLink != null) {
                     if (((JavaBoy.unsign(data) & 0x81) == 0x81)) {
                         dmgcpu.gameLink.send(registers[0x01]);
                     }
@@ -274,18 +270,6 @@ class IoHandler {
                         registers[0x02] &= 0x7F;
                     }
                 }
-
-/*    if (dmgcpu.gameLink == null) {  // Simulate no gameboy present
-     if ((registers[0x02] & 0x01) == 1) {
-	  //System.out.println("Sent byte: " + javaboy.JavaBoy.hexByte(javaboy.JavaBoy.unsign(registers[0x01])));
-      registers[0x01] = (byte) 0xFF; // when no LAN connection
-      dmgcpu.triggerInterrupt(dmgcpu.INT_SER);
-      registers[0x02] &= 0x7F;
-     }
-    } else if (((javaboy.JavaBoy.unsign(data) & 0x81) == 0x81) && (dmgcpu.gameLink != null)) {
-     dmgcpu.gameLink.send(registers[0x01]);
-    }
-//    System.out.println(javaboy.JavaBoy.hexWord(dmgcpu.pc));*/
                 break;
 
             case 0x04:           // DIV
