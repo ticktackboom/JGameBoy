@@ -1,4 +1,4 @@
-import com.meadowsapps.jgameboy.gbc.core.cartridge.GbcCartridge;
+import com.meadowsapps.jgameboy.gbc.core.element.cartridge.GbcCartridge;
 import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 import java.io.File;

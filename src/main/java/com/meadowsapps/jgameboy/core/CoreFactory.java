@@ -1,5 +1,6 @@
 package com.meadowsapps.jgameboy.core;
 
+import com.meadowsapps.jgameboy.core.element.InitializationException;
 import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 
 /**
@@ -18,15 +19,19 @@ public class CoreFactory {
 
     public EmulatorCore getCore(CoreType type) {
         EmulatorCore rv = null;
-        switch (type) {
-            case GAMEBOY:
-            case GAMEBOY_COLOR:
-                rv = new GbcCore();
-                break;
-            case GAMEBOY_ADVANCE:
-                break;
+        try {
+            switch (type) {
+                case GAMEBOY:
+                case GAMEBOY_COLOR:
+                    rv = new GbcCore();
+                    break;
+                case GAMEBOY_ADVANCE:
+                    break;
+            }
+            rv.initialize();
+        } catch (InitializationException e) {
+            e.printStackTrace();
         }
-        rv.initialize();
         return rv;
     }
 

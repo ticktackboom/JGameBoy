@@ -1,23 +1,28 @@
 package com.meadowsapps.jgameboy;
 
 import com.meadowsapps.jgameboy.core.EmulatorCore;
-
-import javax.swing.*;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * Created by Dylan on 1/6/17.
  */
-public class JGameBoy {
+public class JGameBoy extends Application {
 
     private EmulatorCore core;
-
-    private JGameBoyFrame frame;
 
     private static JGameBoy instance;
 
     public JGameBoy() {
-        frame = new JGameBoyFrame();
         instance = this;
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        JGameBoyView view = new JGameBoyView(stage);
+        stage.setScene(new Scene(view));
+        stage.show();
     }
 
     public EmulatorCore getCore() {
@@ -28,20 +33,11 @@ public class JGameBoy {
         this.core = core;
     }
 
-    public JGameBoyFrame getFrame() {
-        return frame;
-    }
-
     public static JGameBoy getInstance() {
         return instance;
     }
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        String laf = UIManager.getSystemLookAndFeelClassName();
-        UIManager.setLookAndFeel(laf);
-
-        JGameBoy emulator = new JGameBoy();
-        emulator.frame.setVisible(true);
+        launch(args);
     }
 }

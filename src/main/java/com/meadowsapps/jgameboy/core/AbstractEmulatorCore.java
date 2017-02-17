@@ -1,5 +1,8 @@
 package com.meadowsapps.jgameboy.core;
 
+
+import javax.swing.*;
+
 /**
  * Created by dmeadows on 2/9/2017.
  */
@@ -9,19 +12,20 @@ public abstract class AbstractEmulatorCore implements EmulatorCore {
 
     private boolean running;
 
-    private Thread emulationThread;
+    private Timer timer;
 
     public AbstractEmulatorCore() {
-        emulationThread = new Thread(this);
+        timer = new Timer(17, event -> {
+            run();
+        });
+        timer.setRepeats(true);
         scale = 1.0;
     }
 
     @Override
     public void start() {
-        if (!emulationThread.isAlive()) {
-            emulationThread.start();
-            running = true;
-        }
+        timer.start();
+        running = true;
     }
 
     @Override

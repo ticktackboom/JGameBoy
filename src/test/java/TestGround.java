@@ -1,4 +1,4 @@
-import com.meadowsapps.jgameboy.core.cpu.Register8Bit;
+import com.meadowsapps.jgameboy.core.element.cpu.Register8Bit;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
