@@ -37,10 +37,38 @@ public interface GbcConstants extends Constants {
     int HIGH_RAM = 0xFF80;
     int INTERRUPT = 0xFFFF;
 
+    int JOYP = 0xFF00;
+    int SB = 0xFF01;
+    int DIV = 0xFF04;
+    int TIMA = 0xFF05;
+    int TMA = 0xFF06;
+    int TAC = 0xFF07;
+    int IF = 0xFF0F;
+    int NR10 = 0xFF10;
+    int NR11 = 0xFF11;
+    int NR12 = 0xFF12;
+    int NR13 = 0xFF13;
+    int NR14 = 0xFF14;
+    int NR21 = 0xFF16;
+    int NR22 = 0xFF17;
+    int NR23 = 0xFF18;
+    int NR24 = 0xFF19;
+    int NR30 = 0xFF1A;
+    int NR31 = 0xFF1B;
+    int NR32 = 0xFF1C;
+    int NR33 = 0xFF1D;
+    int NR34 = 0xFF1E;
+    int NR41 = 0xFF20;
+    int NR42 = 0xFF21;
+    int NR43 = 0xFF22;
+    int NR44 = 0xFF23;
+    int NR50 = 0xFF24;
+    int NR51 = 0xFF25;
+    int NR52 = 0xFF26;
     int LCDC = 0xFF40;
     int STAT = 0xFF41;
-    int SCROLL_Y = 0xFF42;
-    int SCROLL_X = 0xFF43;
+    int SCY = 0xFF42;
+    int SCX = 0xFF43;
     int LY = 0xFF44;
     int LYC = 0xFF45;
     int DMA = 0xFF46;
@@ -49,7 +77,7 @@ public interface GbcConstants extends Constants {
     int OBP1 = 0xFF49;
     int WY = 0xFF4A;
     int WX = 0xFF4B;
-    int VRAM_SELECT = 0xFF4F;
+    int VBK = 0xFF4F;
     int BOOT = 0xFF50;
     int HDMA1 = 0xFF51;
     int HDMA2 = 0xFF52;
@@ -60,13 +88,11 @@ public interface GbcConstants extends Constants {
     int BGPD = 0xFF69;
     int OBPI = 0xFF6A;
     int OBPD = 0xFF6B;
+    int SVBK = 0xFF70;
 
     /* END MEMORY MAP */
 
-
-    int JOYPAD = 0xFF00;
-    int INTERRUPT_FLAG = 0xFF0F;
-    int INTERRUPT_ENABLED_FLAG = 0xFFFF;
+    int IE_FLAG = 0xFFFF;
 
     int TILE_MAP_0 = 0x9800;
     int TILE_MAP_1 = 0x9C00;

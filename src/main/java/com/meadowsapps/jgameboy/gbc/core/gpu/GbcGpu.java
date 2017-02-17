@@ -213,10 +213,10 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
                     case STAT:
                         rv = (mode | (stat & 0xF8));
                         break;
-                    case SCROLL_Y:
+                    case SCY:
                         rv = scrollY;
                         break;
-                    case SCROLL_X:
+                    case SCX:
                         rv = scrollX;
                         break;
                     case WX:
@@ -281,10 +281,10 @@ public class GbcGpu extends AbstractGbcCoreElement implements Gpu {
                     case STAT:
                         stat = (stat & 0x0F) | value;
                         break;
-                    case SCROLL_Y:
+                    case SCY:
                         scrollY = value;
                         break;
-                    case SCROLL_X:
+                    case SCX:
                         scrollX = value;
                         break;
                     case WX:

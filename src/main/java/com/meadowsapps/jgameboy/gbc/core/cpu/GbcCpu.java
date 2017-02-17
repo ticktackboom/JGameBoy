@@ -136,7 +136,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         if (!halted) {
             // check for interrupt
             if (interruptsEnabled) {
-                int ieFlag = mmu().readByte(INTERRUPT_ENABLED_FLAG);
+                int ieFlag = mmu().readByte(IE_FLAG);
                 int iFlag = mmu().readByte(INTERRUPT_FLAG);
                 int interrupt = iFlag & ieFlag;
                 if (interrupt != 0x00) {
