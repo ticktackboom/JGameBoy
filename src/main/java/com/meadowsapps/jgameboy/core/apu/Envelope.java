@@ -5,33 +5,57 @@ package com.meadowsapps.jgameboy.core.apu;
  */
 public class Envelope {
 
-    private int initialValue;
+    private int base;
 
-    private int numberOfSteps;
+    private int direction;
 
-    private boolean increase;
+    private int stepLength;
 
-    public int getInitialValue() {
-        return initialValue;
+    private int index;
+
+    public int getBase() {
+        return base;
     }
 
-    public void setInitialValue(int initialValue) {
-        this.initialValue = initialValue;
+    public void setBase(int base) {
+        this.base = base;
     }
 
-    public int getNumberOfSteps() {
-        return numberOfSteps;
+    public int getDirection() {
+        return direction;
     }
 
-    public void setNumberOfSteps(int numberOfSteps) {
-        this.numberOfSteps = numberOfSteps;
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
-    public boolean isIncrease() {
-        return increase;
+    public int getStepLength() {
+        return stepLength;
     }
 
-    public void setIncrease(boolean increase) {
-        this.increase = increase;
+    public void setStepLength(int stepLength) {
+        this.stepLength = stepLength;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public void handleSweep() {
+        if (index > 0) {
+            index--;
+            if (index == 0) {
+                index = stepLength;
+                if (direction == 1 && base < 0xF) {
+                    base++;
+                } else if (direction == 0 && base > 0) {
+                    base--;
+                }
+            }
+        }
     }
 }
