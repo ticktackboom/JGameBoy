@@ -1,7 +1,7 @@
 package com.meadowsapps.jgameboy.core.io;
 
 import com.meadowsapps.jgameboy.core.CoreElement;
-import com.meadowsapps.jgameboy.core.io.Button;
+import com.meadowsapps.jgameboy.core.IODevice;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.input.KeyEvent;

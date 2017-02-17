@@ -13,8 +13,6 @@ import java.io.InputStream;
  */
 public class GbcMmu extends AbstractGbcCoreElement implements Mmu {
 
-    private int boot;
-
     private int[] hram;
 
     private byte[] bios;
