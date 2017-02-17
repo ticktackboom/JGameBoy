@@ -21,9 +21,6 @@ Place - Suite 330, Boston, MA 02111-1307, USA.
 
 */
 
-import com.meadowsapps.jgameboy.core.Mapped;
-import com.meadowsapps.jgameboy.gbc.core.gpu.GbcGpu;
-
 import java.awt.*;
 
 /**
@@ -185,19 +182,14 @@ abstract class GraphicsChip {
         return height;
     }
 
-    @Mapped(clazz = GbcGpu.class, mapping = "read(int addr)")
     abstract public short addressRead(int addr);
 
-    @Mapped(clazz = GbcGpu.class, mapping = "write(int value, int addr)")
     abstract public void addressWrite(int addr, byte data);
 
-    @Mapped(clazz = GbcGpu.class, mapping = "invalidateAll()")
     abstract public void invalidateAll();
 
-    @Mapped(clazz = GbcGpu.class, mapping = "invalidateAll(int attribs)")
     abstract public void invalidateAll(int attribs);
 
-    @Mapped(clazz = GbcGpu.class, mapping = "draw(Graphics g)")
     abstract public boolean draw(Graphics g, int startX, int startY, Component a);
 
     abstract public void notifyScanline(int line);

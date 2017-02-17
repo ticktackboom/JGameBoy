@@ -1,6 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.AbstractCoreElement;
+import com.meadowsapps.jgameboy.gbc.core.apu.GbcApu;
 import com.meadowsapps.jgameboy.gbc.core.cartridge.GbcCartridge;
 import com.meadowsapps.jgameboy.gbc.core.cpu.GbcCpu;
 import com.meadowsapps.jgameboy.gbc.core.gpu.GbcGpu;
@@ -25,6 +26,11 @@ public abstract class AbstractGbcCoreElement extends AbstractCoreElement impleme
     @Override
     public GbcCpu cpu() {
         return (GbcCpu) super.cpu();
+    }
+
+    @Override
+    public GbcApu apu() {
+        return (GbcApu) super.apu();
     }
 
     @Override

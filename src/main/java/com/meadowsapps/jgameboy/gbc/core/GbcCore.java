@@ -3,6 +3,7 @@ package com.meadowsapps.jgameboy.gbc.core;
 import com.meadowsapps.jgameboy.JGameBoy;
 import com.meadowsapps.jgameboy.JGameBoyFrame;
 import com.meadowsapps.jgameboy.core.AbstractEmulatorCore;
+import com.meadowsapps.jgameboy.gbc.core.apu.GbcApu;
 import com.meadowsapps.jgameboy.gbc.core.cartridge.GbcCartridge;
 import com.meadowsapps.jgameboy.gbc.core.cpu.GbcCpu;
 import com.meadowsapps.jgameboy.gbc.core.gpu.GbcGpu;
@@ -21,6 +22,8 @@ public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
 
     private final GbcCpu cpu;
 
+    private final GbcApu apu;
+
     private final GbcGpu gpu;
 
     private final GbcRam ram;
@@ -35,6 +38,7 @@ public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
 
     public GbcCore() {
         cpu = new GbcCpu(this);
+        apu = new GbcApu(this);
         gpu = new GbcGpu(this);
         ram = new GbcRam(this);
         mmu = new GbcMmu(this);
@@ -45,6 +49,7 @@ public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
     @Override
     public void initialize() {
         cpu.initialize();
+        apu.initialize();
         gpu.initialize();
         ram.initialize();
         mmu.initialize();
@@ -65,6 +70,7 @@ public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
     @Override
     public void reset() {
         cpu.reset();
+        apu.reset();
         gpu.reset();
         ram.reset();
         mmu.reset();
@@ -82,9 +88,11 @@ public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
         while (isRunning()) {
             while (cpuClockAcc < FRAME_CYCLES) {
                 cpu.step();
+                int cycles = cpu.getClock().m();
+                apu.updateSound(cycles);
                 JGameBoyFrame frame = JGameBoy.getInstance().getFrame();
                 frame.repaint();
-                cpuClockAcc += cpu.getClock().m();
+                cpuClockAcc += cycles;
             }
             cpuClockAcc = 0;
         }
@@ -93,6 +101,11 @@ public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
     @Override
     public GbcCpu cpu() {
         return cpu;
+    }
+
+    @Override
+    public GbcApu apu() {
+        return apu;
     }
 
     @Override

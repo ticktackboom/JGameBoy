@@ -1,5 +1,6 @@
 package com.meadowsapps.jgameboy.core;
 
+import com.meadowsapps.jgameboy.core.apu.Apu;
 import com.meadowsapps.jgameboy.core.cartridge.Cartridge;
 import com.meadowsapps.jgameboy.core.cpu.Cpu;
 import com.meadowsapps.jgameboy.core.gpu.Gpu;
@@ -26,6 +27,11 @@ public abstract class AbstractCoreElement implements CoreElement {
     @Override
     public Cpu cpu() {
         return core.cpu();
+    }
+
+    @Override
+    public Apu apu() {
+        return core.apu();
     }
 
     @Override

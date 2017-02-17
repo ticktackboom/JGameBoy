@@ -1,6 +1,7 @@
 package com.meadowsapps.jgameboy.gbc.core;
 
 import com.meadowsapps.jgameboy.core.CoreElement;
+import com.meadowsapps.jgameboy.gbc.core.apu.GbcApu;
 import com.meadowsapps.jgameboy.gbc.core.cartridge.GbcCartridge;
 import com.meadowsapps.jgameboy.gbc.core.cpu.GbcCpu;
 import com.meadowsapps.jgameboy.gbc.core.gpu.GbcGpu;
@@ -16,6 +17,8 @@ public interface GbcCoreElement extends CoreElement, GbcConstants {
     GbcCore core();
 
     GbcCpu cpu();
+
+    GbcApu apu();
 
     GbcGpu gpu();
 

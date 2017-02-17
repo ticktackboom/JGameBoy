@@ -80,7 +80,7 @@ public class SquareWaveChannel extends BaseChannel {
         for (int i = 0; i < 4; i++) {
             soundWavePattern[i] = new int[32];
             for (int j = 0; j < 32; j++) {
-                soundWavePattern[i][j] = (j < pattern[j]) ? 1 : -1;
+                soundWavePattern[i][j] = (j < pattern[i]) ? 1 : -1;
             }
         }
         return soundWavePattern;

@@ -1,5 +1,6 @@
 package com.meadowsapps.jgameboy.core;
 
+import com.meadowsapps.jgameboy.core.apu.Apu;
 import com.meadowsapps.jgameboy.core.cartridge.Cartridge;
 import com.meadowsapps.jgameboy.core.cpu.Cpu;
 import com.meadowsapps.jgameboy.core.gpu.Gpu;
@@ -23,6 +24,8 @@ public interface EmulatorCore extends Constants, Runnable {
     boolean isRunning();
 
     Cpu cpu();
+
+    Apu apu();
 
     Gpu gpu();
 

@@ -130,34 +130,33 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         clock.t(0);
     }
 
-    @Override
     public void step() {
         // clock.reset()
         if (!halted) {
             // check for interrupt
             if (interruptsEnabled) {
                 int ieFlag = mmu().readByte(IE_FLAG);
-                int iFlag = mmu().readByte(INTERRUPT_FLAG);
+                int iFlag = mmu().readByte(IF);
                 int interrupt = iFlag & ieFlag;
                 if (interrupt != 0x00) {
                     switch (interrupt) {
                         case VBLANK_IRQ:
-                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFE);
+                            mmu().writeByte(IF, iFlag & 0xFE);
                             pushImpl(PC.read());
                             PC.write(VBLANK_IR);
                             break;
                         case LCD_IRQ:
-                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFD);
+                            mmu().writeByte(IF, iFlag & 0xFD);
                             pushImpl(PC.read());
                             PC.write(LCD_IR);
                             break;
                         case TIMER_OVERFLOW_IRQ:
-                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xFB);
+                            mmu().writeByte(IF, iFlag & 0xFB);
                             pushImpl(PC.read());
                             PC.write(TIMER_OVERFLOW_IR);
                             break;
                         case P10_IRQ:
-                            mmu().writeByte(INTERRUPT_FLAG, iFlag & 0xEF);
+                            mmu().writeByte(IF, iFlag & 0xEF);
                             pushImpl(PC.read());
                             PC.write(P10_IR);
                             break;
