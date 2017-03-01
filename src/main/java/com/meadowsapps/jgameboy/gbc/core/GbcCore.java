@@ -15,6 +15,8 @@ import javafx.scene.input.KeyCode;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import static com.meadowsapps.jgameboy.gbc.core.element.GbcMemoryMap.*;
+
 /**
  * Created by dmeadows on 1/17/2017.
  */
@@ -118,9 +120,16 @@ public class GbcCore extends AbstractEmulatorCore implements GbcConstants {
     }
 
     @Override
-    public void run() {
-        cpu.step();
-        apu.step();
+    public void handle(long now) {
+        boolean complete = false;
+        while (!complete) {
+            cpu.step();
+
+//            gpu.step();
+            apu.step();
+
+            cpu.handleInterrupts();
+        }
     }
 
     @Override

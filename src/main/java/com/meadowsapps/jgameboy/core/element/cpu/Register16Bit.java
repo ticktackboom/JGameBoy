@@ -5,47 +5,36 @@ package com.meadowsapps.jgameboy.core.element.cpu;
  */
 public class Register16Bit extends AbstractRegister {
 
-    private int word;
+    private short value;
 
     public Register16Bit() {
-        word = 0;
+        value = 0;
     }
 
     @Override
-    public int read() {
-        return word;
+    protected int _readImpl() {
+        return Short.toUnsignedInt(value);
     }
 
     @Override
-    public void write(int value) {
-        this.word = value & 0xFFFF;
-    }
-
-    public int word() {
-        return word;
-    }
-
-    public void word(int word) {
-        word &= 0xFFFF;
-        this.word = word;
+    protected void _writeImpl(int value) {
+        this.value = (short) value;
     }
 
     public int hi() {
-        return word >> 8;
+        return _readImpl() >> 8;
     }
 
     public void hi(int hi) {
-        hi &= 0xFF;
-        word = (hi << 8) + lo();
+        _writeImpl(((hi & 0xFF) << 8) + lo());
     }
 
     public int lo() {
-        return word & 0xFF;
+        return _readImpl() & 0xFF;
     }
 
     public void lo(int lo) {
-        lo &= 0xFF;
-        word = (hi() << 8) + lo;
+        _writeImpl((hi() << 8) + (lo & 0xFF));
     }
 
 }

@@ -6,6 +6,8 @@ import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 import com.meadowsapps.jgameboy.gbc.core.element.AbstractGbcCoreElement;
 import javafx.scene.input.KeyEvent;
 
+import static com.meadowsapps.jgameboy.gbc.core.element.GbcMemoryMap.JOYP;
+
 /**
  * Created by dmeadows on 2/8/2017.
  */

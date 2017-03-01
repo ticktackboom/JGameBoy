@@ -1,45 +1,40 @@
 package com.meadowsapps.jgameboy.core;
 
 
-import javax.swing.*;
+import javafx.animation.AnimationTimer;
 
 /**
  * Created by dmeadows on 2/9/2017.
  */
-public abstract class AbstractEmulatorCore implements EmulatorCore {
+public abstract class AbstractEmulatorCore extends AnimationTimer implements EmulatorCore {
 
     private double scale;
 
     private boolean running;
 
-    private Timer timer;
-
     public AbstractEmulatorCore() {
-        timer = new Timer(17, event -> {
-            run();
-        });
-        timer.setRepeats(true);
         scale = 1.0;
     }
 
     @Override
     public void start() {
-        timer.start();
         running = true;
+        super.start();
     }
 
     @Override
     public void stop() {
+        super.stop();
         running = false;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return running;
     }
 
     @Override
     public double getScale() {
         return scale;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return running;
     }
 }

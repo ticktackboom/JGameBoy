@@ -9,6 +9,8 @@ import com.meadowsapps.jgameboy.gbc.core.element.AbstractGbcCoreElement;
 
 import javax.sound.sampled.*;
 
+import static com.meadowsapps.jgameboy.gbc.core.element.GbcMemoryMap.*;
+
 /**
  * Created by Dylan on 2/16/17.
  */
@@ -88,7 +90,7 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
     public void step() {
         initChannels();
 
-        int cycles = cpu().getClock().m();
+        int cycles = cpu().clock().m();
         soundTimer += cycles;
         if (soundTimer >= 93) {
             soundTimer -= 93;

@@ -7,6 +7,9 @@ import com.meadowsapps.jgameboy.core.element.cpu.Register8Bit;
 import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 import com.meadowsapps.jgameboy.gbc.core.element.AbstractGbcCoreElement;
 
+import static com.meadowsapps.jgameboy.gbc.core.element.GbcMemoryMap.IE;
+import static com.meadowsapps.jgameboy.gbc.core.element.GbcMemoryMap.IF;
+
 /**
  * Emulated CPU found inside of the Nintendo GameBoy.
  * Custom 8-bit Sharp LR35902 based on the Intel 8080
@@ -136,44 +139,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     public void step() {
         // clock.reset()
         if (!halt) {
-            // check for interrupt
-            if (ime) {
-                int ieFlag = mmu().readByte(IE);
-                int iFlag = mmu().readByte(IF);
-                int interrupt = iFlag & ieFlag;
-                if (interrupt != 0x00) {
-                    switch (interrupt) {
-                        case V_BLANK_INTERRUPT:
-                            mmu().writeByte(IF, iFlag & 0xFE);
-                            pushImpl(PC.read());
-                            PC.write(INT40);
-                            break;
-                        case LCDC_STATUS_INTERRUPT:
-                            mmu().writeByte(IF, iFlag & 0xFD);
-                            pushImpl(PC.read());
-                            PC.write(INT48);
-                            break;
-                        case TIMER_INTERRUPT:
-                            mmu().writeByte(IF, iFlag & 0xFB);
-                            pushImpl(PC.read());
-                            PC.write(INT50);
-                            break;
-                        case JOYPAD_INTERRUPT:
-                            mmu().writeByte(IF, iFlag & 0xEF);
-                            pushImpl(PC.read());
-                            PC.write(INT60);
-                            break;
-                    }
-                    ime = false;
-                }
-            }
-
             // fetch
             int opcode = mmu().readByte(PC.read());
             // decode and execute
             execute(opcode);
         } else {
-            clock.m(1);
+            clock.m(4);
         }
     }
 
@@ -1990,17 +1961,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
                 hex = "0x" + hex;
                 throw new IllegalArgumentException(message.replace("%OPCODE%", hex));
         }
-
         completed++;
-        if (ime) {
-            checkInterrupts();
-        }
-
         if (!jumped) {
             PC.add(op.getLength());
         }
         clock.m(op.getTiming());
-        initiateInterrupts();
         debug(op);
     }
 
@@ -3583,13 +3548,13 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void debug(Opcode op) {
-//        System.out.println(completed + ": " + op);
+        System.out.println(completed + ": " + op);
 //        if (PC.read() == 0x00A3) {
 //            System.out.println();
 //        }
     }
 
-    private void checkInterrupts() {
+    public void handleInterrupts() {
         if (isInterruptTriggered()) {
             halt = false;
             if (ime) {
@@ -3624,10 +3589,6 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             ime = false;
             di = false;
         }
-    }
-
-    private void initiateInterrupts() {
-        boolean timaEnabled = (mmu().readByte(0xFF07) & 0x04) == 0;
     }
 
     private boolean isInterruptTriggered() {
@@ -4219,7 +4180,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         return (r1.read() << 8) + r2.read();
     }
 
-    public GbcCpuClock getClock() {
+    public GbcCpuClock clock() {
         return clock;
     }
 

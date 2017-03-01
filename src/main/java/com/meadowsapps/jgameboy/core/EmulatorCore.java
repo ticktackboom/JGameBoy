@@ -12,7 +12,7 @@ import com.meadowsapps.jgameboy.core.util.Constants;
 /**
  * Created by dmeadows on 1/17/2017.
  */
-public interface EmulatorCore extends Constants, Runnable {
+public interface EmulatorCore extends Constants {
 
     void initialize() throws InitializationException;
 
@@ -21,8 +21,6 @@ public interface EmulatorCore extends Constants, Runnable {
     void start();
 
     void stop();
-
-    boolean isRunning();
 
     Cpu cpu();
 
@@ -37,5 +35,7 @@ public interface EmulatorCore extends Constants, Runnable {
     Joypad joypad();
 
     double getScale();
+
+    boolean isRunning();
 
 }

@@ -5,6 +5,8 @@ import com.meadowsapps.jgameboy.core.element.mmu.Mmu;
 import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 import com.meadowsapps.jgameboy.gbc.core.element.AbstractGbcCoreElement;
 
+import static com.meadowsapps.jgameboy.gbc.core.element.GbcMemoryMap.*;
+
 /**
  * Created by Dylan on 1/12/17.
  */

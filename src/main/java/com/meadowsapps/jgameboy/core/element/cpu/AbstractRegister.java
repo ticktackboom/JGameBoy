@@ -8,50 +8,60 @@ import com.meadowsapps.jgameboy.core.util.Constants;
 public abstract class AbstractRegister implements Register {
 
     @Override
+    public int read() {
+        return _readImpl();
+    }
+
+    @Override
+    public void write(int value) {
+        _writeImpl(value);
+    }
+
+    @Override
     public final void inc() {
-        int result = read() + 1;
-        write(result);
+        int result = _readImpl() + 1;
+        _writeImpl(result);
     }
 
     @Override
     public final void dec() {
-        int result = read() - 1;
-        write(result);
+        int result = _readImpl() - 1;
+        _writeImpl(result);
     }
 
     @Override
     public final void shift(int dir, int by) {
-        int value = read();
+        int value = _readImpl();
         int result = (dir == Constants.LEFT) ? value << by : value >> by;
-        write(result);
+        _writeImpl(result);
     }
 
     @Override
     public final void invert() {
-        int result = ~read();
-        write(result);
+        int result = ~_readImpl();
+        _writeImpl(result);
     }
 
     @Override
     public final void add(int value) {
-        int result = read() + value;
-        write(result);
+        int result = _readImpl() + value;
+        _writeImpl(result);
     }
 
     @Override
     public final void subtract(int value) {
-        int result = read() - value;
-        write(result);
+        int result = _readImpl() - value;
+        _writeImpl(result);
     }
 
     @Override
     public final int get(int bit) {
-        return ((read() >> bit) & 1);
+        return ((_readImpl() >> bit) & 1);
     }
 
     @Override
     public final void set(int bit, int set) {
-        int value = read();
+        int value = _readImpl();
 
         int result;
         if (set == 1) {
@@ -59,7 +69,7 @@ public abstract class AbstractRegister implements Register {
         } else {
             result = value & ~(1 << bit);
         }
-        write(result);
+        _writeImpl(result);
     }
 
     @Override
@@ -69,9 +79,9 @@ public abstract class AbstractRegister implements Register {
 
     @Override
     public final void flip(int bit) {
-        int value = read();
+        int value = _readImpl();
         int result = (value ^ (1 << bit));
-        write(result);
+        _writeImpl(result);
     }
 
     @Override
@@ -82,8 +92,22 @@ public abstract class AbstractRegister implements Register {
     @Override
     public String toString() {
         return getClass().getSimpleName() + '{' +
-                "value: " + read() +
+                "value: " + _readImpl() +
                 '}';
     }
+
+    /**
+     * Read implementation used for internal reading within the register
+     *
+     * @return
+     */
+    protected abstract int _readImpl();
+
+    /**
+     * Write implementation used for internal writing within the register
+     *
+     * @param value
+     */
+    protected abstract void _writeImpl(int value);
 
 }
