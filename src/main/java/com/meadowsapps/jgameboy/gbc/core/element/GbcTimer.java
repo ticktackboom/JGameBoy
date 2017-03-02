@@ -39,14 +39,14 @@ public class GbcTimer extends AbstractGbcCoreElement {
 
             div++;
             if (div == 16) {
-                mmu().writeByte((div + 1) & 0xFF, DIV);
+                mmu().write((div + 1) & 0xFF, DIV);
                 div = 0;
             }
         }
     }
 
     private void check() {
-        int tac = mmu().readByte(TAC);
+        int tac = mmu().read(TAC);
         if ((tac & 0x04) == 1) {
             switch (tac & 0x03) {
                 case 0:

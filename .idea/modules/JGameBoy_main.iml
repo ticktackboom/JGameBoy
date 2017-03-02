@@ -4,12 +4,14 @@
     <output url="file://$MODULE_DIR$/../../build/classes/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-all:2.3.11" level="project" />
+    <orderEntry type="library" name="Gradle: log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.7" level="project" />
   </component>
 </module>

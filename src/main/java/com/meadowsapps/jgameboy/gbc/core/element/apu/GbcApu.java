@@ -6,6 +6,7 @@ import com.meadowsapps.jgameboy.core.element.apu.Channel;
 import com.meadowsapps.jgameboy.core.element.apu.Envelope;
 import com.meadowsapps.jgameboy.gbc.core.GbcCore;
 import com.meadowsapps.jgameboy.gbc.core.element.AbstractGbcCoreElement;
+import com.meadowsapps.jgameboy.groovy.core.util.Register8Bit;
 
 import javax.sound.sampled.*;
 
@@ -126,11 +127,11 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
             removeSoundReset(1);
             setSoundOn(1);
 
-            int nr10 = mmu().readByte(NR10);
-            int nr11 = mmu().readByte(NR11);
-            int nr12 = mmu().readByte(NR12);
-            int nr13 = mmu().readByte(NR13);
-            int nr14 = mmu().readByte(NR14);
+            int nr10 = mmu().read(NR10);
+            int nr11 = mmu().read(NR11);
+            int nr12 = mmu().read(NR12);
+            int nr13 = mmu().read(NR13);
+            int nr14 = mmu().read(NR14);
 
             channel1.setOn(true);
             channel1.setWaveDuty((nr11 >> 6) & 0x3);
@@ -191,10 +192,10 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
                         setSoundOff(1);
                     } else {
                         int nr13 = channel1.getGbFrequency() & 0xFF;
-                        mmu().writeByte(nr13, NR13);
-                        int nr14 = mmu().readByte(NR14);
+                        mmu().write(nr13, NR13);
+                        int nr14 = mmu().read(NR14);
                         nr14 = (nr14 & 0xF8) | ((channel1.getGbFrequency() >> 8) & 0x7);
-                        mmu().writeByte(nr14, NR14);
+                        mmu().write(nr14, NR14);
                         channel1.setFrequency(131072 / (2048 - channel1.getGbFrequency()));
                     }
                 }
@@ -207,10 +208,10 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
             removeSoundReset(2);
             setSoundOn(2);
 
-            int nr21 = mmu().readByte(NR21);
-            int nr22 = mmu().readByte(NR22);
-            int nr23 = mmu().readByte(NR23);
-            int nr24 = mmu().readByte(NR24);
+            int nr21 = mmu().read(NR21);
+            int nr22 = mmu().read(NR22);
+            int nr23 = mmu().read(NR23);
+            int nr24 = mmu().read(NR24);
 
             channel2.setOn(true);
             channel2.setWaveDuty((nr21 >> 6) & 0x3);
@@ -262,10 +263,10 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
             removeSoundReset(3);
             setSoundOn(3);
 
-            int nr30 = mmu().readByte(NR30);
-            int nr31 = mmu().readByte(NR31);
-            int nr33 = mmu().readByte(NR33);
-            int nr34 = mmu().readByte(NR34);
+            int nr30 = mmu().read(NR30);
+            int nr31 = mmu().read(NR31);
+            int nr33 = mmu().read(NR33);
+            int nr34 = mmu().read(NR34);
 
             channel3.setOn((nr30 & 0x80) == 0x80);
             channel3.setIndex(0);
@@ -276,7 +277,7 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
             int[] channel3wav = new int[32];
             for (int i = 0x30; i < 0x40; i++) {
                 int addr = 0xFF00 + i;
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 channel3wav[((i - 0x30) * 2)] = ((value >> 4) & 0xF);
                 channel3wav[((i - 0x30) * 2) + 1] = (value & 0xF);
             }
@@ -293,8 +294,8 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
 
     private void updateChannel3() {
         if (channel3.isOn()) {
-            int nr30 = mmu().readByte(NR30);
-            int nr32 = mmu().readByte(NR32);
+            int nr30 = mmu().read(NR30);
+            int nr32 = mmu().read(NR32);
 
             int index = channel3.getIndex();
             channel3.setIndex(index + 1);
@@ -329,10 +330,10 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
             removeSoundReset(4);
             setSoundOn(4);
 
-            int nr41 = mmu().readByte(NR41);
-            int nr42 = mmu().readByte(NR42);
-            int nr43 = mmu().readByte(NR43);
-            int nr44 = mmu().readByte(NR44);
+            int nr41 = mmu().read(NR41);
+            int nr42 = mmu().read(NR42);
+            int nr43 = mmu().read(NR43);
+            int nr44 = mmu().read(NR44);
 
             channel4.setOn(true);
             channel4.setIndex(0);
@@ -429,36 +430,36 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
     }
 
     private boolean isAllSoundOn() {
-        int nr52 = mmu().readByte(NR52);
+        int nr52 = mmu().read(NR52);
         return (nr52 & 0x80) == 0x80;
     }
 
     private boolean isSoundOn(int soundNum) {
         int mask = 1 << (soundNum - 1);
-        int nr52 = mmu().readByte(NR52);
+        int nr52 = mmu().read(NR52);
         return (nr52 & mask) == mask;
     }
 
     private void setSoundOn(int soundNum) {
         int mask = 1 << (soundNum - 1);
-        int nr52 = mmu().readByte(NR52);
-        mmu().writeByte(nr52 | mask, NR52);
+        int nr52 = mmu().read(NR52);
+        mmu().write(nr52 | mask, NR52);
     }
 
     private void setSoundOff(int soundNum) {
         int mask = 1 << (soundNum - 1);
-        int nr52 = mmu().readByte(NR52);
-        mmu().writeByte(nr52 & ~mask, NR52);
+        int nr52 = mmu().read(NR52);
+        mmu().write(nr52 & ~mask, NR52);
     }
 
     private boolean isSoundToTerminal(int soundNum, int soundOutput) {
-        int nr51 = mmu().readByte(NR51);
+        int nr51 = mmu().read(NR51);
         int mask = 1 << ((soundNum - 1) + (soundOutput - 1) * 4);
         return (nr51 & mask) == mask;
     }
 
     private int getSoundLevel(int soundOutput) {
-        int nr50 = mmu().readByte(NR50);
+        int nr50 = mmu().read(NR50);
         return (nr50 >> ((soundOutput - 1) * 4)) & 0x7;
     }
 
@@ -466,42 +467,43 @@ public class GbcApu extends AbstractGbcCoreElement implements Apu {
         boolean rv = false;
         switch (soundNum) {
             case 1:
-                int nr14 = mmu().readByte(NR14);
+                int nr14 = mmu().read(NR14);
                 rv = (nr14 & 0x80) == 0x80;
                 break;
             case 2:
-                int nr24 = mmu().readByte(NR24);
+                int nr24 = mmu().read(NR24);
                 rv = (nr24 & 0x80) == 0x80;
                 break;
             case 3:
-                int nr34 = mmu().readByte(NR34);
+                int nr34 = mmu().read(NR34);
                 rv = (nr34 & 0x80) == 0x80;
                 break;
             case 4:
-                int nr44 = mmu().readByte(NR44);
+                int nr44 = mmu().read(NR44);
                 rv = (nr44 & 0x80) == 0x80;
                 break;
         }
+        Register8Bit r = new Register8Bit();
         return rv;
     }
 
     private void removeSoundReset(int soundNum) {
         switch (soundNum) {
             case 1:
-                int nr14 = mmu().readByte(NR14);
-                mmu().writeByte(nr14 & 0x7F, NR14);
+                int nr14 = mmu().read(NR14);
+                mmu().write(nr14 & 0x7F, NR14);
                 break;
             case 2:
-                int nr24 = mmu().readByte(NR24);
-                mmu().writeByte(nr24 & 0x7F, NR24);
+                int nr24 = mmu().read(NR24);
+                mmu().write(nr24 & 0x7F, NR24);
                 break;
             case 3:
-                int nr34 = mmu().readByte(NR34);
-                mmu().writeByte(nr34 & 0x7F, NR34);
+                int nr34 = mmu().read(NR34);
+                mmu().write(nr34 & 0x7F, NR34);
                 break;
             case 4:
-                int nr44 = mmu().readByte(NR44);
-                mmu().writeByte(nr44 & 0x7F, NR44);
+                int nr44 = mmu().read(NR44);
+                mmu().write(nr44 & 0x7F, NR44);
                 break;
         }
     }

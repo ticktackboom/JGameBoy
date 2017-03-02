@@ -38,7 +38,7 @@ public class GbcJoypad extends AbstractGbcCoreElement implements Joypad {
 
     @Override
     public void handle(KeyEvent event) {
-        int register = mmu().readByte(JOYP);
+        int register = mmu().read(JOYP);
         int type = Joypad.getType(event);
         GbcButton button = GbcButton.getButton(event.getCode());
         if (button != null) {
@@ -61,7 +61,7 @@ public class GbcJoypad extends AbstractGbcCoreElement implements Joypad {
                     break;
             }
         }
-        mmu().writeByte(register, JOYP);
+        mmu().write(register, JOYP);
     }
 
     @Override

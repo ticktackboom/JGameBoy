@@ -4,14 +4,16 @@
     <output-test url="file://$MODULE_DIR$/../../build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../src/test/groovy" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="JGameBoy_main" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-all:2.3.11" level="project" />
+    <orderEntry type="library" name="Gradle: log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.7" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
   </component>
