@@ -140,7 +140,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
         // clock.reset()
         if (!halt) {
             // fetch
-            int opcode = mmu().readByte(PC.read());
+            int opcode = mmu().read(PC.read());
             // decode and execute
             execute(opcode);
         } else {
@@ -158,8 +158,8 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     @Override
     public void execute(int opcode) {
         Opcode op = table.lookup(opcode);
-        int operand1 = mmu().readByte(PC.read() + 1);
-        int operand2 = mmu().readByte(PC.read() + 2);
+        int operand1 = mmu().read(PC.read() + 1);
+        int operand2 = mmu().read(PC.read() + 2);
         boolean jumped = false;
 
         int d8 = operand1;
@@ -240,7 +240,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,(BC)
             case 0x0A: {
                 int addr = getAddress(B, C);
-                ld(A, mmu().readByte(addr));
+                ld(A, mmu().read(addr));
                 break;
             }
 
@@ -355,7 +355,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,(DE)
             case 0x1A: {
                 int addr = getAddress(D, E);
-                ld(A, mmu().readByte(addr));
+                ld(A, mmu().read(addr));
                 break;
             }
 
@@ -486,7 +486,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,(HL+)
             case 0x2A: {
                 int addr = getAddress(H, L);
-                ld(A, mmu().readByte(addr));
+                ld(A, mmu().read(addr));
                 inc(H, L);
                 break;
             }
@@ -597,7 +597,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,(HL-)
             case 0x3A: {
                 int addr = getAddress(H, L);
-                ld(A, mmu().readByte(addr));
+                ld(A, mmu().read(addr));
                 dec(H, L);
                 break;
             }
@@ -673,7 +673,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD B,(HL)
             case 0x46: {
                 int addr = getAddress(H, L);
-                ld(B, mmu().readByte(addr));
+                ld(B, mmu().read(addr));
                 break;
             }
 
@@ -722,7 +722,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD C,(HL)
             case 0x4E: {
                 int addr = getAddress(H, L);
-                ld(C, mmu().readByte(addr));
+                ld(C, mmu().read(addr));
                 break;
             }
 
@@ -771,7 +771,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD D,(HL)
             case 0x56: {
                 int addr = getAddress(H, L);
-                ld(D, mmu().readByte(addr));
+                ld(D, mmu().read(addr));
                 break;
             }
 
@@ -823,7 +823,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD E,(HL)
             case 0x5E: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 ld(E, value);
                 break;
             }
@@ -880,7 +880,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD H,(HL)
             case 0x66: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 ld(H, value);
                 break;
             }
@@ -937,7 +937,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD L,(HL)
             case 0x6E: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 ld(L, value);
                 break;
             }
@@ -1056,7 +1056,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,(HL)
             case 0x7E: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 ld(A, value);
                 break;
             }
@@ -1113,7 +1113,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // ADD A,(HL)
             case 0x86: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 add(A, value);
                 break;
             }
@@ -1170,7 +1170,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // ADC A,(HL)
             case 0x8E: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 adc(A, value);
                 break;
             }
@@ -1227,7 +1227,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // SUB (HL)
             case 0x96: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 sub(A, value);
                 break;
             }
@@ -1284,7 +1284,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // SBC A,(HL)
             case 0x9E: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 sbc(A, value);
                 break;
             }
@@ -1341,7 +1341,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // AND (HL)
             case 0xA6: {
                 int addr = getAddress(H, L);
-                int value = mmu().readByte(addr);
+                int value = mmu().read(addr);
                 and(A, value);
                 break;
             }
@@ -1393,7 +1393,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // XOR (HL)
             case 0xAE: {
                 int addr = getAddress(H, L);
-                xor(A, mmu().readByte(addr));
+                xor(A, mmu().read(addr));
                 break;
             }
 
@@ -1442,7 +1442,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // OR (HL)
             case 0xB6: {
                 int addr = getAddress(H, L);
-                or(A, mmu().readByte(addr));
+                or(A, mmu().read(addr));
                 break;
             }
 
@@ -1491,7 +1491,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // CP (HL)
             case 0xBE: {
                 int addr = getAddress(H, L);
-                cp(A, mmu().readByte(addr));
+                cp(A, mmu().read(addr));
                 break;
             }
 
@@ -1769,7 +1769,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD (C),A
             case 0xE2: {
                 int addr = 0xFF00 + C.read();
-                mmu().writeByte(A.read(), addr);
+                mmu().write(A.read(), addr);
                 break;
             }
 
@@ -1857,7 +1857,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LDH A,(a8)
             case 0xF0: {
                 int addr = 0xFF00 + a8;
-                ld(A, mmu().readByte(addr));
+                ld(A, mmu().read(addr));
                 break;
             }
 
@@ -1870,7 +1870,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
             // LD A,(C)
             case 0xF2: {
                 int addr = 0xFF00 + C.read();
-                ld(A, mmu().readByte(addr));
+                ld(A, mmu().read(addr));
                 break;
             }
 
@@ -1920,7 +1920,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
 
             // LD A,(a16)
             case 0xFA: {
-                ld(A, mmu().readByte(a16));
+                ld(A, mmu().read(a16));
                 break;
             }
 
@@ -3592,19 +3592,19 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private boolean isInterruptTriggered() {
-        int ie = mmu().readByte(IE);
-        int ief = mmu().readByte(IF);
+        int ie = mmu().read(IE);
+        int ief = mmu().read(IF);
         return (ie & ief) != 0;
     }
 
     private boolean isInterruptEnabled(int interrupt) {
-        int ie = mmu().readByte(IE);
+        int ie = mmu().read(IE);
         return (ie & interrupt) == interrupt;
     }
 
     private void disableInterrupt(int interrupt) {
-        int ief = mmu().readByte(IF);
-        mmu().writeByte(ief & ~interrupt, IF);
+        int ief = mmu().read(IF);
+        mmu().write(ief & ~interrupt, IF);
     }
 
     /**
@@ -3614,7 +3614,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
      * @param value the value to store
      */
     private void ld(int addr, int value) {
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
     }
 
     /**
@@ -3712,12 +3712,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
      * @param addr the location in memory of the value to increment
      */
     private void inc(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         F.set(Z_BIT, value == 0xFF);
         F.set(N_BIT, 0);
         F.set(H_BIT, value == 0xFF || value == 0x0F);
         value = (value + 1) & 0xFF;
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
     }
 
     /**
@@ -3784,12 +3784,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void dec(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         F.set(Z_BIT, value == 0x01);
         F.set(N_BIT, 1);
         F.set(H_BIT, value == 0x00 || value == 0x10);
         value = (value - 1) & 0xFF;
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
     }
 
     private void dec(Register8Bit r) {
@@ -3943,11 +3943,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void rlc(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int bit7 = getBit(7, value);
         value = (value << 1) & 0xFF;
         value = setBit(0, value, bit7);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, value == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -3965,11 +3965,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void rrc(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int bit0 = getBit(0, value);
         value = (value >> 1) & 0xFF;
         value = setBit(7, value, bit0);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, value == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -3987,12 +3987,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void rl(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int bit7 = getBit(7, value);
         int cBit = F.get(C_BIT);
         value = (value << 1) & 0xFF;
         value = setBit(0, value, cBit);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -4011,12 +4011,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void rr(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int bit0 = getBit(0, value);
         int cBit = F.get(C_BIT);
         value = (value >> 1) & 0xFF;
         value = setBit(7, value, cBit);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, value == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -4035,11 +4035,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void sla(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int bit7 = getBit(7, value);
         value = (value << 1) & 0xFF;
         value = setBit(0, value, 0);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, value == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -4057,12 +4057,12 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void sra(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int bit0 = getBit(0, value);
         int bit7 = getBit(7, value);
         value = (value >> 1) & 0xFF;
         value = setBit(7, value, bit7);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, value == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -4081,11 +4081,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void swap(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int hi = (value >> 4);
         int lo = (value & 0xF);
         value = (lo << 4) + hi;
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, value == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -4103,11 +4103,11 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void srl(int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int bit0 = getBit(0, value);
         value = (value >> 1) & 0xFF;
         value = setBit(7, value, 0);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
         F.set(Z_BIT, value == 0);
         F.set(N_BIT, 0);
         F.set(H_BIT, 0);
@@ -4125,7 +4125,7 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void bit(int bit, int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         int b = getBit(bit, value);
         F.set(Z_BIT, b == 0);
         F.set(N_BIT, 0);
@@ -4140,9 +4140,9 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void res(int bit, int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         value = setBit(bit, value, 0);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
     }
 
     private void res(int bit, Register8Bit r) {
@@ -4150,9 +4150,9 @@ public class GbcCpu extends AbstractGbcCoreElement implements Cpu {
     }
 
     private void set(int bit, int addr) {
-        int value = mmu().readByte(addr);
+        int value = mmu().read(addr);
         value = setBit(bit, value, 1);
-        mmu().writeByte(value, addr);
+        mmu().write(value, addr);
     }
 
     private void set(int bit, Register8Bit r) {

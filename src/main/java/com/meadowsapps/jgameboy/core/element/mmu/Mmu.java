@@ -7,12 +7,8 @@ import com.meadowsapps.jgameboy.core.element.CoreElement;
  */
 public interface Mmu extends CoreElement {
 
-    int readByte(int addr);
+    int read(int addr);
 
-    int readWord(int addr);
-
-    void writeByte(int value, int addr);
-
-    void writeWord(int value, int addr);
+    void write(int value, int addr);
 
 }

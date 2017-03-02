@@ -2,9 +2,6 @@ package com.meadowsapps.jgameboy.gbc.core.element.cartridge.mbc;
 
 import com.meadowsapps.jgameboy.gbc.core.element.cartridge.GbcCartridge;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.util.Arrays;
 
 /**
@@ -14,9 +11,9 @@ public class GbcMbc1 extends AbstractGbcMbc {
 
     private int romSize;
 
-    private int[] romBank0;
+    private byte[] romBank0;
 
-    private int[][] romBanks;
+    private byte[][] romBanks;
 
     private int selectedRomBank;
 
@@ -26,7 +23,7 @@ public class GbcMbc1 extends AbstractGbcMbc {
 
     private boolean hasRam;
 
-    private int[][] ramBanks;
+    private byte[][] ramBanks;
 
     private int selectedRamBank;
 
@@ -42,16 +39,13 @@ public class GbcMbc1 extends AbstractGbcMbc {
     public void initialize(byte[] contents) {
         romSize = cartridge().getHeader().getRomSize();
         int romBankCount = cartridge().getHeader().getRomBankCount();
-        romBank0 = new int[0x4000];
-        romBanks = new int[romBankCount][0x4000];
+        romBank0 = new byte[0x4000];
+        romBanks = new byte[romBankCount][0x4000];
 
         int bank = 0;
         for (int i = 0; i < contents.length; i += 0x4000) {
             // store buffer as int[] to proper rom bank
-            byte[] current = Arrays.copyOfRange(contents, i, i + 0x4000);
-            IntBuffer intBuf = ByteBuffer.wrap(current).order(ByteOrder.nativeOrder()).asIntBuffer();
-            int[] buffer = new int[intBuf.remaining()];
-            intBuf.get(buffer);
+            byte[] buffer = Arrays.copyOfRange(contents, i, i + 0x4000);
             if (bank == 0) {
                 romBank0 = buffer;
             } else {
@@ -132,7 +126,7 @@ public class GbcMbc1 extends AbstractGbcMbc {
             case 0xB000:
                 addr -= 0xA000;
                 if (ramEnabled) {
-                    ramBanks[selectedRamBank][addr] = value;
+                    ramBanks[selectedRamBank][addr] = (byte) value;
                 }
                 break;
         }
