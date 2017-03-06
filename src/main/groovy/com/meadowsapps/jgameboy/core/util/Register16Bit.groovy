@@ -5,11 +5,11 @@ package com.meadowsapps.jgameboy.core.util
  */
 class Register16Bit {
 
-    UInt16 word = new UInt16()
+    UInt16 word = new UnionUInt16()
 
-    UInt8 hi = new UInt8()
+    UInt8 hi = new UnionUInt8()
 
-    UInt8 lo = new UInt8()
+    UInt8 lo = new UnionUInt8()
 
     private void setWord(Number n) {
         this.word = new UInt16(n.intValue())
@@ -37,5 +37,23 @@ class Register16Bit {
         hi = new UInt8(_hi)
         int _lo = (word.intValue() & 0xFF)
         lo = new UInt8(_lo)
+    }
+
+    private class UnionUInt8 extends UInt8 {
+
+        @Override
+        void putAt(Number bit, boolean set) {
+            super.putAt(bit, set)
+            updateWord()
+        }
+    }
+
+    private class UnionUInt16 extends UInt16 {
+
+        @Override
+        void putAt(Number bit, boolean set) {
+            super.putAt(bit, set)
+            updateBytes()
+        }
     }
 }

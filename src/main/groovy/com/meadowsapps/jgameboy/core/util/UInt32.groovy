@@ -1,8 +1,11 @@
 package com.meadowsapps.jgameboy.core.util
 
+import groovy.transform.InheritConstructors
+
 /**
  * Created by dmeadows on 3/5/17.
  */
+@InheritConstructors
 class UInt32 extends UInt {
 
     static final int MAX_VALUE = 0xFFFFFFFF
@@ -71,23 +74,19 @@ class UInt32 extends UInt {
     }
 
     @Override
-    UInt32 putAt(Number bit, Number set) {
-        UInt32 rv = this
+    void putAt(Number bit, Number set) {
         if (0 <= set.intValue() && set.intValue() <= 1) {
-            rv = putAt(bit, set.intValue() == 1)
+            putAt(bit, set.intValue() == 1)
         }
-        return rv
     }
 
     @Override
-    UInt32 putAt(Number bit, boolean set) {
-        int result;
+    void putAt(Number bit, boolean set) {
         if (set) {
-            result = value | (1 << bit.intValue())
+            value |= (1 << bit.intValue())
         } else {
-            result = value & ~(1 << bit.intValue())
+            value &= ~(1 << bit.intValue())
         }
-        return new UInt32(result)
     }
 
     @Override

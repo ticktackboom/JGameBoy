@@ -2,14 +2,20 @@ package com.meadowsapps.jgameboy.gbc
 
 import com.meadowsapps.jgameboy.core.util.UInt16
 import com.meadowsapps.jgameboy.core.util.UInt8
+import groovy.transform.InheritConstructors
 
 /**
  * Created by dmeadows on 3/5/17.
  */
-class GbcMmu {
+@InheritConstructors
+class GbcMmu extends GbcCoreElement {
 
-    UInt8[] memory = new UInt8[0xFFFF]
-    
+    private UInt8[] memory
+
+    void initialize() {
+        memory = new UInt8[0xFFFF]
+    }
+
     UInt8 readByte(UInt16 addr) {
         UInt8 rv = memory[addr.intValue()]
         if (rv == null) {

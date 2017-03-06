@@ -63,9 +63,9 @@ abstract class UInt extends Number {
 
     abstract int getAt(Number bit)
 
-    abstract putAt(Number bit, Number set)
+    abstract void putAt(Number bit, Number set)
 
-    abstract putAt(Number bit, boolean set)
+    abstract void putAt(Number bit, boolean set)
 
     abstract leftShift(Number bits)
 

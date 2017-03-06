@@ -75,23 +75,19 @@ class UInt8 extends UInt {
     }
 
     @Override
-    UInt8 putAt(Number bit, Number set) {
-        UInt8 rv = this
+    void putAt(Number bit, Number set) {
         if (0 <= set.intValue() && set.intValue() <= 1) {
-            rv = putAt(bit, set.intValue() == 1)
+            putAt(bit, set.intValue() == 1)
         }
-        return rv
     }
 
     @Override
-    UInt8 putAt(Number bit, boolean set) {
-        int result;
+    void putAt(Number bit, boolean set) {
         if (set) {
-            result = value | (1 << bit.intValue())
+            value |= (1 << bit.intValue())
         } else {
-            result = value & ~(1 << bit.intValue())
+            value &= ~(1 << bit.intValue())
         }
-        return new UInt8(result)
     }
 
     @Override
