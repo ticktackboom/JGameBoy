@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JGameBoy.iml" filepath="$PROJECT_DIR$/.idea/modules/JGameBoy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JGameBoy_main.iml" filepath="$PROJECT_DIR$/.idea/modules/JGameBoy_main.iml" group="JGameBoy" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JGameBoy_test.iml" filepath="$PROJECT_DIR$/.idea/modules/JGameBoy_test.iml" group="JGameBoy" />
+    </modules>
+  </component>
+</project>
