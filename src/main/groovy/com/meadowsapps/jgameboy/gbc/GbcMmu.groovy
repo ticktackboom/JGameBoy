@@ -13,7 +13,7 @@ class GbcMmu extends GbcCoreElement {
     private UInt8[] memory
 
     void initialize() {
-        memory = new UInt8[0xFFFF]
+        memory = new UInt8[0x10000]
     }
 
     UInt8 readByte(UInt16 addr) {

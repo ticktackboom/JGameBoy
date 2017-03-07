@@ -1,5 +1,7 @@
 package com.meadowsapps.jgameboy.core.util
 
+import groovy.transform.InheritConstructors
+
 /**
  * Created by dmeadows on 3/5/17.
  */
@@ -12,17 +14,17 @@ class Register16Bit {
     UInt8 lo = new UnionUInt8()
 
     private void setWord(Number n) {
-        this.word = new UInt16(n.intValue())
+        this.word = new UnionUInt16(n.intValue())
         updateBytes()
     }
 
     private void setHi(Number n) {
-        this.hi = new UInt8(n.intValue())
+        this.hi = new UnionUInt8(n.intValue())
         updateWord()
     }
 
     private void setLo(Number n) {
-        this.lo = new UInt8(n.intValue())
+        this.lo = new UnionUInt8(n.intValue())
         updateWord()
     }
 
@@ -39,6 +41,7 @@ class Register16Bit {
         lo = new UInt8(_lo)
     }
 
+    @InheritConstructors
     private class UnionUInt8 extends UInt8 {
 
         @Override
@@ -48,6 +51,7 @@ class Register16Bit {
         }
     }
 
+    @InheritConstructors
     private class UnionUInt16 extends UInt16 {
 
         @Override

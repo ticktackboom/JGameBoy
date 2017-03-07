@@ -5,6 +5,7 @@ import com.meadowsapps.jgameboy.core.util.UInt16
 import com.meadowsapps.jgameboy.core.util.UInt8
 import groovy.lang.Closure as Opcode
 import groovy.transform.InheritConstructors
+import org.codehaus.groovy.runtime.ConvertedClosure
 
 /**
  * Created by dmeadows on 3/5/17.
@@ -26,7 +27,7 @@ class GbcCpu extends GbcCoreElement {
 
     private Register16Bit PC
 
-    private Opcode[] table
+    private Opcode[] opcodes
 
     private Clock clock
 
@@ -47,61 +48,68 @@ class GbcCpu extends GbcCoreElement {
         PC = new Register16Bit()
         clock = new Clock()
 
-        table = new Opcode[0xFF]
-        table[0x00] = this.&Opcode0x00
-        table[0x01] = this.&Opcode0x01
-        table[0x02] = this.&Opcode0x02
-        table[0x03] = this.&Opcode0x03
-        table[0x04] = this.&Opcode0x04
-        table[0x05] = this.&Opcode0x05
-        table[0x06] = this.&Opcode0x06
-        table[0x07] = this.&Opcode0x07
-        table[0x08] = this.&Opcode0x08
-        table[0x09] = this.&Opcode0x09
-        table[0x0A] = this.&Opcode0x0A
-        table[0x0B] = this.&Opcode0x0B
-        table[0x0C] = this.&Opcode0x0C
-        table[0x0D] = this.&Opcode0x0D
-        table[0x0E] = this.&Opcode0x0E
-        table[0x0F] = this.&Opcode0x0F
-        table[0x10] = this.&Opcode0x10
-        table[0x11] = this.&Opcode0x11
-        table[0x12] = this.&Opcode0x12
-        table[0x13] = this.&Opcode0x13
-        table[0x14] = this.&Opcode0x14
-        table[0x15] = this.&Opcode0x15
-        table[0x16] = this.&Opcode0x16
-        table[0x17] = this.&Opcode0x17
-        table[0x18] = this.&Opcode0x18
-        table[0x19] = this.&Opcode0x19
-        table[0x1A] = this.&Opcode0x1A
-        table[0x1B] = this.&Opcode0x1B
-        table[0x1C] = this.&Opcode0x1C
-        table[0x1D] = this.&Opcode0x1D
-        table[0x1E] = this.&Opcode0x1E
-        table[0x1F] = this.&Opcode0x1F
-        table[0x20] = this.&Opcode0x20
-        table[0x21] = this.&Opcode0x21
-        table[0x22] = this.&Opcode0x22
-        table[0x23] = this.&Opcode0x23
-        table[0x24] = this.&Opcode0x24
-        table[0x25] = this.&Opcode0x25
-        table[0x26] = this.&Opcode0x26
-        table[0x27] = this.&Opcode0x27
-        table[0x28] = this.&Opcode0x28
-        table[0x29] = this.&Opcode0x29
-        table[0x2A] = this.&Opcode0x2A
-        table[0x2B] = this.&Opcode0x2B
-        table[0x2C] = this.&Opcode0x2C
-        table[0x2D] = this.&Opcode0x2D
-        table[0x2E] = this.&Opcode0x2E
-        table[0x2F] = this.&Opcode0x2F
-
+        opcodes = new Opcode[0x100]
+        opcodes[0x00] = this.&Opcode0x00
+        opcodes[0x01] = this.&Opcode0x01
+        opcodes[0x02] = this.&Opcode0x02
+        opcodes[0x03] = this.&Opcode0x03
+        opcodes[0x04] = this.&Opcode0x04
+        opcodes[0x05] = this.&Opcode0x05
+        opcodes[0x06] = this.&Opcode0x06
+        opcodes[0x07] = this.&Opcode0x07
+        opcodes[0x08] = this.&Opcode0x08
+        opcodes[0x09] = this.&Opcode0x09
+        opcodes[0x0A] = this.&Opcode0x0A
+        opcodes[0x0B] = this.&Opcode0x0B
+        opcodes[0x0C] = this.&Opcode0x0C
+        opcodes[0x0D] = this.&Opcode0x0D
+        opcodes[0x0E] = this.&Opcode0x0E
+        opcodes[0x0F] = this.&Opcode0x0F
+        opcodes[0x10] = this.&Opcode0x10
+        opcodes[0x11] = this.&Opcode0x11
+        opcodes[0x12] = this.&Opcode0x12
+        opcodes[0x13] = this.&Opcode0x13
+        opcodes[0x14] = this.&Opcode0x14
+        opcodes[0x15] = this.&Opcode0x15
+        opcodes[0x16] = this.&Opcode0x16
+        opcodes[0x17] = this.&Opcode0x17
+        opcodes[0x18] = this.&Opcode0x18
+        opcodes[0x19] = this.&Opcode0x19
+        opcodes[0x1A] = this.&Opcode0x1A
+        opcodes[0x1B] = this.&Opcode0x1B
+        opcodes[0x1C] = this.&Opcode0x1C
+        opcodes[0x1D] = this.&Opcode0x1D
+        opcodes[0x1E] = this.&Opcode0x1E
+        opcodes[0x1F] = this.&Opcode0x1F
+        opcodes[0x20] = this.&Opcode0x20
+        opcodes[0x21] = this.&Opcode0x21
+        opcodes[0x22] = this.&Opcode0x22
+        opcodes[0x23] = this.&Opcode0x23
+        opcodes[0x24] = this.&Opcode0x24
+        opcodes[0x25] = this.&Opcode0x25
+        opcodes[0x26] = this.&Opcode0x26
+        opcodes[0x27] = this.&Opcode0x27
+        opcodes[0x28] = this.&Opcode0x28
+        opcodes[0x29] = this.&Opcode0x29
+        opcodes[0x2A] = this.&Opcode0x2A
+        opcodes[0x2B] = this.&Opcode0x2B
+        opcodes[0x2C] = this.&Opcode0x2C
+        opcodes[0x2D] = this.&Opcode0x2D
+        opcodes[0x2E] = this.&Opcode0x2E
+        opcodes[0x2F] = this.&Opcode0x2F
+        opcodes[0x30] = this.&Opcode0x30
+        opcodes[0x31] = this.&Opcode0x31
+        opcodes[0x32] = this.&Opcode0x32
+        opcodes[0x33] = this.&Opcode0x33
+        opcodes[0x34] = this.&Opcode0x34
+        opcodes[0x35] = this.&Opcode0x35
+        opcodes[0x36] = this.&Opcode0x36
+        opcodes[0x37] = this.&Opcode0x37
     }
 
     void execute() {
         UInt8 opcode = mmu().readByte(PC.word)
-        table[opcode.intValue()].call()
+        opcodes[opcode.intValue()].call()
     }
 
     /**
@@ -858,12 +866,85 @@ class GbcCpu extends GbcCoreElement {
         PC.word++
     }
 
+    /**
+     * INC SP
+     */
+    private void Opcode0x33() {
+        SP.word++
+
+        clock.m = 2
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * INC (HL)
+     */
+    private void Opcode0x34() {
+        UInt8 value = mmu().readByte(HL.word) + 1
+        mmu().writeByte(HL.word, value)
+
+        AF.lo[Z] = value.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = value.equals(0x00) || value.equals(0x10)
+
+        clock.m = 3
+        clock.t = 12
+
+        PC.word++
+    }
+
+    /**
+     * DEC (HL)
+     */
+    private void Opcode0x35() {
+        UInt8 value = mmu().readByte(HL.word) - 1
+        mmu().writeByte(HL.word, value)
+
+        AF.lo[Z] = value.equals(0x00)
+        AF.lo[N] = 1
+        AF.lo[H] = value.equals(0xFF) || value.equals(0x0F)
+
+        clock.m = 3
+        clock.t = 12
+
+        PC.word++
+    }
+
+    /**
+     * LD (HL),d8
+     */
+    private void Opcode0x36() {
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        mmu().writeByte(HL.word, d8)
+
+        clock.m = 2
+        clock.t = 12
+
+        PC.word += 2
+    }
+
+    /**
+     * SCF
+     */
+    private void Opcode0x37() {
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = 1
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
     static void main(String[] args) {
         GbcCore core = new GbcCore()
-        int length = 0x2F
+        int length = 0x37
         long start = System.currentTimeMillis()
         for (int i = 0; i < length; i++) {
-            core.cpu().table[i]()
+            core.cpu().opcodes[i]()
         }
         long stop = System.currentTimeMillis()
         println(stop - start)
