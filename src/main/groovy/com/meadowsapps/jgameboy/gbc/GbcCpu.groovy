@@ -5,7 +5,6 @@ import com.meadowsapps.jgameboy.core.util.UInt16
 import com.meadowsapps.jgameboy.core.util.UInt8
 import groovy.lang.Closure as Opcode
 import groovy.transform.InheritConstructors
-import org.codehaus.groovy.runtime.ConvertedClosure
 
 /**
  * Created by dmeadows on 3/5/17.
@@ -48,6 +47,7 @@ class GbcCpu extends GbcCoreElement {
         PC = new Register16Bit()
         clock = new Clock()
 
+        long start = System.currentTimeMillis()
         opcodes = new Opcode[0x100]
         opcodes[0x00] = this.&Opcode0x00
         opcodes[0x01] = this.&Opcode0x01
@@ -105,6 +105,80 @@ class GbcCpu extends GbcCoreElement {
         opcodes[0x35] = this.&Opcode0x35
         opcodes[0x36] = this.&Opcode0x36
         opcodes[0x37] = this.&Opcode0x37
+        opcodes[0x38] = this.&Opcode0x38
+        opcodes[0x39] = this.&Opcode0x39
+        opcodes[0x3A] = this.&Opcode0x3A
+        opcodes[0x3B] = this.&Opcode0x3B
+        opcodes[0x3C] = this.&Opcode0x3C
+        opcodes[0x3D] = this.&Opcode0x3D
+        opcodes[0x3E] = this.&Opcode0x3E
+        opcodes[0x3F] = this.&Opcode0x3F
+        opcodes[0x40] = this.&Opcode0x40
+        opcodes[0x41] = this.&Opcode0x41
+        opcodes[0x42] = this.&Opcode0x42
+        opcodes[0x43] = this.&Opcode0x43
+        opcodes[0x44] = this.&Opcode0x44
+        opcodes[0x45] = this.&Opcode0x45
+        opcodes[0x46] = this.&Opcode0x46
+        opcodes[0x47] = this.&Opcode0x47
+        opcodes[0x48] = this.&Opcode0x48
+        opcodes[0x49] = this.&Opcode0x49
+        opcodes[0x4A] = this.&Opcode0x4A
+        opcodes[0x4B] = this.&Opcode0x4B
+        opcodes[0x4C] = this.&Opcode0x4C
+        opcodes[0x4D] = this.&Opcode0x4D
+        opcodes[0x4E] = this.&Opcode0x4E
+        opcodes[0x4F] = this.&Opcode0x4F
+        opcodes[0x50] = this.&Opcode0x50
+        opcodes[0x51] = this.&Opcode0x51
+        opcodes[0x52] = this.&Opcode0x52
+        opcodes[0x53] = this.&Opcode0x53
+        opcodes[0x54] = this.&Opcode0x54
+        opcodes[0x55] = this.&Opcode0x55
+        opcodes[0x56] = this.&Opcode0x56
+        opcodes[0x57] = this.&Opcode0x57
+        opcodes[0x58] = this.&Opcode0x58
+        opcodes[0x59] = this.&Opcode0x59
+        opcodes[0x5A] = this.&Opcode0x5A
+        opcodes[0x5B] = this.&Opcode0x5B
+        opcodes[0x5C] = this.&Opcode0x5C
+        opcodes[0x5D] = this.&Opcode0x5D
+        opcodes[0x5E] = this.&Opcode0x5E
+        opcodes[0x5F] = this.&Opcode0x5F
+        opcodes[0x60] = this.&Opcode0x60
+        opcodes[0x61] = this.&Opcode0x61
+        opcodes[0x62] = this.&Opcode0x62
+        opcodes[0x63] = this.&Opcode0x63
+        opcodes[0x64] = this.&Opcode0x64
+        opcodes[0x65] = this.&Opcode0x65
+        opcodes[0x66] = this.&Opcode0x66
+        opcodes[0x67] = this.&Opcode0x67
+        opcodes[0x68] = this.&Opcode0x68
+        opcodes[0x69] = this.&Opcode0x69
+        opcodes[0x6A] = this.&Opcode0x6A
+        opcodes[0x6B] = this.&Opcode0x6B
+        opcodes[0x6C] = this.&Opcode0x6C
+        opcodes[0x6D] = this.&Opcode0x6D
+        opcodes[0x6E] = this.&Opcode0x6E
+        opcodes[0x6F] = this.&Opcode0x6F
+        opcodes[0x70] = this.&Opcode0x70
+        opcodes[0x71] = this.&Opcode0x71
+        opcodes[0x72] = this.&Opcode0x72
+        opcodes[0x73] = this.&Opcode0x73
+        opcodes[0x74] = this.&Opcode0x74
+        opcodes[0x75] = this.&Opcode0x75
+        opcodes[0x76] = this.&Opcode0x76
+        opcodes[0x77] = this.&Opcode0x77
+        opcodes[0x78] = this.&Opcode0x78
+        opcodes[0x79] = this.&Opcode0x79
+        opcodes[0x7A] = this.&Opcode0x7A
+        opcodes[0x7B] = this.&Opcode0x7B
+        opcodes[0x7C] = this.&Opcode0x7C
+        opcodes[0x7D] = this.&Opcode0x7D
+        opcodes[0x7E] = this.&Opcode0x7E
+        opcodes[0x7F] = this.&Opcode0x7F
+        long stop = System.currentTimeMillis()
+        println(stop - start)
     }
 
     void execute() {
@@ -939,9 +1013,892 @@ class GbcCpu extends GbcCoreElement {
         PC.word++
     }
 
+    /**
+     * JR C,r8
+     */
+    private void Opcode0x38() {
+        if (AF.lo[C] == 1) {
+            byte r8 = mmu().readByte(PC.word + 1).byteValue()
+            PC.word += r8
+
+            clock.t = 12
+        } else {
+            clock.t = 8
+        }
+
+        clock.m = 2
+
+        PC.word += 2
+    }
+
+    /**
+     * ADD HL,SP
+     */
+    private void Opcode0x39() {
+        int hl = HL.word.intValue()
+        int sp = SP.word.intValue()
+        HL.word += SP.word
+
+        AF.lo[N] = 0
+        AF.lo[H] = (hl & 0x0FFF) + (sp & 0x0FFF) > 0x0FFF
+        AF.lo[C] = HL.word.intValue() > 0xFFFF
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * LD A,(HL-)
+     */
+    private void Opcode0x3A() {
+        AF.hi = mmu().readByte(HL.word)
+        HL.word--
+
+        clock.m = 1
+        clock.t = 8
+    }
+
+    /**
+     * DEC SP
+     */
+    private void Opcode0x3B() {
+        SP.word--
+
+        clock.m = 2
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * INC A
+     */
+    private void Opcode0x3C() {
+        AF.hi++
+
+        AF.lo[Z] = AF.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = AF.lo.equals(0x00) || AF.lo.equals(0x10)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * DEC A
+     */
+    private void Opcode0x3D() {
+        AF.hi--
+
+        AF.lo[Z] = AF.hi.equals(0x00)
+        AF.lo[N] = 1
+        AF.lo[H] = AF.hi.equals(0xFF) || AF.hi.equals(0x0F)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,d8
+     */
+    private void Opcode0x3E() {
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        AF.hi = d8
+
+        clock.m = 2
+        clock.t = 8
+
+        PC.word += 2
+    }
+
+    /**
+     * CCF
+     */
+    private void Opcode0x3F() {
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = ~AF.lo[C]
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,B
+     */
+    private void Opcode0x40() {
+        BC.hi = BC.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,C
+     */
+    private void Opcode0x41() {
+        BC.hi = BC.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,D
+     */
+    private void Opcode0x42() {
+        BC.hi = DE.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,E
+     */
+    private void Opcode0x43() {
+        BC.hi = DE.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,H
+     */
+    private void Opcode0x44() {
+        BC.hi = HL.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,L
+     */
+    private void Opcode0x45() {
+        BC.hi = HL.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,(HL)
+     */
+    private void Opcode0x46() {
+        BC.hi = mmu().readByte(HL.word)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD B,A
+     */
+    private void Opcode0x47() {
+        BC.hi = AF.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,B
+     */
+    private void Opcode0x48() {
+        BC.lo = BC.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,C
+     */
+    private void Opcode0x49() {
+        BC.lo = BC.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,D
+     */
+    private void Opcode0x4A() {
+        BC.lo = DE.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,E
+     */
+    private void Opcode0x4B() {
+        BC.lo = DE.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,H
+     */
+    private void Opcode0x4C() {
+        BC.lo = HL.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,L
+     */
+    private void Opcode0x4D() {
+        BC.lo = HL.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,(HL)
+     */
+    private void Opcode0x4E() {
+        BC.lo = mmu().readByte(HL.word)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD C,A
+     */
+    private void Opcode0x4F() {
+        BC.lo = AF.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,B
+     */
+    private void Opcode0x50() {
+        DE.hi = BC.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,C
+     */
+    private void Opcode0x51() {
+        DE.hi = BC.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,D
+     */
+    private void Opcode0x52() {
+        DE.hi = DE.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,E
+     */
+    private void Opcode0x53() {
+        DE.hi = DE.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,H
+     */
+    private void Opcode0x54() {
+        DE.hi = HL.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,L
+     */
+    private void Opcode0x55() {
+        DE.hi = HL.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,(HL)
+     */
+    private void Opcode0x56() {
+        DE.hi = mmu().readByte(HL.word)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD D,A
+     */
+    private void Opcode0x57() {
+        DE.hi = AF.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,B
+     */
+    private void Opcode0x58() {
+        DE.lo = BC.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,C
+     */
+    private void Opcode0x59() {
+        DE.lo = BC.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,D
+     */
+    private void Opcode0x5A() {
+        DE.lo = DE.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,E
+     */
+    private void Opcode0x5B() {
+        DE.lo = DE.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,H
+     */
+    private void Opcode0x5C() {
+        DE.lo = HL.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,L
+     */
+    private void Opcode0x5D() {
+        DE.lo = HL.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,(HL)
+     */
+    private void Opcode0x5E() {
+        DE.lo = mmu().readByte(HL.word)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD E,A
+     */
+    private void Opcode0x5F() {
+        DE.lo = AF.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,B
+     */
+    private void Opcode0x60() {
+        HL.hi = BC.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,C
+     */
+    private void Opcode0x61() {
+        HL.hi = BC.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,D
+     */
+    private void Opcode0x62() {
+        HL.hi = DE.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,E
+     */
+    private void Opcode0x63() {
+        HL.hi = DE.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,H
+     */
+    private void Opcode0x64() {
+        HL.hi = HL.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,L
+     */
+    private void Opcode0x65() {
+        HL.hi = HL.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,(HL)
+     */
+    private void Opcode0x66() {
+        HL.hi = mmu().readByte(HL.word)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD H,A
+     */
+    private void Opcode0x67() {
+        HL.hi = AF.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,B
+     */
+    private void Opcode0x68() {
+        HL.lo = BC.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,C
+     */
+    private void Opcode0x69() {
+        HL.lo = BC.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,D
+     */
+    private void Opcode0x6A() {
+        HL.lo = DE.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,E
+     */
+    private void Opcode0x6B() {
+        HL.lo = DE.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,H
+     */
+    private void Opcode0x6C() {
+        HL.lo = HL.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,L
+     */
+    private void Opcode0x6D() {
+        HL.lo = HL.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,(HL)
+     */
+    private void Opcode0x6E() {
+        HL.lo = mmu().readByte(HL.word)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD L,A
+     */
+    private void Opcode0x6F() {
+        HL.lo = AF.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD (HL),B
+     */
+    private void Opcode0x70() {
+        mmu().writeByte(HL.word, BC.hi)
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * LD (HL),C
+     */
+    private void Opcode0x71() {
+        mmu().writeByte(HL.word, BC.lo)
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * LD (HL),D
+     */
+    private void Opcode0x72() {
+        mmu().writeByte(HL.word, DE.hi)
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * LD (HL),E
+     */
+    private void Opcode0x73() {
+        mmu().writeByte(HL.word, DE.lo)
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * LD (HL),H
+     */
+    private void Opcode0x74() {
+        mmu().writeByte(HL.word, HL.hi)
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * LD (HL),L
+     */
+    private void Opcode0x75() {
+        mmu().writeByte(HL.word, HL.lo)
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * HALT
+     */
+    private void Opcode0x76() {
+        // todo: add opcode operation
+        clock.m = 1
+        clock.t = 4
+    }
+
+    /**
+     * LD (HL),A
+     */
+    private void Opcode0x77() {
+        mmu().writeByte(HL.word, AF.hi)
+
+        clock.m = 1
+        clock.t = 8
+
+        PC.word++
+    }
+
+    /**
+     * LD A,B
+     */
+    private void Opcode0x78() {
+        AF.hi = BC.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,C
+     */
+    private void Opcode0x79() {
+        AF.hi = BC.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,D
+     */
+    private void Opcode0x7A() {
+        AF.hi = DE.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,E
+     */
+    private void Opcode0x7B() {
+        AF.hi = DE.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,H
+     */
+    private void Opcode0x7C() {
+        AF.hi = HL.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,L
+     */
+    private void Opcode0x7D() {
+        AF.hi = HL.lo
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,(HL)
+     */
+    private void Opcode0x7E() {
+        AF.hi = mmu().readByte(HL.word)
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * LD A,A
+     */
+    private void Opcode0x7F() {
+        AF.hi = AF.hi
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
     static void main(String[] args) {
         GbcCore core = new GbcCore()
-        int length = 0x37
+        int length = 0x80
         long start = System.currentTimeMillis()
         for (int i = 0; i < length; i++) {
             core.cpu().opcodes[i]()

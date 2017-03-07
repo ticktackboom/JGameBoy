@@ -81,4 +81,20 @@ abstract class UInt extends Number {
         return value == n.intValue()
     }
 
+    boolean isLessThan(Number n) {
+        return value < n.intValue()
+    }
+
+    boolean isLessThanOrEqualTo(Number n) {
+        return value <= n.intValue()
+    }
+
+    boolean isGreaterThan(Number n) {
+        return value > n.intValue()
+    }
+
+    boolean isGreaterThanOrEqualTo(Number n) {
+        return value >= n.intValue()
+    }
+
 }
