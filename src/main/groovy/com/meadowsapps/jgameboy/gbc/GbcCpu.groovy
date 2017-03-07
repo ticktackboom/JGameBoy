@@ -177,6 +177,22 @@ class GbcCpu extends GbcCoreElement {
         opcodes[0x7D] = this.&Opcode0x7D
         opcodes[0x7E] = this.&Opcode0x7E
         opcodes[0x7F] = this.&Opcode0x7F
+        opcodes[0x80] = this.&Opcode0x80
+        opcodes[0x81] = this.&Opcode0x81
+        opcodes[0x82] = this.&Opcode0x82
+        opcodes[0x83] = this.&Opcode0x83
+        opcodes[0x84] = this.&Opcode0x84
+        opcodes[0x85] = this.&Opcode0x85
+        opcodes[0x86] = this.&Opcode0x86
+        opcodes[0x87] = this.&Opcode0x87
+        opcodes[0x88] = this.&Opcode0x88
+        opcodes[0x89] = this.&Opcode0x89
+        opcodes[0x8A] = this.&Opcode0x8A
+        opcodes[0x8B] = this.&Opcode0x8B
+        opcodes[0x8C] = this.&Opcode0x8C
+        opcodes[0x8D] = this.&Opcode0x8D
+        opcodes[0x8E] = this.&Opcode0x8E
+        opcodes[0x8F] = this.&Opcode0x8F
         long stop = System.currentTimeMillis()
         println(stop - start)
     }
@@ -1896,9 +1912,337 @@ class GbcCpu extends GbcCoreElement {
         PC.word++
     }
 
+    /**
+     * ADD A,B
+     */
+    private void Opcode0x80() {
+        int value1 = AF.hi.intValue()
+        int value2 = BC.hi.intValue()
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADD A,C
+     */
+    private void Opcode0x81() {
+        int value1 = AF.hi.intValue()
+        int value2 = BC.lo.intValue()
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADD A,D
+     */
+    private void Opcode0x82() {
+        int value1 = AF.hi.intValue()
+        int value2 = DE.hi.intValue()
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADD A,E
+     */
+    private void Opcode0x83() {
+        int value1 = AF.hi.intValue()
+        int value2 = DE.lo.intValue()
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADD A,H
+     */
+    private void Opcode0x84() {
+        int value1 = AF.hi.intValue()
+        int value2 = HL.hi.intValue()
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADD A,L
+     */
+    private void Opcode0x85() {
+        int value1 = AF.hi.intValue()
+        int value2 = HL.lo.intValue()
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADD A,(HL)
+     */
+    private void Opcode0x86() {
+        int value1 = AF.hi.intValue()
+        int value2 = mmu().readByte(HL.word)
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADD A,A
+     */
+    private void Opcode0x87() {
+        int value1 = AF.hi.intValue()
+        int value2 = AF.hi.intValue()
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,B
+     */
+    private void Opcode0x88() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = BC.hi.intValue() + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,C
+     */
+    private void Opcode0x89() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = BC.lo.intValue() + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,D
+     */
+    private void Opcode0x8A() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = DE.hi.intValue() + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,E
+     */
+    private void Opcode0x8B() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = DE.lo.intValue() + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,H
+     */
+    private void Opcode0x8C() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = HL.hi.intValue() + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,L
+     */
+    private void Opcode0x8D() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = HL.lo.intValue() + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,(HL)
+     */
+    private void Opcode0x8E() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = mmu().readByte(HL.word) + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
+    /**
+     * ADC A,A
+     */
+    private void Opcode0x8F() {
+        int bitC = AF.lo[C]
+        int value1 = AF.hi.intValue()
+        int value2 = AF.hi.intValue() + bitC
+        int sum = value1 + value2
+        AF.hi = sum
+
+        AF.lo[Z] = sum == 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        clock.m = 1
+        clock.t = 4
+
+        PC.word++
+    }
+
     static void main(String[] args) {
         GbcCore core = new GbcCore()
-        int length = 0x80
+        int length = 0x90
         long start = System.currentTimeMillis()
         for (int i = 0; i < length; i++) {
             core.cpu().opcodes[i]()
