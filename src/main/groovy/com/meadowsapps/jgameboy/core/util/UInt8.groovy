@@ -114,4 +114,10 @@ class UInt8 extends UInt {
         return new UInt8(result)
     }
 
+    @Override
+    UInt8 bitwiseNegate() {
+        int result = (~value) as int
+        return new UInt8(result)
+    }
+
 }

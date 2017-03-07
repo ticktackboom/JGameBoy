@@ -75,6 +75,8 @@ abstract class UInt extends Number {
 
     abstract previous()
 
+    abstract bitwiseNegate()
+
     boolean equals(Number n) {
         return value == n.intValue()
     }

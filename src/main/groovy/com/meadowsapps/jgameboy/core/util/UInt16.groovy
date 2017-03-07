@@ -114,6 +114,12 @@ class UInt16 extends UInt {
         return new UInt16(result)
     }
 
+    @Override
+    UInt16 bitwiseNegate() {
+        int result = (~value) as int
+        return new UInt16(result)
+    }
+
     static UInt16 combine(Number hi, Number lo) {
         int _hi = ((hi.intValue() & 0xFF) >> 8)
         int _lo = (lo.intValue() & 0xFF)

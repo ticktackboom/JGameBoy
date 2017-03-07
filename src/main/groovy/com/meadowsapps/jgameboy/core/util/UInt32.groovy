@@ -113,4 +113,10 @@ class UInt32 extends UInt {
         return new UInt32(result)
     }
 
+    @Override
+    UInt32 bitwiseNegate() {
+        int result = (~value) as int
+        return new UInt32(result)
+    }
+
 }
