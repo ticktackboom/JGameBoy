@@ -10,7 +10,6 @@ import groovy.transform.InheritConstructors
 /**
  * Created by dmeadows on 3/5/17.
  */
-// todo: update cycles - 0x74
 @InheritConstructors
 class GbcCpu extends GbcCoreElement {
 
@@ -268,7 +267,7 @@ class GbcCpu extends GbcCoreElement {
      * STOP 0
      */
     private void Opcode0x10() {
-        // todo: ensure this is correct
+        // todo: 0x10 (STOP 0) - ensure this is correct
         if (!debug)
             while (AF.hi.equals(0x00) || mmu().readByte(0xFF00).equals(0x00)); ;
 
@@ -1420,9 +1419,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x74() {
         mmu().writeByte(HL.word, HL.hi)
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -1432,9 +1429,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x75() {
         mmu().writeByte(HL.word, HL.lo)
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -1442,9 +1437,8 @@ class GbcCpu extends GbcCoreElement {
      * HALT
      */
     private void Opcode0x76() {
-        // todo: add opcode operation
-        clock.m = 1
-        clock.t = 4
+        // todo: 0x76 (HALT) - add opcode operation
+        cycles = 4
     }
 
     /**
@@ -1453,9 +1447,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x77() {
         mmu().writeByte(HL.word, AF.hi)
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -1465,9 +1457,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x78() {
         AF.hi = BC.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1477,9 +1467,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x79() {
         AF.hi = BC.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1489,9 +1477,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x7A() {
         AF.hi = DE.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1501,9 +1487,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x7B() {
         AF.hi = DE.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1513,9 +1497,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x7C() {
         AF.hi = HL.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1525,9 +1507,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x7D() {
         AF.hi = HL.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1537,9 +1517,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x7E() {
         AF.hi = mmu().readByte(HL.word)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1549,9 +1527,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x7F() {
         AF.hi = AF.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1569,9 +1545,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1589,9 +1563,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1609,9 +1581,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1629,9 +1599,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1649,9 +1617,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1669,9 +1635,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1689,9 +1653,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1709,9 +1671,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1730,9 +1690,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1751,9 +1709,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1772,9 +1728,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1793,9 +1747,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1814,9 +1766,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1835,9 +1785,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1856,9 +1804,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1877,9 +1823,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1897,9 +1841,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1917,9 +1859,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1937,9 +1877,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1957,9 +1895,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1977,9 +1913,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1997,9 +1931,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2017,9 +1949,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -2037,9 +1967,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2058,9 +1986,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2079,9 +2005,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2100,9 +2024,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2121,9 +2043,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2142,9 +2062,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2163,9 +2081,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2184,9 +2100,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -2205,9 +2119,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2225,9 +2137,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2245,9 +2155,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2265,9 +2173,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2285,9 +2191,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2305,9 +2209,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2325,9 +2227,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2345,9 +2245,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -2365,9 +2263,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 1
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2385,9 +2281,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2405,9 +2299,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2425,9 +2317,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2445,9 +2335,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2465,9 +2353,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2485,9 +2371,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2505,9 +2389,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -2525,9 +2407,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2545,9 +2425,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2565,9 +2443,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2585,9 +2461,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2605,9 +2479,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2625,9 +2497,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2645,9 +2515,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2665,9 +2533,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -2685,9 +2551,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 0
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2704,9 +2568,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2723,9 +2585,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2742,9 +2602,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2761,9 +2619,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2780,9 +2636,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2799,9 +2653,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2818,9 +2670,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -2837,9 +2687,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
         AF.lo[C] = difference < 0x00
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -2851,12 +2699,9 @@ class GbcCpu extends GbcCoreElement {
             PC.word = mmu().readWord(SP.word)
             SP.word += 2
 
-            clock.m = 1
-            clock.t = 20
+            cycles = 20
         } else {
-            clock.m = 1
-            clock.t = 8
-
+            cycles = 8
             PC.word++
         }
     }
@@ -2868,9 +2713,7 @@ class GbcCpu extends GbcCoreElement {
         BC.word = mmu().readWord(SP.word)
         SP.word += 2
 
-        clock.m = 1
-        clock.t = 12
-
+        cycles = 12
         PC.word++
     }
 
@@ -2882,12 +2725,9 @@ class GbcCpu extends GbcCoreElement {
             UInt16 a16 = mmu().readWord(PC.word + 1)
             PC.word = a16
 
-            clock.m = 3
-            clock.t = 16
+            cycles = 16
         } else {
-            clock.m = 3
-            clock.t = 12
-
+            cycles = 12
             PC.word += 3
         }
     }
@@ -2899,8 +2739,7 @@ class GbcCpu extends GbcCoreElement {
         UInt16 a16 = mmu().readWord(PC.word + 1)
         PC.word = a16
 
-        clock.m = 3
-        clock.t = 16
+        cycles = 16
     }
 
     /**
@@ -2908,15 +2747,12 @@ class GbcCpu extends GbcCoreElement {
      */
     private void Opcode0xC4() {
         if (AF.lo[Z] != 1) {
-            UInt16 a16 = mmu().readWord(PC.word + 1)
+            UInt16 a16 = mmu().readWord(PC.word + 3)
             PC.word = a16
 
-            clock.m = 3
-            clock.t = 16
+            cycles = 24
         } else {
-            clock.m = 3
-            clock.t = 12
-
+            cycles = 12
             PC.word += 3
         }
     }
@@ -2928,9 +2764,7 @@ class GbcCpu extends GbcCoreElement {
         SP.word -= 2
         mmu().writeWord(SP.word, BC.word)
 
-        clock.m = 1
-        clock.t = 16
-
+        cycles = 16
         PC.word++
     }
 
@@ -2949,9 +2783,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 2
-        clock.t = 8
-
+        cycles = 8
         PC.word += 2
     }
 
@@ -2959,12 +2791,11 @@ class GbcCpu extends GbcCoreElement {
      * RST 00H
      */
     private void Opcode0xC7() {
-        SP.word--
+        SP.word -= 2
         mmu().writeWord(SP.word, PC.word + 1)
         PC.word = 0x0000
 
-        clock.m = 1
-        clock.t = 16
+        cycles = 16
     }
 
     /**
@@ -2975,12 +2806,9 @@ class GbcCpu extends GbcCoreElement {
             PC.word = mmu().readWord(SP.word)
             SP.word += 2
 
-            clock.m = 1
-            clock.t = 20
+            cycles = 20
         } else {
-            clock.m = 1
-            clock.t = 8
-
+            cycles = 8
             PC.word++
         }
     }
@@ -2992,8 +2820,7 @@ class GbcCpu extends GbcCoreElement {
         PC.word = mmu().readWord(SP.word)
         SP.word += 2
 
-        clock.m = 1
-        clock.t = 16
+        cycles = 16
     }
 
     /**
@@ -3004,12 +2831,9 @@ class GbcCpu extends GbcCoreElement {
             UInt16 a16 = mmu().readWord(PC.word + 1)
             PC.word = a16
 
-            clock.m = 3
-            clock.t = 16
+            cycles = 16
         } else {
-            clock.m = 3
-            clock.t = 12
-
+            cycles = 12
             PC.word += 3
         }
     }
@@ -3035,12 +2859,9 @@ class GbcCpu extends GbcCoreElement {
             UInt16 a16 = mmu().readWord(PC.word + 1)
             PC.word = a16
 
-            // todo: check the clock cycles here
-            clock.m = 5
-            clock.t = 24
+            cycles = 24
         } else {
-            clock.m = 3
-            clock.t = 12
+            cycles = 12
         }
     }
 
@@ -3053,8 +2874,7 @@ class GbcCpu extends GbcCoreElement {
         UInt16 a16 = mmu().readWord(PC.word + 1)
         PC.word = a16
 
-        clock.m = 3
-        clock.t = 24
+        cycles = 24
     }
 
     /**
@@ -3073,9 +2893,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
         AF.lo[C] = sum > 0xFF
 
-        clock.m = 2
-        clock.t = 4
-
+        cycles = 8
         PC.word += 2
     }
 
@@ -3083,17 +2901,400 @@ class GbcCpu extends GbcCoreElement {
      * RST 08H
      */
     private void Opcode0xCF() {
-        SP.word--
+        SP.word -= 2
         mmu().writeWord(SP.word, PC.word + 1)
         PC.word = 0x0008
 
-        clock.m = 1
-        clock.t = 16
+        cycles = 16
+    }
+
+    /**
+     * RET NC
+     */
+    private void Opcode0xD0() {
+        if (AF.lo[C] != 1) {
+            PC.word = mmu().readWord(SP.word)
+            SP.word += 2
+
+            cycles = 20
+        } else {
+            cycles = 8
+            PC.word++
+        }
+    }
+
+    /**
+     * POP DE
+     */
+    private void Opcode0xD1() {
+        DE.word = mmu().readWord(SP.word)
+        SP.word += 2
+
+        cycles = 12
+        PC.word++
+    }
+
+    /**
+     * JP NC,a16
+     */
+    private void Opcode0xD2() {
+        if (AF.lo[C] != 1) {
+            UInt16 a16 = mmu().readWord(PC.word + 1)
+            PC.word = a16
+
+            cycles = 16
+        } else {
+            cycles = 12
+            PC.word += 3
+        }
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xD3() {
+        // todo: 0xD3 (NONE) - throw OpcodeException
+    }
+
+    /**
+     * CALL NC,a16
+     */
+    private void Opcode0xD4() {
+        if (AF.lo[C] != 1) {
+            SP.word -= 2
+            mmu().writeWord(SP.word, PC.word + 3)
+            UInt16 a16 = mmu().readWord(PC.word + 1)
+            PC.word = a16
+
+            cycles = 24
+        } else {
+            cycles = 12
+            PC.word += 3
+        }
+    }
+
+    /**
+     * PUSH DE
+     */
+    private void Opcode0xD5() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, DE.word)
+
+        cycles = 16
+        PC.word++
+    }
+
+    /**
+     * SUB d8
+     */
+    private void Opcode0xD6() {
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        int value1 = AF.hi.intValue()
+        int value2 = d8.intValue()
+        int difference = value1 - value2
+        AF.hi = difference
+
+        AF.lo[Z] = difference == 0x00
+        AF.lo[N] = 1
+        AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
+        AF.lo[C] = difference < 0x00
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RST 10H
+     */
+    private void Opcode0xD7() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, PC.word + 1)
+        PC.word = 0x0010
+
+        cycles = 16
+    }
+
+    /**
+     * RET C
+     */
+    private void Opcode0xD8() {
+        if (AF.lo[C] == 1) {
+            PC.word = mmu().readWord(SP.word)
+            SP.word += 2
+
+            cycles = 20
+        } else {
+            cycles = 8
+            PC.word++
+        }
+    }
+
+    /**
+     * RETI
+     */
+    private void Opcode0xD9() {
+        PC.word = mmu().readWord(SP.word)
+        SP.word += 2
+
+        cycles = 16
+        // todo: 0xD9 (RETI) - ime
+    }
+
+    /**
+     * JP C,a16
+     */
+    private void Opcode0xDA() {
+        if (AF.lo[C] == 1) {
+            UInt16 a16 = mmu().readWord(PC.word + 1)
+            PC.word = a16
+
+            cycles = 16
+        } else {
+            cycles = 12
+            PC.word += 3
+        }
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xDB() {
+        // todo: 0xDB (NONE) - throw OpcodeException
+    }
+
+    /**
+     * CALL C,a16
+     */
+    private void Opcode0xDC() {
+        if (AF.lo[C] == 1) {
+            UInt16 a16 = mmu().readWord(PC.word + 3)
+            PC.word = a16
+
+            cycles = 24
+        } else {
+            cycles = 12
+            PC.word += 3
+        }
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xDD() {
+        // todo: 0xDD (NONE) - throw OpcodeException
+    }
+
+    /**
+     * SBC A,d8
+     */
+    private void Opcode0xDE() {
+        int bitC = AF.lo[C]
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        int value1 = AF.hi.intValue()
+        int value2 = d8.intValue() + bitC
+        int difference = value1 - value2
+        AF.hi = difference
+
+        AF.lo[Z] = difference == 0x00
+        AF.lo[N] = 1
+        AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
+        AF.lo[C] = difference < 0x00
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RST 18H
+     */
+    private void Opcode0xDF() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, PC.word + 1)
+        PC.word = 0x0018
+
+        cycles = 16
+    }
+
+    /**
+     * LDH (a8),A
+     */
+    private void Opcode0xE0() {
+        UInt8 a8 = mmu().readByte(PC.word + 1)
+        mmu().writeByte(UInt16.combine(0xFF00, a8), AF.hi)
+
+        cycles = 12
+        PC.word += 2
+    }
+
+    /**
+     * POP HL
+     */
+    private void Opcode0xE1() {
+        HL.word = mmu().readWord(SP.word)
+        SP.word += 2
+
+        cycles = 12
+        PC.word++
+    }
+
+    /**
+     * LD (C),A
+     */
+    private void Opcode0xE2() {
+        mmu().writeByte(UInt16.combine(0xFF00, BC.lo), AF.hi)
+
+        cycles = 8
+        PC.word++
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xE3() {
+        // todo: 0xE3 (NONE) - throw OpcodeException
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xE4() {
+        // todo: 0xE4 (NONE) - throw OpcodeException
+    }
+
+    /**
+     * PUSH HL
+     */
+    private void Opcode0xE5() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, HL.word)
+
+        cycles = 16
+        PC.word++
+    }
+
+    /**
+     * AND d8
+     */
+    private void Opcode0xE6() {
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        int value1 = AF.hi.intValue()
+        int value2 = d8.intValue()
+        int result = value1 & value2
+        AF.hi = result
+
+        AF.lo[Z] = result == 0x00
+        AF.lo[N] = 0
+        AF.lo[H] = 1
+        AF.lo[C] = 0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RST 20H
+     */
+    private void Opcode0xE7() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, PC.word + 1)
+        PC.word = 0x0020
+
+        cycles = 16
+    }
+
+    /**
+     * ADD SP,r8
+     */
+    private void Opcode0xE8() {
+        byte r8 = mmu().readByte(PC.word + 1).byteValue()
+        int value1 = SP.word.intValue()
+        int value2 = r8
+        int sum = value1 + value2
+        SP.word = sum
+
+        AF.lo[Z] = 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        cycles = 16
+        PC.word += 2
+    }
+
+    /**
+     * JP (HL)
+     */
+    private void Opcode0xE9() {
+        PC.word = HL.word
+
+        cycles = 4
+    }
+
+    /**
+     * LD (a16),A
+     */
+    private void Opcode0xEA() {
+        UInt16 a16 = mmu().readWord(PC.word + 1)
+        mmu().writeByte(a16, AF.hi)
+
+        cycles = 16
+        PC.word += 3
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xEB() {
+        // todo: 0xEB (NONE) - throw OpcodeException
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xEC() {
+        // todo: 0xEC (NONE) - throw OpcodeException
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xED() {
+        // todo: 0xED (NONE) - throw OpcodeException
+    }
+
+    /**
+     * XOR d8
+     */
+    private void Opcode0xEE() {
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        int value1 = AF.hi.intValue()
+        int value2 = d8.intValue()
+        int result = value1 ^ value2
+        AF.hi = result
+
+        AF.lo[Z] = result == 0x00
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = 0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RST 28H
+     */
+    private void Opcode0xEF() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, PC.word + 1)
+        PC.word = 0x0028
+
+        cycles = 16
     }
 
     static void main(String[] args) {
         GbcCore core = new GbcCore()
-        int length = 0xD0
+        int length = 0xF0
         long start = System.currentTimeMillis()
         for (int i = 0; i < length; i++) {
             core.cpu().opcodes[i]()
