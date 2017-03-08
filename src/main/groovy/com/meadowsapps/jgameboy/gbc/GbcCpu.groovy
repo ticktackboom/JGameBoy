@@ -10,7 +10,7 @@ import groovy.transform.InheritConstructors
 /**
  * Created by dmeadows on 3/5/17.
  */
-// todo: update cycles - 0x31
+// todo: update cycles - 0x74
 @InheritConstructors
 class GbcCpu extends GbcCoreElement {
 
@@ -713,9 +713,7 @@ class GbcCpu extends GbcCoreElement {
         UInt16 d16 = mmu().readWord(PC.word + 1)
         SP.word = d16
 
-        clock.m = 3
-        clock.t = 12
-
+        cycles = 12
         PC.word += 3
     }
 
@@ -726,9 +724,7 @@ class GbcCpu extends GbcCoreElement {
         mmu().writeByte(HL.word, AF.hi)
         HL.word--
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -738,9 +734,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x33() {
         SP.word++
 
-        clock.m = 2
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -755,9 +749,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[N] = 0
         AF.lo[H] = value.equals(0x00) || value.equals(0x10)
 
-        clock.m = 3
-        clock.t = 12
-
+        cycles = 12
         PC.word++
     }
 
@@ -772,9 +764,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[N] = 1
         AF.lo[H] = value.equals(0xFF) || value.equals(0x0F)
 
-        clock.m = 3
-        clock.t = 12
-
+        cycles = 12
         PC.word++
     }
 
@@ -785,9 +775,7 @@ class GbcCpu extends GbcCoreElement {
         UInt8 d8 = mmu().readByte(PC.word + 1)
         mmu().writeByte(HL.word, d8)
 
-        clock.m = 2
-        clock.t = 12
-
+        cycles = 12
         PC.word += 2
     }
 
@@ -799,9 +787,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = 1
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -813,13 +799,10 @@ class GbcCpu extends GbcCoreElement {
             byte r8 = mmu().readByte(PC.word + 1).byteValue()
             PC.word += r8
 
-            clock.t = 12
+            cycles = 12
         } else {
-            clock.t = 8
+            cycles = 8
         }
-
-        clock.m = 2
-
         PC.word += 2
     }
 
@@ -835,9 +818,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = (hl & 0x0FFF) + (sp & 0x0FFF) > 0x0FFF
         AF.lo[C] = HL.word.intValue() > 0xFFFF
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -848,8 +829,8 @@ class GbcCpu extends GbcCoreElement {
         AF.hi = mmu().readByte(HL.word)
         HL.word--
 
-        clock.m = 1
-        clock.t = 8
+        cycles = 8
+        PC.word++
     }
 
     /**
@@ -858,9 +839,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x3B() {
         SP.word--
 
-        clock.m = 2
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -874,9 +853,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[N] = 0
         AF.lo[H] = AF.lo.equals(0x00) || AF.lo.equals(0x10)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -890,9 +867,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[N] = 1
         AF.lo[H] = AF.hi.equals(0xFF) || AF.hi.equals(0x0F)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -903,9 +878,7 @@ class GbcCpu extends GbcCoreElement {
         UInt8 d8 = mmu().readByte(PC.word + 1)
         AF.hi = d8
 
-        clock.m = 2
-        clock.t = 8
-
+        cycles = 8
         PC.word += 2
     }
 
@@ -917,9 +890,7 @@ class GbcCpu extends GbcCoreElement {
         AF.lo[H] = 0
         AF.lo[C] = ~AF.lo[C]
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -929,9 +900,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x40() {
         BC.hi = BC.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -941,9 +910,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x41() {
         BC.hi = BC.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -953,9 +920,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x42() {
         BC.hi = DE.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -965,9 +930,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x43() {
         BC.hi = DE.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -977,9 +940,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x44() {
         BC.hi = HL.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -989,9 +950,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x45() {
         BC.hi = HL.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1001,9 +960,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x46() {
         BC.hi = mmu().readByte(HL.word)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1013,9 +970,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x47() {
         BC.hi = AF.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1025,9 +980,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x48() {
         BC.lo = BC.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1037,9 +990,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x49() {
         BC.lo = BC.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1049,9 +1000,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x4A() {
         BC.lo = DE.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1061,9 +1010,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x4B() {
         BC.lo = DE.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1073,9 +1020,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x4C() {
         BC.lo = HL.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1085,9 +1030,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x4D() {
         BC.lo = HL.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1097,9 +1040,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x4E() {
         BC.lo = mmu().readByte(HL.word)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1109,9 +1050,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x4F() {
         BC.lo = AF.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1121,9 +1060,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x50() {
         DE.hi = BC.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1133,9 +1070,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x51() {
         DE.hi = BC.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1145,9 +1080,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x52() {
         DE.hi = DE.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1157,9 +1090,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x53() {
         DE.hi = DE.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1169,9 +1100,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x54() {
         DE.hi = HL.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1181,9 +1110,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x55() {
         DE.hi = HL.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1193,9 +1120,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x56() {
         DE.hi = mmu().readByte(HL.word)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1205,9 +1130,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x57() {
         DE.hi = AF.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1217,9 +1140,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x58() {
         DE.lo = BC.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1229,9 +1150,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x59() {
         DE.lo = BC.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1241,9 +1160,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x5A() {
         DE.lo = DE.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1253,9 +1170,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x5B() {
         DE.lo = DE.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1265,9 +1180,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x5C() {
         DE.lo = HL.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1277,9 +1190,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x5D() {
         DE.lo = HL.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1289,9 +1200,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x5E() {
         DE.lo = mmu().readByte(HL.word)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1301,9 +1210,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x5F() {
         DE.lo = AF.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1313,9 +1220,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x60() {
         HL.hi = BC.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1325,9 +1230,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x61() {
         HL.hi = BC.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1337,9 +1240,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x62() {
         HL.hi = DE.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1349,9 +1250,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x63() {
         HL.hi = DE.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1361,9 +1260,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x64() {
         HL.hi = HL.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1373,9 +1270,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x65() {
         HL.hi = HL.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1385,9 +1280,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x66() {
         HL.hi = mmu().readByte(HL.word)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1397,9 +1290,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x67() {
         HL.hi = AF.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1409,9 +1300,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x68() {
         HL.lo = BC.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1421,9 +1310,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x69() {
         HL.lo = BC.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1433,9 +1320,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x6A() {
         HL.lo = DE.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1445,9 +1330,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x6B() {
         HL.lo = DE.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1457,9 +1340,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x6C() {
         HL.lo = HL.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1469,9 +1350,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x6D() {
         HL.lo = HL.lo
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1481,9 +1360,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x6E() {
         HL.lo = mmu().readByte(HL.word)
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 8
         PC.word++
     }
 
@@ -1493,9 +1370,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x6F() {
         HL.lo = AF.hi
 
-        clock.m = 1
-        clock.t = 4
-
+        cycles = 4
         PC.word++
     }
 
@@ -1505,9 +1380,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x70() {
         mmu().writeByte(HL.word, BC.hi)
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -1517,9 +1390,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x71() {
         mmu().writeByte(HL.word, BC.lo)
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -1529,9 +1400,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x72() {
         mmu().writeByte(HL.word, DE.hi)
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
@@ -1541,9 +1410,7 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0x73() {
         mmu().writeByte(HL.word, DE.lo)
 
-        clock.m = 1
-        clock.t = 8
-
+        cycles = 8
         PC.word++
     }
 
