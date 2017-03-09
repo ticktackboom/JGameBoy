@@ -31,6 +31,8 @@ class GbcCpu extends GbcCoreElement {
 
     private Opcode[] opcodesCB
 
+    private boolean ime
+
     private int cycles
 
     private static final int Z = 7
@@ -55,6 +57,7 @@ class GbcCpu extends GbcCoreElement {
         for (int i = 0; i < opcodes.length; i++) {
             String hex = Utilities.toHex(i)
             opcodes[i] = this.&"Opcode${hex}"
+            opcodesCB[i] = this.&"OpcodeCB${hex}"
         }
         long stop = System.currentTimeMillis()
         println(stop - start)
@@ -2953,7 +2956,7 @@ class GbcCpu extends GbcCoreElement {
      * NONE
      */
     private void Opcode0xD3() {
-        // todo: 0xD3 (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xD3 is not defined")
     }
 
     /**
@@ -3035,9 +3038,9 @@ class GbcCpu extends GbcCoreElement {
     private void Opcode0xD9() {
         PC.word = mmu().readWord(SP.word)
         SP.word += 2
+        ime = true
 
         cycles = 16
-        // todo: 0xD9 (RETI) - ime
     }
 
     /**
@@ -3059,7 +3062,7 @@ class GbcCpu extends GbcCoreElement {
      * NONE
      */
     private void Opcode0xDB() {
-        // todo: 0xDB (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xDB is not defined")
     }
 
     /**
@@ -3081,7 +3084,7 @@ class GbcCpu extends GbcCoreElement {
      * NONE
      */
     private void Opcode0xDD() {
-        // todo: 0xDD (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xDD is not defined")
     }
 
     /**
@@ -3151,14 +3154,14 @@ class GbcCpu extends GbcCoreElement {
      * NONE
      */
     private void Opcode0xE3() {
-        // todo: 0xE3 (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xE3 is not defined")
     }
 
     /**
      * NONE
      */
     private void Opcode0xE4() {
-        // todo: 0xE4 (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xE4 is not defined")
     }
 
     /**
@@ -3245,21 +3248,21 @@ class GbcCpu extends GbcCoreElement {
      * NONE
      */
     private void Opcode0xEB() {
-        // todo: 0xEB (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xEB is not defined")
     }
 
     /**
      * NONE
      */
     private void Opcode0xEC() {
-        // todo: 0xEC (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xEC is not defined")
     }
 
     /**
      * NONE
      */
     private void Opcode0xED() {
-        // todo: 0xED (NONE) - throw OpcodeException
+        throw new OpcodeException("Opcode 0xED is not defined")
     }
 
     /**
@@ -3292,15 +3295,774 @@ class GbcCpu extends GbcCoreElement {
         cycles = 16
     }
 
+    /**
+     * LDH A,(a8)
+     */
+    private void Opcode0xF0() {
+        UInt8 a8 = mmu().readByte(PC.word + 1)
+        AF.hi = mmu().readByte(UInt16.combine(0xFF00, a8))
+
+        cycles = 12
+        PC.word += 2
+    }
+
+    /**
+     * POP AF
+     */
+    private void Opcode0xF1() {
+        AF.word = mmu().readWord(SP.word)
+        SP.word += 2
+
+        cycles = 12
+        PC.word++
+    }
+
+    /**
+     * LD A,(C)
+     */
+    private void Opcode0xF2() {
+        AF.hi = mmu().readByte(UInt16.combine(0xFF00, BC.lo))
+
+        cycles = 8
+        PC.word++
+    }
+
+    /**
+     * DI
+     */
+    private void Opcode0xF3() {
+        ime = false
+
+        cycles = 4
+        PC.word++
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xF4() {
+        throw new OpcodeException("Opcode 0xF4 is not defined")
+    }
+
+    /**
+     * PUSH AF
+     */
+    private void Opcode0xF5() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, AF.word)
+
+        cycles = 16
+        PC.word++
+    }
+
+    /**
+     * OR d8
+     */
+    private void Opcode0xF6() {
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        int value1 = AF.hi.intValue()
+        int value2 = d8.intValue()
+        int result = value1 | value2
+        AF.hi = result
+
+        AF.lo[Z] = result == 0x00
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = 0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RST 30H
+     */
+    private void Opcode0xF7() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, PC.word + 1)
+        PC.word = 0x0030
+
+        cycles = 16
+    }
+
+    /**
+     * LD HL,SP+r8
+     */
+    private void Opcode0xF8() {
+        byte r8 = mmu().readByte(PC.word + 1).byteValue()
+        int value1 = SP.word.intValue()
+        int value2 = r8.intValue()
+        int sum = value1 + value2
+        HL.word = sum
+
+        AF.lo[Z] = 0
+        AF.lo[N] = 0
+        AF.lo[H] = (value1 & 0x0F) + (value2 & 0x0F) > 0x0F
+        AF.lo[C] = sum > 0xFF
+
+        cycles = 12
+        PC.word += 2
+    }
+
+    /**
+     * LD SP,HL
+     */
+    private void Opcode0xF9() {
+        SP.word = HL.word
+
+        cycles = 8
+        PC.word++
+    }
+
+    /**
+     * LD A,(a16)
+     */
+    private void Opcode0xFA() {
+        UInt16 a16 = mmu().readWord(PC.word + 1)
+        AF.hi = mmu().readByte(a16)
+
+        cycles = 16
+        PC.word += 3
+    }
+
+    /**
+     * EI
+     */
+    private void Opcode0xFB() {
+        ime = true
+
+        cycles = 4
+        PC.word++
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xFC() {
+        throw new OpcodeException("Opcode 0xFC is not defined")
+    }
+
+    /**
+     * NONE
+     */
+    private void Opcode0xFD() {
+        throw new OpcodeException("Opcode 0xFD is not defined")
+    }
+
+    /**
+     * CP d8
+     */
+    private void Opcode0xFE() {
+        UInt8 d8 = mmu().readByte(PC.word + 1)
+        int value1 = AF.hi.intValue()
+        int value2 = d8.intValue()
+        int difference = value1 - value2
+
+        AF.lo[Z] = difference == 0x00
+        AF.lo[N] = 1
+        AF.lo[H] = (difference & 0x0F) > (value1 & 0x0F)
+        AF.lo[C] = difference < 0x00
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RST 38H
+     */
+    private void Opcode0xFF() {
+        SP.word -= 2
+        mmu().writeWord(SP.word, PC.word + 1)
+        PC.word = 0x0038
+
+        cycles = 16
+    }
+
+    /**
+     * RLC B
+     */
+    private void OpcodeCB0x00() {
+        int bit7 = BC.hi[7]
+        BC.hi = BC.hi << 1
+        BC.hi[0] = bit7
+
+        AF.lo[Z] = BC.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RLC C
+     */
+    private void OpcodeCB0x01() {
+        int bit7 = BC.lo[7]
+        BC.lo = BC.lo << 1
+        BC.lo[0] = bit7
+
+        AF.lo[Z] = BC.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RLC D
+     */
+    private void OpcodeCB0x02() {
+        int bit7 = DE.hi[7]
+        DE.hi = DE.hi << 1
+        DE.hi[0] = bit7
+
+        AF.lo[Z] = DE.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RLC E
+     */
+    private void OpcodeCB0x03() {
+        int bit7 = DE.lo[7]
+        DE.lo = DE.lo << 1
+        DE.lo[0] = bit7
+
+        AF.lo[Z] = DE.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RLC H
+     */
+    private void OpcodeCB0x04() {
+        int bit7 = HL.hi[7]
+        HL.hi = HL.hi << 1
+        HL.hi[0] = bit7
+
+        AF.lo[Z] = HL.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RLC L
+     */
+    private void OpcodeCB0x05() {
+        int bit7 = HL.lo[7]
+        HL.lo = HL.lo << 1
+        HL.lo[0] = bit7
+
+        AF.lo[Z] = HL.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RLC (HL)
+     */
+    private void OpcodeCB0x06() {
+        UInt8 value = mmu().readByte(HL.word)
+        int bit7 = value[7]
+        value = value << 1
+        value[0] = bit7
+        mmu().writeByte(HL.word, value)
+
+        AF.lo[Z] = value.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RLC A
+     */
+    private void OpcodeCB0x07() {
+        int bit7 = AF.hi[7]
+        AF.hi = AF.hi << 1
+        AF.hi[0] = bit7
+
+        AF.lo[Z] = AF.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC B
+     */
+    private void OpcodeCB0x08() {
+        int bit0 = BC.hi[0]
+        BC.hi = BC.hi >> 1
+        BC.hi[7] = bit0
+
+        AF.lo[Z] = BC.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC C
+     */
+    private void OpcodeCB0x09() {
+        int bit0 = BC.lo[0]
+        BC.lo = BC.lo >> 1
+        BC.lo[7] = bit0
+
+        AF.lo[Z] = BC.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC D
+     */
+    private void OpcodeCB0x0A() {
+        int bit0 = DE.hi[0]
+        DE.hi = DE.hi >> 1
+        DE.hi[7] = bit0
+
+        AF.lo[Z] = DE.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC E
+     */
+    private void OpcodeCB0x0B() {
+        int bit0 = DE.lo[0]
+        DE.lo = DE.lo >> 1
+        DE.lo[7] = bit0
+
+        AF.lo[Z] = DE.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC H
+     */
+    private void OpcodeCB0x0C() {
+        int bit0 = HL.hi[0]
+        HL.hi = HL.hi >> 1
+        HL.hi[7] = bit0
+
+        AF.lo[Z] = HL.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC L
+     */
+    private void OpcodeCB0x0D() {
+        int bit0 = HL.lo[0]
+        HL.lo = HL.lo >> 1
+        HL.lo[7] = bit0
+
+        AF.lo[Z] = HL.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC (HL)
+     */
+    private void OpcodeCB0x0E() {
+        UInt8 value = mmu().readByte(HL.word)
+        int bit0 = value[0]
+        value = value >> 1
+        value[7] = bit0
+        mmu().writeByte(HL.word, value)
+
+        AF.lo[Z] = value.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RRC A
+     */
+    private void OpcodeCB0x0F() {
+        int bit0 = AF.hi[0]
+        AF.hi = AF.hi >> 1
+        AF.hi[7] = bit0
+
+        AF.lo[Z] = AF.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL B
+     */
+    private void OpcodeCB0x10() {
+        int bit7 = BC.hi[7]
+        int bitC = AF.lo[C]
+        BC.hi = BC.hi << 1
+        BC.hi[0] = bitC
+
+        AF.lo[Z] = BC.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL C
+     */
+    private void OpcodeCB0x11() {
+        int bit7 = BC.lo[7]
+        int bitC = AF.lo[C]
+        BC.lo = BC.lo << 1
+        BC.lo[0] = bitC
+
+        AF.lo[Z] = BC.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL D
+     */
+    private void OpcodeCB0x12() {
+        int bit7 = DE.hi[7]
+        int bitC = AF.lo[C]
+        DE.hi = DE.hi << 1
+        DE.hi[0] = bitC
+
+        AF.lo[Z] = DE.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL E
+     */
+    private void OpcodeCB0x13() {
+        int bit7 = DE.lo[7]
+        int bitC = AF.lo[C]
+        DE.lo = DE.lo << 1
+        DE.lo[0] = bitC
+
+        AF.lo[Z] = DE.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL H
+     */
+    private void OpcodeCB0x14() {
+        int bit7 = HL.hi[7]
+        int bitC = AF.lo[C]
+        HL.hi = HL.hi << 1
+        HL.hi[0] = bitC
+
+        AF.lo[Z] = HL.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL L
+     */
+    private void OpcodeCB0x15() {
+        int bit7 = HL.lo[7]
+        int bitC = AF.lo[C]
+        HL.lo = HL.lo << 1
+        HL.lo[0] = bitC
+
+        AF.lo[Z] = HL.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL (HL)
+     */
+    private void OpcodeCB0x16() {
+        UInt8 value = mmu().readByte(HL.word)
+        int bit7 = value[7]
+        int bitC = AF.lo[C]
+        value = value << 1
+        value[0] = bitC
+        mmu().writeByte(HL.word, value)
+
+        AF.lo[Z] = value.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RL A
+     */
+    private void OpcodeCB0x17() {
+        int bit7 = AF.hi[7]
+        int bitC = AF.lo[C]
+        AF.hi = AF.hi << 1
+        AF.hi[0] = bitC
+
+        AF.lo[Z] = AF.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit7
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR B
+     */
+    private void OpcodeCB0x18() {
+        int bit0 = BC.hi[0]
+        int bitC = AF.lo[C]
+        BC.hi = BC.hi >> 1
+        BC.hi[7] = bitC
+
+        AF.lo[Z] = BC.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR C
+     */
+    private void OpcodeCB0x19() {
+        int bit0 = BC.lo[0]
+        int bitC = AF.lo[C]
+        BC.lo = BC.lo >> 1
+        BC.lo[7] = bitC
+
+        AF.lo[Z] = BC.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR D
+     */
+    private void OpcodeCB0x1A() {
+        int bit0 = DE.hi[0]
+        int bitC = AF.lo[C]
+        DE.hi = DE.hi >> 1
+        DE.hi[7] = bitC
+
+        AF.lo[Z] = DE.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR E
+     */
+    private void OpcodeCB0x1B() {
+        int bit0 = DE.lo[0]
+        int bitC = AF.lo[C]
+        DE.lo = DE.lo >> 1
+        DE.lo[7] = bitC
+
+        AF.lo[Z] = DE.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR H
+     */
+    private void OpcodeCB0x1C() {
+        int bit0 = HL.hi[0]
+        int bitC = AF.lo[C]
+        HL.hi = HL.hi >> 1
+        HL.hi[7] = bitC
+
+        AF.lo[Z] = HL.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR L
+     */
+    private void OpcodeCB0x1D() {
+        int bit0 = HL.lo[0]
+        int bitC = AF.lo[C]
+        HL.lo = HL.lo >> 1
+        HL.lo[7] = bitC
+
+        AF.lo[Z] = HL.lo.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR (HL)
+     */
+    private void OpcodeCB0x1E() {
+        UInt8 value = mmu().readByte(HL.word)
+        int bit0 = value[0]
+        int bitC = AF.lo[C]
+        value = value >> 1
+        value[7] = bitC
+        mmu().writeByte(HL.word, value)
+
+        AF.lo[Z] = value.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
+    /**
+     * RR A
+     */
+    private void OpcodeCB0x1F() {
+        int bit0 = AF.hi[0]
+        int bitC = AF.lo[C]
+        AF.hi = AF.hi >> 1
+        AF.hi[7] = bitC
+
+        AF.lo[Z] = AF.hi.equals(0x00)
+        AF.lo[N] = 0
+        AF.lo[H] = 0
+        AF.lo[C] = bit0
+
+        cycles = 8
+        PC.word += 2
+    }
+
     static void main(String[] args) {
         GbcCore core = new GbcCore()
-        int length = 0xF0
+        int length = 0x100
+        int lengthCB = 0x20
         long start = System.currentTimeMillis()
         for (int i = 0; i < length; i++) {
-            core.cpu().opcodes[i]()
+            try {
+                core.cpu().opcodes[i].call()
+            } catch (OpcodeException e) {
+                e.printStackTrace()
+            }
+        }
+        for (int i = 0; i < lengthCB; i++) {
+            core.cpu().opcodesCB[i].call()
         }
         long stop = System.currentTimeMillis()
         println(stop - start)
-        println((stop - start) / length)
+        println((stop - start) / (length + lengthCB))
     }
 }
