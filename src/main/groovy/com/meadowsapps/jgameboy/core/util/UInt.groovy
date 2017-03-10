@@ -81,6 +81,10 @@ abstract class UInt extends Number {
         return value == n.intValue()
     }
 
+    int hashCode() {
+        return value
+    }
+
     boolean isLessThan(Number n) {
         return value < n.intValue()
     }
